@@ -13,13 +13,15 @@ export default function Hero() {
   const [mousePosition, setMousePosition] = useState({ x: 0.5, y: 0.5 })
   const targetRotationRef = useRef({ x: 0, y: 0 })
   const currentRotationRef = useRef({ x: 0, y: 0 })
+  const autoRotationRef = useRef(0)
   const [particles] = useState(() =>
-    [...Array(15)].map(() => ({
+    [...Array(30)].map(() => ({
       initialX: Math.random() * 100,
       initialY: Math.random() * 100,
       moveX: Math.random() * 50 - 25,
       duration: 10 + Math.random() * 10,
       delay: Math.random() * 5,
+      size: Math.random() > 0.5 ? 1 : 0.5, // Varying sizes
     }))
   )
 
@@ -78,19 +80,28 @@ export default function Hero() {
 
       ctx.clearRect(0, 0, window.innerWidth, window.innerHeight)
 
-      // Update target rotation from mouse position
-      targetRotationRef.current.x = (mousePosition.y - 0.5) * Math.PI * 0.6  // Vertical follows mouse
-      targetRotationRef.current.y = -(mousePosition.x - 0.5) * Math.PI * 0.6 // Horizontal inverted
+      const isMobileDevice = window.innerWidth < 768
 
-      // Smooth interpolation with easing
-      const ease = 0.08
-      const dx = targetRotationRef.current.x - currentRotationRef.current.x
-      const dy = targetRotationRef.current.y - currentRotationRef.current.y
+      if (isMobileDevice) {
+        // On mobile: slow auto-rotation
+        autoRotationRef.current += 0.002
+        currentRotationRef.current.x = Math.sin(autoRotationRef.current * 0.5) * 0.3
+        currentRotationRef.current.y = autoRotationRef.current
+      } else {
+        // On desktop: follow mouse
+        targetRotationRef.current.x = (mousePosition.y - 0.5) * Math.PI * 0.6  // Vertical follows mouse
+        targetRotationRef.current.y = -(mousePosition.x - 0.5) * Math.PI * 0.6 // Horizontal inverted
 
-      // Only update if there's a meaningful difference (prevents micro-movements)
-      if (Math.abs(dx) > 0.0001 || Math.abs(dy) > 0.0001) {
-        currentRotationRef.current.x += dx * ease
-        currentRotationRef.current.y += dy * ease
+        // Smooth interpolation with easing
+        const ease = 0.08
+        const dx = targetRotationRef.current.x - currentRotationRef.current.x
+        const dy = targetRotationRef.current.y - currentRotationRef.current.y
+
+        // Only update if there's a meaningful difference (prevents micro-movements)
+        if (Math.abs(dx) > 0.0001 || Math.abs(dy) > 0.0001) {
+          currentRotationRef.current.x += dx * ease
+          currentRotationRef.current.y += dy * ease
+        }
       }
 
       // Project all particles
@@ -372,10 +383,12 @@ export default function Hero() {
       {particles.map((particle, i) => (
         <motion.div
           key={i}
-          className="absolute w-1 h-1 bg-blue-400 rounded-full opacity-40"
+          className="absolute bg-blue-400 rounded-full opacity-40"
           style={{
             left: `${particle.initialX}%`,
             top: `${particle.initialY}%`,
+            width: `${particle.size * 4}px`,
+            height: `${particle.size * 4}px`,
             boxShadow: '0 0 10px rgba(100, 180, 255, 0.6)',
           }}
           animate={{
@@ -402,36 +415,101 @@ export default function Hero() {
       {/* Vignette */}
       <div className="absolute inset-0 bg-gradient-radial from-transparent via-black/10 to-black/60 pointer-events-none" />
 
+      {/* Mobile Top Info - Fixed at top */}
+      <div className="absolute top-4 left-4 right-4 z-20 md:hidden">
+        <div className="grid grid-cols-2 gap-x-4 gap-y-3">
+          {/* Portfolio */}
+          <div className="hero-info">
+            <div className="text-[9px] text-gray-500 tracking-[0.25em] font-mono mb-1 uppercase" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>
+              Portfolio
+            </div>
+            <div className="text-[11px] text-gray-400 font-mono" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>
+              2025
+            </div>
+          </div>
+
+          {/* Based in */}
+          <div className="hero-info text-right">
+            <div className="text-[9px] text-gray-500 tracking-[0.25em] font-mono mb-1 uppercase" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>
+              Based in
+            </div>
+            <div className="text-[11px] text-gray-400 font-mono" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>
+              Finland
+            </div>
+          </div>
+
+          {/* Contact */}
+          <div className="hero-info">
+            <div className="text-[9px] text-gray-500 tracking-[0.25em] font-mono mb-1 uppercase" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>
+              Contact
+            </div>
+            <div className="text-[11px] text-gray-400 font-mono space-y-0.5">
+              <div className="hover:text-gray-300 transition-colors cursor-pointer" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>Email</div>
+              <div className="hover:text-gray-300 transition-colors cursor-pointer" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>LinkedIn</div>
+              </div>
+          </div>
+
+          {/* Stack */}
+          <div className="hero-info text-right">
+            <div className="text-[9px] text-gray-500 tracking-[0.25em] font-mono mb-1 uppercase" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>
+              Stack
+            </div>
+            <div className="text-[11px] text-gray-400 font-mono space-y-0.5">
+              <div style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>TypeScript</div>
+              <div style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>React</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Content */}
       <div className="hero-content relative z-10 w-full max-w-[1800px] mx-auto px-6 md:px-12 lg:px-20">
 
-        {/* Top Info Bar */}
-        <div className="absolute top-6 md:top-10 left-6 md:left-12 lg:left-20 right-6 md:right-12 lg:right-20 flex justify-between items-start">
-          <motion.div
-            className="hero-info"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-          >
-            <div className="text-[9px] md:text-[10px] text-gray-600 tracking-[0.25em] font-mono mb-1 uppercase">
-              Portfolio
+        {/* Desktop: Top Info Bar in corners */}
+        <div className="absolute top-10 left-12 lg:left-20 right-12 lg:right-20 hidden md:flex justify-between items-start">
+          {/* Top Left - Portfolio & Contact */}
+          <div className="flex flex-col gap-6">
+            <div className="hero-info">
+              <div className="text-[10px] text-gray-500 tracking-[0.25em] font-mono mb-1 uppercase" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>
+                Portfolio
+              </div>
+              <div className="text-xs text-gray-400 font-mono" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>
+                2025
+              </div>
             </div>
-            <div className="text-[11px] md:text-xs text-gray-500 font-mono">
-              2025
-            </div>
-          </motion.div>
 
-          <motion.div
-            className="hero-info text-right"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-          >
-            <div className="text-[9px] md:text-[10px] text-gray-600 tracking-[0.25em] font-mono mb-1 uppercase">
-              Based in
+            <div className="hero-info">
+              <div className="text-[10px] text-gray-500 tracking-[0.25em] font-mono mb-2 uppercase" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>
+                Contact
+              </div>
+              <div className="text-xs text-gray-400 font-mono space-y-1">
+                <div className="hover:text-gray-300 transition-colors cursor-pointer" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>Email</div>
+                <div className="hover:text-gray-300 transition-colors cursor-pointer" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>LinkedIn</div>
+              </div>
             </div>
-            <div className="text-[11px] md:text-xs text-gray-500 font-mono">
-              Finland
+          </div>
+
+          {/* Top Right - Based in & Stack */}
+          <div className="flex flex-col gap-6 text-right">
+            <div className="hero-info">
+              <div className="text-[10px] text-gray-500 tracking-[0.25em] font-mono mb-1 uppercase" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>
+                Based in
+              </div>
+              <div className="text-xs text-gray-400 font-mono" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>
+                Finland
+              </div>
             </div>
-          </motion.div>
+
+            <div className="hero-info">
+              <div className="text-[10px] text-gray-500 tracking-[0.25em] font-mono mb-2 uppercase" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>
+                Stack
+              </div>
+              <div className="text-xs text-gray-400 font-mono space-y-1">
+                <div style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>TypeScript</div>
+                <div style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>React</div>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Main Title */}
@@ -458,30 +536,40 @@ export default function Hero() {
           </h1>
 
           {/* Subtitle */}
-          <div className="hero-subtitle w-full flex justify-center mb-16 md:mb-20 lg:mb-24">
-            <p className="text-base md:text-lg lg:text-xl text-gray-500 font-light leading-relaxed text-center max-w-3xl px-4" style={{ fontFamily: 'var(--font-space-grotesk)' }}>
+          <div className="hero-subtitle w-full flex justify-center">
+            <p
+              className="text-base md:text-lg lg:text-xl text-gray-300 font-light leading-relaxed text-center max-w-3xl px-4"
+              style={{
+                fontFamily: 'var(--font-space-grotesk)',
+                textShadow: '0 2px 8px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 0, 0, 0.5)',
+              }}
+            >
               Creative Web Developer specializing in building<br className="hidden sm:block" />
               exceptional digital experiences with modern technologies
             </p>
           </div>
+        </div>
+      </div>
 
-          {/* Info Grid */}
-          <div className="hero-subtitle w-full flex justify-center mb-16 px-4">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 md:gap-12 max-w-5xl w-full">
-            <div className="hero-info flex flex-col items-center text-center">
-              <div className="text-[9px] md:text-[10px] text-gray-600 tracking-[0.25em] font-mono mb-2 uppercase">
+      {/* Bottom Info - 3 sections centered at bottom */}
+      <div className="absolute bottom-6 md:bottom-10 left-0 right-0 z-20 flex justify-center">
+          <div className="flex flex-col md:flex-row items-center gap-8 md:gap-16">
+            {/* Role */}
+            <div className="hero-info text-center">
+              <div className="text-[9px] md:text-[10px] text-gray-500 tracking-[0.25em] font-mono mb-2 uppercase" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>
                 Role
               </div>
-              <div className="text-sm md:text-base text-gray-400 font-light" style={{ fontFamily: 'var(--font-space-grotesk)' }}>
+              <div className="text-[11px] md:text-xs text-gray-400 font-mono" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>
                 Front End Developer
               </div>
             </div>
 
-            <div className="hero-info flex flex-col items-center text-center">
-              <div className="text-[9px] md:text-[10px] text-gray-600 tracking-[0.25em] font-mono mb-2 uppercase">
+            {/* Availability */}
+            <div className="hero-info text-center">
+              <div className="text-[9px] md:text-[10px] text-gray-500 tracking-[0.25em] font-mono mb-2 uppercase" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>
                 Availability
               </div>
-              <div className="text-sm md:text-base text-gray-400 font-light flex items-center justify-center gap-2">
+              <div className="text-[11px] md:text-xs text-gray-400 font-mono flex items-center justify-center gap-2">
                 <motion.div
                   className="w-1.5 h-1.5 bg-emerald-400 rounded-full"
                   animate={{
@@ -492,82 +580,20 @@ export default function Hero() {
                     repeat: Infinity,
                   }}
                 />
-                <span style={{ fontFamily: 'var(--font-space-grotesk)' }}>Open to work</span>
+                <span style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>Open to work</span>
               </div>
             </div>
 
-            <div className="hero-info flex flex-col items-center text-center">
-              <div className="text-[9px] md:text-[10px] text-gray-600 tracking-[0.25em] font-mono mb-2 uppercase">
+            {/* Specialization */}
+            <div className="hero-info text-center">
+              <div className="text-[9px] md:text-[10px] text-gray-500 tracking-[0.25em] font-mono mb-2 uppercase" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>
                 Specialization
               </div>
-              <div className="text-sm md:text-base text-gray-400 font-light" style={{ fontFamily: 'var(--font-space-grotesk)' }}>
+              <div className="text-[11px] md:text-xs text-gray-400 font-mono" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>
                 React · Next.js · GSAP
               </div>
             </div>
-            </div>
           </div>
-        </div>
-
-        {/* Bottom Info */}
-        <div className="absolute bottom-6 md:bottom-10 left-6 md:left-12 lg:left-20 right-6 md:right-12 lg:right-20 flex justify-between items-end">
-          <motion.div
-            className="hero-info"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-          >
-            <div className="text-[9px] md:text-[10px] text-gray-600 tracking-[0.25em] font-mono mb-2 uppercase">
-              Contact
-            </div>
-            <div className="text-[11px] md:text-xs text-gray-500 font-mono space-y-1">
-              <div className="hover:text-gray-300 transition-colors cursor-pointer">Email</div>
-              <div className="hover:text-gray-300 transition-colors cursor-pointer">LinkedIn</div>
-            </div>
-          </motion.div>
-
-          <motion.div
-            className="scroll-indicator text-center hidden md:block"
-            animate={{
-              y: [0, 8, 0],
-            }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-          >
-            <div className="text-[9px] text-gray-600 tracking-[0.25em] font-mono mb-2 uppercase">
-              Scroll
-            </div>
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 20 20"
-              fill="none"
-              className="mx-auto"
-            >
-              <path
-                d="M10 4V16M10 16L6 12M10 16L14 12"
-                stroke="currentColor"
-                strokeWidth="1"
-                className="text-gray-600"
-              />
-            </svg>
-          </motion.div>
-
-          <motion.div
-            className="hero-info text-right"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-          >
-            <div className="text-[9px] md:text-[10px] text-gray-600 tracking-[0.25em] font-mono mb-2 uppercase">
-              Stack
-            </div>
-            <div className="text-[11px] md:text-xs text-gray-500 font-mono space-y-1">
-              <div>TypeScript</div>
-              <div>React</div>
-            </div>
-          </motion.div>
-        </div>
       </div>
     </section>
   )
