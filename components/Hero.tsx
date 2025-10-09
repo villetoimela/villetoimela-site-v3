@@ -14,16 +14,28 @@ export default function Hero() {
   const targetRotationRef = useRef({ x: 0, y: 0 })
   const currentRotationRef = useRef({ x: 0, y: 0 })
   const autoRotationRef = useRef(0)
-  const [particles] = useState(() =>
-    [...Array(30)].map(() => ({
-      initialX: Math.random() * 100,
-      initialY: Math.random() * 100,
-      moveX: Math.random() * 50 - 25,
-      duration: 10 + Math.random() * 10,
-      delay: Math.random() * 5,
-      size: Math.random() > 0.5 ? 1 : 0.5, // Varying sizes
-    }))
-  )
+  const [particles, setParticles] = useState<Array<{
+    initialX: number
+    initialY: number
+    moveX: number
+    duration: number
+    delay: number
+    size: number
+  }>>([])
+
+  // Initialize particles on client side only to avoid hydration mismatch
+  useEffect(() => {
+    setParticles(
+      [...Array(50)].map(() => ({
+        initialX: Math.random() * 100,
+        initialY: Math.random() * 100,
+        moveX: Math.random() * 50 - 25,
+        duration: 10 + Math.random() * 10,
+        delay: Math.random() * 5,
+        size: Math.random() > 0.5 ? 1 : 0.5,
+      }))
+    )
+  }, [])
 
   // Smooth 3D Sphere that follows cursor
   useEffect(() => {
@@ -324,6 +336,7 @@ export default function Hero() {
     <section
       ref={heroRef}
       className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#0a0a0a]"
+      suppressHydrationWarning
     >
       {/* Animated gradient orbs in background */}
       <motion.div

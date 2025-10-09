@@ -27,7 +27,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className="lenis">
+    <html lang="en">
       <body className={`${spaceGrotesk.variable} ${spaceMono.variable} cursor-none md:cursor-none`}>
         <SmoothScroll />
         <SimpleCursor />

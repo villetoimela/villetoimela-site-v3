@@ -1,15 +1,13 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import dynamic from 'next/dynamic'
 
-export default function SimpleCursor() {
+function SimpleCursorInner() {
   const [position, setPosition] = useState({ x: 0, y: 0 })
   const [isPointer, setIsPointer] = useState(false)
-  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    setMounted(true)
-
     const updatePosition = (e: MouseEvent) => {
       setPosition({ x: e.clientX, y: e.clientY })
     }
@@ -32,8 +30,6 @@ export default function SimpleCursor() {
       window.removeEventListener('mouseover', handleMouseOver)
     }
   }, [])
-
-  if (!mounted) return null
 
   return (
     <>
@@ -75,3 +71,10 @@ export default function SimpleCursor() {
     </>
   )
 }
+
+// Export with dynamic import to prevent hydration mismatch
+const SimpleCursor = dynamic(() => Promise.resolve(SimpleCursorInner), {
+  ssr: false,
+})
+
+export default SimpleCursor
