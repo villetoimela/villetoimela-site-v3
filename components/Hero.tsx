@@ -320,6 +320,18 @@ export default function Hero() {
         },
       })
 
+      // Bottom info parallax effect
+      gsap.to('.hero-bottom-info', {
+        y: -100,
+        opacity: 0.3,
+        scrollTrigger: {
+          trigger: heroRef.current,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 1.5,
+        },
+      })
+
       // Canvas stays visible - no scroll effect
       // Removed canvas ScrollTrigger to keep it visible
     }, heroRef)
@@ -574,7 +586,7 @@ export default function Hero() {
       </div>
 
       {/* Bottom Info - 3 sections centered at bottom */}
-      <div className="absolute bottom-6 md:bottom-10 left-0 right-0 z-20 flex justify-center">
+      <div className="hero-bottom-info absolute bottom-6 md:bottom-10 left-0 right-0 z-20 flex justify-center">
           <div className="flex flex-col md:flex-row items-center gap-8 md:gap-16">
             {/* Role */}
             <div className="hero-info text-center">
