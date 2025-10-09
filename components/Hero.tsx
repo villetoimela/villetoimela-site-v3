@@ -157,7 +157,7 @@ export default function Hero() {
           const distance = Math.sqrt(dx * dx + dy * dy)
 
           if (distance < 70) {
-            const lineOpacity = 0.18 * (1 - distance / 70) * p.scale
+            const lineOpacity = 0.08 * (1 - distance / 70) * p.scale
             ctx.beginPath()
             ctx.strokeStyle = `rgba(100, 180, 255, ${lineOpacity})`
             ctx.lineWidth = 0.8
@@ -173,7 +173,7 @@ export default function Hero() {
       projected.forEach((p) => {
         if (p.scale < 0.3) return
 
-        const baseOpacity = Math.max(0.2, Math.min(0.7, p.scale * 0.7))
+        const baseOpacity = Math.max(0.1, Math.min(0.4, p.scale * 0.4))
         const size = p.size * p.scale
 
         // Outer glow
