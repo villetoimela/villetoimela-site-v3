@@ -516,7 +516,7 @@ export default function Hero() {
         <div className="text-center" style={{ perspective: '2000px' }}>
           <h1 className="leading-[0.85] mb-8 md:mb-10 lg:mb-14">
             <div
-              className="hero-name-line block text-[20vw] md:text-[18vw] lg:text-[15vw] font-bold tracking-[-0.02em] text-gray-50 mb-1 md:mb-2"
+              className="hero-name-line block text-[20vw] md:text-[18vw] lg:text-[18vw] font-bold tracking-[-0.02em] text-gray-50 mb-1 md:mb-2"
               style={{
                 fontFamily: 'var(--font-space-grotesk)',
                 transformStyle: 'preserve-3d',
@@ -525,7 +525,7 @@ export default function Hero() {
               VILLE
             </div>
             <div
-              className="hero-name-line block text-[20vw] md:text-[18vw] lg:text-[15vw] font-bold tracking-[-0.02em] text-gray-50"
+              className="hero-name-line block text-[20vw] md:text-[18vw] lg:text-[18vw] font-bold tracking-[-0.02em] text-gray-50"
               style={{
                 fontFamily: 'var(--font-space-grotesk)',
                 transformStyle: 'preserve-3d',
