@@ -1,11 +1,11 @@
 import Hero from '@/components/Hero'
+import HorizontalScroll from '@/components/HorizontalScroll'
 
 export default function Home() {
   return (
     <main suppressHydrationWarning>
       <Hero />
-      {/* Temporary content to enable scrolling */}
-      <div className="h-screen bg-black" />
+      <HorizontalScroll />
     </main>
   )
 }
