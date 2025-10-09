@@ -94,16 +94,30 @@ export default function Loader({
             className="text-center"
           >
             {/* Main text */}
-            <div className="mb-8">
-              <h2
-                className="text-4xl md:text-6xl lg:text-7xl font-light tracking-wide text-white mb-6"
-                style={{
-                  fontFamily: 'var(--font-space-grotesk)',
-                }}
-              >
-                Welcome
-              </h2>
-            </div>
+            <h2
+              className="text-4xl md:text-6xl lg:text-7xl font-light tracking-wide text-white"
+              style={{
+                fontFamily: 'var(--font-space-grotesk)',
+              }}
+            >
+              Welcome
+            </h2>
+
+            <div className="h-8" />
+
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.6 }}
+              transition={{ delay: 0.8, duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
+              className="text-lg md:text-xl text-white/60 font-light tracking-wide"
+              style={{
+                fontFamily: 'var(--font-space-grotesk)',
+              }}
+            >
+              Get to know me
+            </motion.p>
+
+            <div className="h-12" />
 
             {/* Scroll indicator */}
             <motion.div
