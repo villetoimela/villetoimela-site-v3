@@ -3,6 +3,7 @@ import { Space_Grotesk, Space_Mono } from 'next/font/google'
 import './globals.css'
 import SmoothScroll from '@/components/SmoothScroll'
 import SimpleCursor from '@/components/SimpleCursor'
+import LoaderWrapper from '@/components/LoaderWrapper'
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
@@ -31,7 +32,9 @@ export default function RootLayout({
       <body className={`${spaceGrotesk.variable} ${spaceMono.variable} cursor-none md:cursor-none`}>
         <SmoothScroll />
         <SimpleCursor />
-        {children}
+        <LoaderWrapper>
+          {children}
+        </LoaderWrapper>
       </body>
     </html>
   )

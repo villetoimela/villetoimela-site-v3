@@ -4,10 +4,12 @@ import { useEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { motion } from 'framer-motion'
+import { useLoader } from './LoaderWrapper'
 
 gsap.registerPlugin(ScrollTrigger)
 
 export default function Hero() {
+  const isLoaded = useLoader()
   const heroRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [mousePosition, setMousePosition] = useState({ x: 0.5, y: 0.5 })
@@ -39,6 +41,8 @@ export default function Hero() {
 
   // Smooth 3D Sphere that follows cursor
   useEffect(() => {
+    if (!isLoaded) return // Don't start canvas animation until loaded
+
     const canvas = canvasRef.current
     if (!canvas) return
 
@@ -220,7 +224,7 @@ export default function Hero() {
       window.removeEventListener('resize', resize)
       cancelAnimationFrame(animationFrameId)
     }
-  }, [mousePosition])
+  }, [mousePosition, isLoaded])
 
   // Smooth mouse tracking
   useEffect(() => {
@@ -237,8 +241,10 @@ export default function Hero() {
     }
   }, [])
 
-  // GSAP Animations
+  // GSAP Animations - only start when loader is complete
   useEffect(() => {
+    if (!isLoaded) return
+
     const ctx = gsap.context(() => {
       // Large title animation
       gsap.fromTo('.hero-name-line',
@@ -254,7 +260,7 @@ export default function Hero() {
           duration: 1.8,
           stagger: 0.2,
           ease: 'power4.out',
-          delay: 0.5,
+          delay: 0.3,
         }
       )
 
@@ -269,7 +275,7 @@ export default function Hero() {
           y: 0,
           duration: 1.2,
           ease: 'power3.out',
-          delay: 1.5,
+          delay: 1.1,
         }
       )
 
@@ -285,7 +291,7 @@ export default function Hero() {
           duration: 1,
           stagger: 0.1,
           ease: 'power3.out',
-          delay: 2,
+          delay: 1.6,
         }
       )
 
@@ -298,7 +304,7 @@ export default function Hero() {
           opacity: 1,
           duration: 1,
           ease: 'power3.out',
-          delay: 2.5,
+          delay: 2.1,
         }
       )
 
@@ -314,29 +320,22 @@ export default function Hero() {
         },
       })
 
-      gsap.to(canvasRef.current, {
-        scale: 1.5,
-        opacity: 0.2,
-        scrollTrigger: {
-          trigger: heroRef.current,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 1,
-        },
-      })
+      // Canvas stays visible - no scroll effect
+      // Removed canvas ScrollTrigger to keep it visible
     }, heroRef)
 
     return () => {
       ctx.revert()
       ScrollTrigger.getAll().forEach(st => st.kill())
     }
-  }, [])
+  }, [isLoaded])
 
   return (
     <section
       ref={heroRef}
       className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#0a0a0a]"
       suppressHydrationWarning
+      style={{ opacity: isLoaded ? 1 : 0, transition: 'opacity 0.5s ease-out' }}
     >
       {/* Animated gradient orbs in background */}
       <motion.div
@@ -344,15 +343,18 @@ export default function Hero() {
         style={{
           background: 'radial-gradient(circle, rgba(100, 180, 255, 0.4) 0%, rgba(80, 150, 255, 0.2) 50%, transparent 70%)',
         }}
+        initial={{ opacity: 0 }}
         animate={{
-          x: ['-10%', '10%', '-10%'],
-          y: ['-5%', '5%', '-5%'],
-          scale: [1, 1.1, 1],
+          opacity: isLoaded ? 0.2 : 0,
+          x: isLoaded ? ['-10%', '10%', '-10%'] : 0,
+          y: isLoaded ? ['-5%', '5%', '-5%'] : 0,
+          scale: isLoaded ? [1, 1.1, 1] : 1,
         }}
         transition={{
-          duration: 20,
-          repeat: Infinity,
-          ease: "easeInOut"
+          opacity: { duration: 1 },
+          x: { duration: 20, repeat: Infinity, ease: "easeInOut" },
+          y: { duration: 20, repeat: Infinity, ease: "easeInOut" },
+          scale: { duration: 20, repeat: Infinity, ease: "easeInOut" },
         }}
       />
 
@@ -361,16 +363,18 @@ export default function Hero() {
         style={{
           background: 'radial-gradient(circle, rgba(120, 200, 255, 0.3) 0%, rgba(100, 180, 255, 0.15) 50%, transparent 70%)',
         }}
+        initial={{ opacity: 0 }}
         animate={{
-          x: ['10%', '-10%', '10%'],
-          y: ['5%', '-5%', '5%'],
-          scale: [1, 1.15, 1],
+          opacity: isLoaded ? 0.2 : 0,
+          x: isLoaded ? ['10%', '-10%', '10%'] : 0,
+          y: isLoaded ? ['5%', '-5%', '5%'] : 0,
+          scale: isLoaded ? [1, 1.15, 1] : 1,
         }}
         transition={{
-          duration: 25,
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: 2
+          opacity: { duration: 1, delay: 0.2 },
+          x: { duration: 25, repeat: Infinity, ease: "easeInOut" },
+          y: { duration: 25, repeat: Infinity, ease: "easeInOut" },
+          scale: { duration: 25, repeat: Infinity, ease: "easeInOut" },
         }}
       />
 
@@ -379,16 +383,18 @@ export default function Hero() {
         style={{
           background: 'radial-gradient(circle, rgba(150, 220, 255, 0.35) 0%, rgba(120, 200, 255, 0.18) 50%, transparent 70%)',
         }}
+        initial={{ opacity: 0 }}
         animate={{
-          x: ['-15%', '15%', '-15%'],
-          y: ['10%', '-10%', '10%'],
-          scale: [1, 1.2, 1],
+          opacity: isLoaded ? 0.15 : 0,
+          x: isLoaded ? ['-15%', '15%', '-15%'] : 0,
+          y: isLoaded ? ['10%', '-10%', '10%'] : 0,
+          scale: isLoaded ? [1, 1.2, 1] : 1,
         }}
         transition={{
-          duration: 18,
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: 5
+          opacity: { duration: 1, delay: 0.4 },
+          x: { duration: 18, repeat: Infinity, ease: "easeInOut" },
+          y: { duration: 18, repeat: Infinity, ease: "easeInOut" },
+          scale: { duration: 18, repeat: Infinity, ease: "easeInOut" },
         }}
       />
 
@@ -420,9 +426,12 @@ export default function Hero() {
       ))}
 
       {/* 3D Canvas Background */}
-      <canvas
+      <motion.canvas
         ref={canvasRef}
         className="absolute inset-0"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: isLoaded ? 1 : 0 }}
+        transition={{ duration: 1.5, delay: 0.2 }}
       />
 
       {/* Vignette */}

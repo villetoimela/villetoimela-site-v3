@@ -16,6 +16,9 @@ const config: Config = {
         sans: ['var(--font-geist-sans)', 'system-ui', 'sans-serif'],
         mono: ['var(--font-geist-mono)', 'monospace'],
       },
+      perspective: {
+        '1000': '1000px',
+      },
     },
   },
   plugins: [],
