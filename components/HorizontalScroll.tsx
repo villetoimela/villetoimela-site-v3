@@ -122,7 +122,7 @@ export default function HorizontalScroll() {
   return (
     <section
       ref={sectionRef}
-      className="relative bg-[#0a0a0a] overflow-hidden"
+      className="relative bg-[#000000] overflow-hidden"
     >
 
       {/* Horizontal scroll container */}
@@ -144,25 +144,16 @@ export default function HorizontalScroll() {
           preserveAspectRatio="none"
         >
           <defs>
-            {/* Gradient for the line */}
+            {/* Subtle gradient for the line */}
             <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="rgba(120, 200, 255, 0.5)" />
-              <stop offset="50%" stopColor="rgba(140, 210, 255, 0.7)" />
-              <stop offset="100%" stopColor="rgba(120, 200, 255, 0.9)" />
+              <stop offset="0%" stopColor="rgba(140, 210, 255, 0.5)" />
+              <stop offset="50%" stopColor="rgba(160, 230, 255, 0.8)" />
+              <stop offset="100%" stopColor="rgba(140, 210, 255, 0.5)" />
             </linearGradient>
 
-            {/* Glow filter with extended region to prevent clipping */}
-            <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+            {/* Very subtle glow filter */}
+            <filter id="subtleGlow" x="-50%" y="-50%" width="200%" height="200%">
               <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
-              <feMerge>
-                <feMergeNode in="coloredBlur"/>
-                <feMergeNode in="SourceGraphic"/>
-              </feMerge>
-            </filter>
-
-            {/* Strong glow for endpoint with extended region */}
-            <filter id="strongGlow" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
               <feMerge>
                 <feMergeNode in="coloredBlur"/>
                 <feMergeNode in="coloredBlur"/>
@@ -171,24 +162,15 @@ export default function HorizontalScroll() {
             </filter>
           </defs>
 
-          {/* Background glow line - smooth horizontal wave */}
-          <path
-            d="M 0 50 Q 25 35, 50 50 T 100 50 T 150 50 T 200 50 T 250 50"
-            stroke="rgba(120, 200, 255, 0.35)"
-            strokeWidth="2"
-            fill="none"
-            strokeLinecap="round"
-            filter="url(#glow)"
-          />
-
-          {/* Main line - smooth horizontal wave */}
+          {/* Single thin line - smooth horizontal wave */}
           <path
             d="M 0 50 Q 25 35, 50 50 T 100 50 T 150 50 T 200 50 T 250 50"
             stroke="url(#lineGradient)"
-            strokeWidth="0.6"
+            strokeWidth="0.4"
             fill="none"
             strokeLinecap="round"
-            filter="url(#glow)"
+            filter="url(#subtleGlow)"
+            opacity="1"
           />
         </svg>
 
