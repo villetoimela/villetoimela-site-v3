@@ -46,9 +46,9 @@ const ProjectsPreview = () => {
                 color: gsap.utils.interpolate('#ffffff', '#000000', lightProgress),
                 duration: 0,
               })
-            } else if (progress > 0.85) {
+            } else if (progress > 0.75) {
               // Leaving section - transition to dark (faster transition)
-              const darkProgress = (progress - 0.85) / 0.15
+              const darkProgress = (progress - 0.75) / 0.15
               gsap.to('html', {
                 backgroundColor: gsap.utils.interpolate('#fafafa', '#000000', darkProgress),
                 duration: 0,
