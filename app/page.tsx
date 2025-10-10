@@ -4,6 +4,7 @@ import ZoomDive from '@/components/ZoomDive'
 import ProjectMarquee from '@/components/ProjectMarquee'
 import ProjectsPreview from '@/components/ProjectsPreview'
 import TechStack from '@/components/TechStack'
+import ContactFooter from '@/components/ContactFooter'
 
 export default function Home() {
   return (
@@ -65,6 +66,7 @@ export default function Home() {
       <ZoomDive />
       <ProjectMarquee />
       <TechStack />
+      <ContactFooter />
     </main>
   )
 }
