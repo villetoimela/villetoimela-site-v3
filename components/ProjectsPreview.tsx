@@ -15,25 +15,60 @@ const ProjectsPreview = () => {
     if (!sectionRef.current || !titleRef.current || !gridRef.current) return
 
     const ctx = gsap.context(() => {
-      // Smooth background color transition on html element
-      gsap.to('html', {
-        backgroundColor: '#fafafa',
+      // Create timeline for background color transitions
+      gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: 'top 60%',
-          end: 'top 30%',
-          scrub: 1.5,
-        },
-      })
-
-      // Transition back to dark when leaving
-      gsap.to('html', {
-        backgroundColor: '#0a0a0a',
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'bottom 30%',
+          start: 'top bottom',
           end: 'bottom top',
-          scrub: 1.5,
+          scrub: 1,
+          markers: false,
+          onUpdate: (self) => {
+            const progress = self.progress
+            if (progress < 0.15) {
+              // Before section - keep dark
+              gsap.to('html', {
+                backgroundColor: '#000000',
+                duration: 0,
+              })
+              gsap.to(titleRef.current, {
+                color: '#ffffff',
+                duration: 0,
+              })
+            } else if (progress < 0.35) {
+              // Entering section - transition to light
+              const lightProgress = (progress - 0.15) / 0.2
+              gsap.to('html', {
+                backgroundColor: gsap.utils.interpolate('#000000', '#fafafa', lightProgress),
+                duration: 0,
+              })
+              gsap.to(titleRef.current, {
+                color: gsap.utils.interpolate('#ffffff', '#000000', lightProgress),
+                duration: 0,
+              })
+            } else if (progress > 0.8) {
+              // Leaving section - transition to dark
+              const darkProgress = (progress - 0.8) / 0.2
+              gsap.to('html', {
+                backgroundColor: gsap.utils.interpolate('#fafafa', '#000000', darkProgress),
+                duration: 0,
+              })
+              gsap.to(titleRef.current, {
+                color: gsap.utils.interpolate('#000000', '#ffffff', darkProgress),
+                duration: 0,
+              })
+            } else {
+              // Middle of section - keep light
+              gsap.to('html', {
+                backgroundColor: '#fafafa',
+                duration: 0,
+              })
+              gsap.to(titleRef.current, {
+                color: '#000000',
+                duration: 0,
+              })
+            }
+          },
         },
       })
 
@@ -135,7 +170,7 @@ const ProjectsPreview = () => {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-screen bg-gradient-to-b from-zinc-50 via-white to-zinc-100 py-32 overflow-hidden"
+      className="relative min-h-screen py-32 overflow-hidden"
     >
       {/* Background gradient effects - now subtle on light bg */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/5 rounded-full blur-[120px]" />
@@ -146,12 +181,12 @@ const ProjectsPreview = () => {
         {/* Title */}
         <h2
           ref={titleRef}
-          className="text-5xl md:text-7xl font-bold mb-20 text-center perspective-[1000px]"
+          className="text-5xl md:text-7xl font-light mb-20 text-center perspective-[1000px]"
         >
-          <span className="title-line block bg-gradient-to-r from-zinc-800 via-zinc-600 to-zinc-800 bg-clip-text text-transparent">
+          <span className="title-line block">
             Sneak peek to some of
           </span>
-          <span className="title-line block bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600 bg-clip-text text-transparent mt-2">
+          <span className="title-line block mt-2">
             my projects
           </span>
         </h2>

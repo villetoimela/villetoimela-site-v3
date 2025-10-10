@@ -28,7 +28,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className="bg-[#0a0a0a]">
+    <html lang="en" className="bg-black">
       <body className={`${spaceGrotesk.variable} ${spaceMono.variable} cursor-none md:cursor-none`}>
         <SmoothScroll />
         <SimpleCursor />
