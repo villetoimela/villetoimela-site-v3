@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import emailjs from '@emailjs/browser'
+import { motion } from 'framer-motion'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -15,7 +16,30 @@ const ContactFooter = () => {
     message: '',
   })
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle')
+  const [particles, setParticles] = useState<Array<{
+    initialX: number
+    initialY: number
+    moveX: number
+    duration: number
+    delay: number
+    size: number
+  }>>([])
 
+  // Initialize particles
+  useEffect(() => {
+    setParticles(
+      [...Array(50)].map(() => ({
+        initialX: Math.random() * 100,
+        initialY: Math.random() * 100,
+        moveX: Math.random() * 50 - 25,
+        duration: 10 + Math.random() * 10,
+        delay: Math.random() * 5,
+        size: Math.random() > 0.5 ? 1 : 0.5,
+      }))
+    )
+  }, [])
+
+  // GSAP Animations
   useEffect(() => {
     if (!sectionRef.current) return
 
@@ -128,6 +152,85 @@ const ContactFooter = () => {
       ref={sectionRef}
       className="relative bg-black py-32 overflow-hidden"
     >
+      {/* Animated gradient orbs in background */}
+      <motion.div
+        className="absolute top-0 left-0 w-[600px] h-[600px] rounded-full opacity-20 blur-3xl"
+        style={{
+          background: 'radial-gradient(circle, rgba(100, 180, 255, 0.4) 0%, rgba(80, 150, 255, 0.2) 50%, transparent 70%)',
+        }}
+        animate={{
+          x: ['-10%', '10%', '-10%'],
+          y: ['-5%', '5%', '-5%'],
+          scale: [1, 1.1, 1],
+        }}
+        transition={{
+          x: { duration: 20, repeat: Infinity, ease: "easeInOut" },
+          y: { duration: 20, repeat: Infinity, ease: "easeInOut" },
+          scale: { duration: 20, repeat: Infinity, ease: "easeInOut" },
+        }}
+      />
+
+      <motion.div
+        className="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full opacity-20 blur-3xl"
+        style={{
+          background: 'radial-gradient(circle, rgba(120, 200, 255, 0.3) 0%, rgba(100, 180, 255, 0.15) 50%, transparent 70%)',
+        }}
+        animate={{
+          x: ['10%', '-10%', '10%'],
+          y: ['5%', '-5%', '5%'],
+          scale: [1, 1.15, 1],
+        }}
+        transition={{
+          x: { duration: 25, repeat: Infinity, ease: "easeInOut" },
+          y: { duration: 25, repeat: Infinity, ease: "easeInOut" },
+          scale: { duration: 25, repeat: Infinity, ease: "easeInOut" },
+        }}
+      />
+
+      <motion.div
+        className="absolute top-1/3 right-1/4 w-[400px] h-[400px] rounded-full opacity-15 blur-3xl"
+        style={{
+          background: 'radial-gradient(circle, rgba(150, 220, 255, 0.35) 0%, rgba(120, 200, 255, 0.18) 50%, transparent 70%)',
+        }}
+        animate={{
+          x: ['-15%', '15%', '-15%'],
+          y: ['10%', '-10%', '10%'],
+          scale: [1, 1.2, 1],
+        }}
+        transition={{
+          x: { duration: 18, repeat: Infinity, ease: "easeInOut" },
+          y: { duration: 18, repeat: Infinity, ease: "easeInOut" },
+          scale: { duration: 18, repeat: Infinity, ease: "easeInOut" },
+        }}
+      />
+
+      {/* Floating particles */}
+      {particles.map((particle, i) => (
+        <motion.div
+          key={i}
+          className="absolute bg-blue-400 rounded-full opacity-40"
+          style={{
+            left: `${particle.initialX}%`,
+            top: `${particle.initialY}%`,
+            width: `${particle.size * 4}px`,
+            height: `${particle.size * 4}px`,
+            boxShadow: '0 0 10px rgba(100, 180, 255, 0.6)',
+          }}
+          animate={{
+            y: [0, -100, 0],
+            x: [0, particle.moveX, 0],
+            opacity: [0.2, 0.6, 0.2],
+            scale: [1, 1.5, 1],
+          }}
+          transition={{
+            duration: particle.duration,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: particle.delay,
+          }}
+        />
+      ))}
+
       {/* Background effects */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-1/4 left-1/3 w-96 h-96 bg-purple-500/5 rounded-full blur-[120px]" />
