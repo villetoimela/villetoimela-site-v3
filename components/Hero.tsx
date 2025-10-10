@@ -345,7 +345,7 @@ export default function Hero() {
   return (
     <section
       ref={heroRef}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#0a0a0a]"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black"
       suppressHydrationWarning
       style={{ opacity: isLoaded ? 1 : 0, transition: 'opacity 0.5s ease-out' }}
     >
