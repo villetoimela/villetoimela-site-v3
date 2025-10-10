@@ -3,6 +3,7 @@ import HorizontalScroll from '@/components/HorizontalScroll'
 import ZoomDive from '@/components/ZoomDive'
 import ProjectMarquee from '@/components/ProjectMarquee'
 import ProjectsPreview from '@/components/ProjectsPreview'
+import TechStack from '@/components/TechStack'
 
 export default function Home() {
   return (
@@ -63,6 +64,7 @@ export default function Home() {
       />
       <ZoomDive />
       <ProjectMarquee />
+      <TechStack />
     </main>
   )
 }
