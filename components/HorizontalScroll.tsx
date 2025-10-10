@@ -72,14 +72,15 @@ export default function HorizontalScroll({ panels }: HorizontalScrollProps) {
         pathElement.style.strokeDasharray = `${pathLength}`
         pathElement.style.strokeDashoffset = `${pathLength}`
 
-        // Animate the line in sync with horizontal scroll
+        // Animate the line in sync with horizontal scroll - slower on mobile, normal on desktop
+        const lineScrollMultiplier = window.innerWidth < 1024 ? 1.5 : 1
         const lineTween = gsap.to(pathElement, {
           strokeDashoffset: 0,
           ease: 'none',
           scrollTrigger: {
             trigger: section,
             start: 'top top',
-            end: () => `+=${scrollWidth}`,
+            end: () => `+=${scrollWidth * lineScrollMultiplier}`,
             scrub: 1,
           },
         })
@@ -207,7 +208,7 @@ export default function HorizontalScroll({ panels }: HorizontalScrollProps) {
                 </h2>
 
                 {/* Text on the right */}
-                <div className="lg:pt-32">
+                <div className="lg:pt-32 pr-4 md:pr-0">
                   {typeof panel.content === 'string' ? (
                     <p
                       className="text-lg md:text-xl lg:text-2xl text-gray-300 leading-relaxed"
