@@ -35,9 +35,9 @@ const ProjectsPreview = () => {
                 color: '#ffffff',
                 duration: 0,
               })
-            } else if (progress < 0.35) {
-              // Entering section - transition to light
-              const lightProgress = (progress - 0.15) / 0.2
+            } else if (progress < 0.25) {
+              // Entering section - transition to light (faster transition)
+              const lightProgress = (progress - 0.15) / 0.1
               gsap.to('html', {
                 backgroundColor: gsap.utils.interpolate('#000000', '#fafafa', lightProgress),
                 duration: 0,
@@ -46,9 +46,9 @@ const ProjectsPreview = () => {
                 color: gsap.utils.interpolate('#ffffff', '#000000', lightProgress),
                 duration: 0,
               })
-            } else if (progress > 0.8) {
-              // Leaving section - transition to dark
-              const darkProgress = (progress - 0.8) / 0.2
+            } else if (progress > 0.85) {
+              // Leaving section - transition to dark (faster transition)
+              const darkProgress = (progress - 0.85) / 0.15
               gsap.to('html', {
                 backgroundColor: gsap.utils.interpolate('#fafafa', '#000000', darkProgress),
                 duration: 0,
