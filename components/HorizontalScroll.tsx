@@ -180,7 +180,7 @@ export default function HorizontalScroll() {
             <div className="flex flex-col lg:flex-row lg:items-start gap-8 lg:gap-32">
               {/* Title on the left */}
               <h2
-                className="text-6xl md:text-8xl lg:text-9xl font-bold text-white lg:min-w-[400px] xl:min-w-[500px] shrink-0"
+                className="text-6xl md:text-8xl lg:text-9xl font-light text-white lg:min-w-[400px] xl:min-w-[500px] shrink-0"
                 style={{ fontFamily: 'var(--font-space-grotesk)', lineHeight: 0.9 }}
               >
                 Who am I
@@ -205,7 +205,7 @@ export default function HorizontalScroll() {
             <div className="flex flex-col lg:flex-row lg:items-start gap-8 lg:gap-32">
               {/* Title on the left */}
               <h2
-                className="text-6xl md:text-8xl lg:text-9xl font-bold text-white lg:min-w-[400px] xl:min-w-[500px] shrink-0"
+                className="text-6xl md:text-8xl lg:text-9xl font-light text-white lg:min-w-[400px] xl:min-w-[500px] shrink-0"
                 style={{ fontFamily: 'var(--font-space-grotesk)', lineHeight: 0.9 }}
               >
                 What I do
