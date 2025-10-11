@@ -1,19 +1,18 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { projects } from '@/data/projects'
-
-gsap.registerPlugin(ScrollTrigger)
 
 const ProjectsPreview = () => {
   const sectionRef = useRef<HTMLDivElement>(null)
   const track1Ref = useRef<HTMLDivElement>(null)
   const track2Ref = useRef<HTMLDivElement>(null)
   const [isVisible, setIsVisible] = useState(false)
+  const [isMounted, setIsMounted] = useState(false)
+  const animationsRef = useRef<(Animation | null)[]>([])
+  const isVisibleRef = useRef(false)
 
   // Split featured projects into two tracks
   const allFeatured = projects.filter(p => p.featured)
@@ -34,18 +33,35 @@ const ProjectsPreview = () => {
     size: number
   }>>([])
 
+  // Mount check
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
   // Intersection Observer to track visibility
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           setIsVisible(entry.isIntersecting)
+          isVisibleRef.current = entry.isIntersecting
           console.log(`[ProjectsPreview] Visibility: ${entry.isIntersecting ? 'VISIBLE - animations active' : 'HIDDEN - animations paused'}`)
+
+          // Pause/resume Web Animations API
+          if (entry.isIntersecting) {
+            animationsRef.current.forEach(anim => {
+              if (anim) anim.play()
+            })
+          } else {
+            animationsRef.current.forEach(anim => {
+              if (anim) anim.pause()
+            })
+          }
         })
       },
       {
-        threshold: 0.1, // Trigger when at least 10% is visible
-        rootMargin: '100px', // Start loading slightly before entering viewport
+        threshold: 0.1,
+        rootMargin: '100px',
       }
     )
 
@@ -60,10 +76,10 @@ const ProjectsPreview = () => {
     }
   }, [])
 
-  // Initialize floating particles - reduce on mobile
+  // Initialize floating particles - significantly reduce on mobile
   useEffect(() => {
     const isMobileDevice = window.innerWidth < 768
-    const particleCount = isMobileDevice ? 10 : 30
+    const particleCount = isMobileDevice ? 0 : 20 // No particles on mobile!
 
     setFloatingParticles(
       [...Array(particleCount)].map(() => ({
@@ -77,113 +93,55 @@ const ProjectsPreview = () => {
     )
   }, [])
 
+  // Auto-scrolling animations with Web Animations API (much lighter than GSAP ScrollTrigger!)
   useEffect(() => {
-    if (!sectionRef.current || !track1Ref.current || !track2Ref.current) return
+    if (!isMounted || !track1Ref.current || !track2Ref.current) return
 
-    const ctx = gsap.context(() => {
-      // Set initial state for title
-      gsap.set('.showcase-title', {
-        opacity: 0,
-        y: 50,
-      })
+    const track1 = track1Ref.current
+    const track2 = track2Ref.current
 
-      // Animate title
-      gsap.to('.showcase-title', {
-        opacity: 1,
-        y: 0,
-        duration: 1,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 30%',
-          end: 'top top',
-          scrub: 1,
-        },
-      })
+    // Track 1 - scrolls left
+    const anim1 = track1.animate(
+      [
+        { transform: 'translateX(0%)' },
+        { transform: 'translateX(-50%)' }
+      ],
+      {
+        duration: 40000, // 40 seconds for smooth scroll
+        iterations: Infinity,
+        easing: 'linear'
+      }
+    )
 
-      // First track - scroll left (top-left to bottom-right)
-      gsap.to(track1Ref.current, {
-        x: '-50%',
-        ease: 'none',
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top bottom',
-          end: 'bottom top',
-          scrub: 1,
-        },
-      })
+    // Track 2 - scrolls right
+    const anim2 = track2.animate(
+      [
+        { transform: 'translateX(-50%)' },
+        { transform: 'translateX(0%)' }
+      ],
+      {
+        duration: 35000, // Slightly different speed for variety
+        iterations: Infinity,
+        easing: 'linear'
+      }
+    )
 
-      // Second track - scroll right (top-right to bottom-left)
-      gsap.fromTo(
-        track2Ref.current,
-        {
-          x: '-50%',
-        },
-        {
-          x: '0%',
-          ease: 'none',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: 1,
-          },
-        }
-      )
+    animationsRef.current = [anim1, anim2]
 
-      // Set initial state for project cards
-      gsap.set('.track1-card', {
-        opacity: 0,
-        y: 50,
-      })
-
-      gsap.set('.track2-card', {
-        opacity: 0,
-        y: 50,
-      })
-
-      // Animate track 1 cards in
-      gsap.to('.track1-card', {
-        opacity: 1,
-        y: 0,
-        duration: 1,
-        ease: 'power2.out',
-        stagger: 0.1,
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 30%',
-          end: 'top top',
-          scrub: 1,
-        },
-      })
-
-      // Animate track 2 cards in (slight delay)
-      gsap.to('.track2-card', {
-        opacity: 1,
-        y: 0,
-        duration: 1,
-        ease: 'power2.out',
-        stagger: 0.1,
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 25%',
-          end: 'top top',
-          scrub: 1,
-        },
-      })
-    }, sectionRef)
-
-    return () => ctx.revert()
-  }, [])
+    return () => {
+      anim1.cancel()
+      anim2.cancel()
+    }
+  }, [isMounted])
 
   return (
     <section
       ref={sectionRef}
       className="relative bg-black py-32 overflow-hidden"
     >
-      {/* Animated gradient orbs in background - only animate when visible */}
+      {/* Animated gradient orbs in background - hidden on mobile, only animate when visible */}
       <motion.div
-        className="absolute top-1/4 left-1/4 w-[500px] h-[500px] rounded-full opacity-15 blur-3xl pointer-events-none"
+        className="absolute top-1/4 left-1/4 w-[500px] h-[500px] rounded-full opacity-15 blur-3xl pointer-events-none hidden md:block"
         style={{
           background: 'radial-gradient(circle, rgba(100, 180, 255, 0.3) 0%, rgba(80, 150, 255, 0.15) 50%, transparent 70%)',
         }}
@@ -200,7 +158,7 @@ const ProjectsPreview = () => {
       />
 
       <motion.div
-        className="absolute bottom-1/3 right-1/4 w-[400px] h-[400px] rounded-full opacity-15 blur-3xl pointer-events-none"
+        className="absolute bottom-1/3 right-1/4 w-[400px] h-[400px] rounded-full opacity-15 blur-3xl pointer-events-none hidden md:block"
         style={{
           background: 'radial-gradient(circle, rgba(120, 200, 255, 0.25) 0%, rgba(100, 180, 255, 0.12) 50%, transparent 70%)',
         }}
@@ -217,7 +175,7 @@ const ProjectsPreview = () => {
       />
 
       <motion.div
-        className="absolute top-1/2 right-1/3 w-[350px] h-[350px] rounded-full opacity-10 blur-3xl pointer-events-none"
+        className="absolute top-1/2 right-1/3 w-[350px] h-[350px] rounded-full opacity-10 blur-3xl pointer-events-none hidden md:block"
         style={{
           background: 'radial-gradient(circle, rgba(150, 220, 255, 0.3) 0%, rgba(120, 200, 255, 0.15) 50%, transparent 70%)',
         }}
@@ -262,7 +220,7 @@ const ProjectsPreview = () => {
 
       <div className="container mx-auto px-6 relative z-10">
         {/* Title */}
-        <div className="showcase-title text-center mb-32">
+        <div className="text-center mb-32">
           <p className="text-white/40 text-xs uppercase tracking-[0.3em] mb-4 font-light">
             Recent Work
           </p>
@@ -289,7 +247,7 @@ const ProjectsPreview = () => {
                     href={project.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="project-card track1-card flex-shrink-0 w-[400px] h-[225px] rounded-2xl overflow-hidden border border-white/10 cursor-pointer group hover:scale-105 transition-transform duration-300"
+                    className="flex-shrink-0 w-[400px] h-[225px] rounded-2xl overflow-hidden border border-white/10 cursor-pointer group hover:scale-105 transition-transform duration-300"
                   >
                     <div className="relative w-full h-full">
                       {/* Project Image */}
@@ -353,7 +311,7 @@ const ProjectsPreview = () => {
                     href={project.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="project-card track2-card flex-shrink-0 w-[400px] h-[225px] rounded-2xl overflow-hidden border border-white/10 cursor-pointer group hover:scale-105 transition-transform duration-300"
+                    className="flex-shrink-0 w-[400px] h-[225px] rounded-2xl overflow-hidden border border-white/10 cursor-pointer group hover:scale-105 transition-transform duration-300"
                   >
                     <div className="relative w-full h-full">
                       {/* Project Image */}
