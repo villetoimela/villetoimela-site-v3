@@ -8,8 +8,10 @@ import Image from 'next/image'
 export default function ProjectMarquee() {
   const [hoveredId, setHoveredId] = useState<string | null>(null)
   const [isMounted, setIsMounted] = useState(false)
+  const [isVisible, setIsVisible] = useState(false)
   const marqueeRefs = useRef<(HTMLDivElement | null)[]>([])
   const sectionRef = useRef<HTMLDivElement>(null)
+  const isVisibleRef = useRef(false)
   const targetSpeed = useRef(0.3)
   const currentSpeed = useRef(0.3)
   const lastScrollY = useRef(0)
@@ -17,6 +19,7 @@ export default function ProjectMarquee() {
   const animationFrameId = useRef<number | null>(null)
   const hoverStates = useRef<Map<number, { target: number, current: number }>>(new Map())
   const scrollResetTimeout = useRef<NodeJS.Timeout | null>(null)
+  const animationsRef = useRef<(Animation | null)[]>([])
 
   // Floating background particles
   const [floatingParticles, setFloatingParticles] = useState<Array<{
@@ -33,10 +36,51 @@ export default function ProjectMarquee() {
     setIsMounted(true)
   }, [])
 
-  // Initialize floating particles
+  // Intersection Observer to track visibility
   useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          setIsVisible(entry.isIntersecting)
+          isVisibleRef.current = entry.isIntersecting
+          console.log(`[ProjectMarquee] Visibility: ${entry.isIntersecting ? 'VISIBLE - animations active' : 'HIDDEN - animations paused'}`)
+
+          // Pause/resume Web Animations API
+          if (entry.isIntersecting) {
+            animationsRef.current.forEach(anim => {
+              if (anim) anim.play()
+            })
+          } else {
+            animationsRef.current.forEach(anim => {
+              if (anim) anim.pause()
+            })
+          }
+        })
+      },
+      {
+        threshold: 0.1,
+        rootMargin: '100px',
+      }
+    )
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current)
+    }
+
+    return () => {
+      if (sectionRef.current) {
+        observer.unobserve(sectionRef.current)
+      }
+    }
+  }, [])
+
+  // Initialize floating particles - reduce on mobile
+  useEffect(() => {
+    const isMobileDevice = window.innerWidth < 768
+    const particleCount = isMobileDevice ? 10 : 30
+
     setFloatingParticles(
-      [...Array(30)].map(() => ({
+      [...Array(particleCount)].map(() => ({
         initialX: Math.random() * 100,
         initialY: Math.random() * 100,
         moveX: Math.random() * 50 - 25,
@@ -141,13 +185,22 @@ export default function ProjectMarquee() {
       return animation
     })
 
+    // Store animations for pause/resume
+    animationsRef.current = animations
+
     // Initialize hover states for each row
     animations.forEach((_, index) => {
       hoverStates.current.set(index, { target: 1, current: 1 })
     })
 
-    // Smooth speed interpolation loop
+    // Smooth speed interpolation loop - only when visible
     const updateSpeed = () => {
+      // Skip updating if not visible
+      if (!isVisibleRef.current) {
+        animationFrameId.current = requestAnimationFrame(updateSpeed)
+        return
+      }
+
       // Lerp towards target speed for smooth transition
       const lerpFactor = 0.08 // Slower lerp for smoother transition
       currentSpeed.current += (targetSpeed.current - currentSpeed.current) * lerpFactor
@@ -248,17 +301,17 @@ export default function ProjectMarquee() {
 
   return (
     <section ref={sectionRef} className="relative bg-black pt-0 pb-20 overflow-x-hidden overflow-y-visible">
-      {/* Animated gradient orbs in background */}
+      {/* Animated gradient orbs in background - only animate when visible */}
       <motion.div
         className="absolute top-1/4 left-1/4 w-[500px] h-[500px] rounded-full opacity-15 blur-3xl pointer-events-none"
         style={{
           background: 'radial-gradient(circle, rgba(100, 180, 255, 0.3) 0%, rgba(80, 150, 255, 0.15) 50%, transparent 70%)',
         }}
-        animate={{
+        animate={isVisible ? {
           x: ['-10%', '10%', '-10%'],
           y: ['-5%', '5%', '-5%'],
           scale: [1, 1.1, 1],
-        }}
+        } : {}}
         transition={{
           x: { duration: 20, repeat: Infinity, ease: "easeInOut" },
           y: { duration: 20, repeat: Infinity, ease: "easeInOut" },
@@ -271,11 +324,11 @@ export default function ProjectMarquee() {
         style={{
           background: 'radial-gradient(circle, rgba(120, 200, 255, 0.25) 0%, rgba(100, 180, 255, 0.12) 50%, transparent 70%)',
         }}
-        animate={{
+        animate={isVisible ? {
           x: ['10%', '-10%', '10%'],
           y: ['5%', '-5%', '5%'],
           scale: [1, 1.15, 1],
-        }}
+        } : {}}
         transition={{
           x: { duration: 25, repeat: Infinity, ease: "easeInOut" },
           y: { duration: 25, repeat: Infinity, ease: "easeInOut" },
@@ -288,11 +341,11 @@ export default function ProjectMarquee() {
         style={{
           background: 'radial-gradient(circle, rgba(150, 220, 255, 0.3) 0%, rgba(120, 200, 255, 0.15) 50%, transparent 70%)',
         }}
-        animate={{
+        animate={isVisible ? {
           x: ['-15%', '15%', '-15%'],
           y: ['10%', '-10%', '10%'],
           scale: [1, 1.2, 1],
-        }}
+        } : {}}
         transition={{
           x: { duration: 18, repeat: Infinity, ease: "easeInOut" },
           y: { duration: 18, repeat: Infinity, ease: "easeInOut" },
@@ -300,7 +353,7 @@ export default function ProjectMarquee() {
         }}
       />
 
-      {/* Floating particles */}
+      {/* Floating particles - only animate when visible */}
       {floatingParticles.map((particle, i) => (
         <motion.div
           key={i}
@@ -312,12 +365,12 @@ export default function ProjectMarquee() {
             height: `${particle.size * 3}px`,
             boxShadow: '0 0 8px rgba(100, 180, 255, 0.5)',
           }}
-          animate={{
+          animate={isVisible ? {
             y: [0, -100, 0],
             x: [0, particle.moveX, 0],
             opacity: [0.15, 0.4, 0.15],
             scale: [1, 1.5, 1],
-          }}
+          } : {}}
           transition={{
             duration: particle.duration,
             repeat: Infinity,
