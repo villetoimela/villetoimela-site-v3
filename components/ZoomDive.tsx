@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import StarField from './StarField'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -35,6 +36,9 @@ export default function ZoomDive() {
       y: number
       z: number
       initialZ: number
+      offsetX: number
+      offsetY: number
+      speed: number
     }> = []
 
     const starCount = 800
@@ -46,12 +50,16 @@ export default function ZoomDive() {
         y: Math.random() * canvas.height - canvas.height / 2,
         z: Math.random() * 2000,
         initialZ: 0,
+        offsetX: Math.random() * Math.PI * 2,
+        offsetY: Math.random() * Math.PI * 2,
+        speed: 0.5 + Math.random() * 0.5,
       })
       stars[i].initialZ = stars[i].z
     }
 
     let animationProgress = 0
     let lastProgress = 0
+    let time = 0
 
     // Render function - only updates visual representation
     const render = () => {
@@ -65,27 +73,45 @@ export default function ZoomDive() {
       const progressDelta = animationProgress - lastProgress
       const speed = Math.abs(progressDelta) * 100 * (1 + animationProgress * 2) // Speed increases as you scroll
 
-      stars.forEach((star) => {
-        // Only update Z position based on scroll direction
-        if (progressDelta !== 0) {
-          star.z -= progressDelta * 2000 * (1 + animationProgress * 2)
+      // Increment time for continuous movement
+      time += 0.016 // ~60fps
 
-          // Reset star if it goes behind camera or too far
-          if (star.z <= 0) {
-            star.z = 2000
-            star.x = Math.random() * canvas.width - canvas.width / 2
-            star.y = Math.random() * canvas.height - canvas.height / 2
-          } else if (star.z > 2000) {
-            star.z = 1
-            star.x = Math.random() * canvas.width - canvas.width / 2
-            star.y = Math.random() * canvas.height - canvas.height / 2
-          }
+      stars.forEach((star) => {
+        // Continuous slow movement even when not scrolling
+        const idleSpeed = 0.3 // Very slow continuous movement
+
+        // Combine scroll movement with idle movement
+        if (progressDelta !== 0) {
+          // Fast scroll-based movement
+          star.z -= progressDelta * 2000 * (1 + animationProgress * 2)
+        } else {
+          // Slow continuous movement when idle
+          star.z -= idleSpeed
         }
+
+        // Reset star if it goes behind camera or too far
+        if (star.z <= 0) {
+          star.z = 2000
+          star.x = Math.random() * canvas.width - canvas.width / 2
+          star.y = Math.random() * canvas.height - canvas.height / 2
+          star.offsetX = Math.random() * Math.PI * 2
+          star.offsetY = Math.random() * Math.PI * 2
+        } else if (star.z > 2000) {
+          star.z = 1
+          star.x = Math.random() * canvas.width - canvas.width / 2
+          star.y = Math.random() * canvas.height - canvas.height / 2
+          star.offsetX = Math.random() * Math.PI * 2
+          star.offsetY = Math.random() * Math.PI * 2
+        }
+
+        // Add subtle floating motion when idle
+        const floatX = progressDelta === 0 ? Math.sin(time * star.speed + star.offsetX) * 2 : 0
+        const floatY = progressDelta === 0 ? Math.cos(time * star.speed + star.offsetY) * 2 : 0
 
         // Project 3D position to 2D
         const scale = 1000 / star.z
-        const x2d = star.x * scale + centerX
-        const y2d = star.y * scale + centerY
+        const x2d = (star.x + floatX) * scale + centerX
+        const y2d = (star.y + floatY) * scale + centerY
 
         // Calculate star size based on depth
         const size = (1 - star.z / 2000) * 3
@@ -178,7 +204,7 @@ export default function ZoomDive() {
       ref={sectionRef}
       className="relative bg-black overflow-hidden h-screen"
     >
-      {/* Canvas for star field */}
+      {/* Canvas for star field - keeps original zoom effect */}
       <canvas
         ref={canvasRef}
         className="absolute inset-0 w-full h-full"
