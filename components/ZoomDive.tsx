@@ -194,7 +194,7 @@ export default function ZoomDive() {
             className="text-7xl md:text-9xl lg:text-[12rem] font-light text-white"
             style={{ fontFamily: 'var(--font-space-grotesk)', lineHeight: 0.9 }}
           >
-            Featured<br />Work
+            Some of my<br /> latest works
           </h2>
           <div className="mt-8 flex items-center justify-center gap-4">
             <div className="w-16 h-px bg-gradient-to-r from-transparent via-blue-400 to-transparent" />
