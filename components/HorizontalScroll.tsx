@@ -53,10 +53,13 @@ export default function HorizontalScroll({ panels }: HorizontalScrollProps) {
     size: number
   }>>([])
 
-  // Initialize floating particles
+  // Initialize floating particles - none on mobile for performance
   useEffect(() => {
+    const isMobileDevice = window.innerWidth < 768
+    const particleCount = isMobileDevice ? 0 : 20 // 0 on mobile, 20 on desktop
+
     setFloatingParticles(
-      [...Array(30)].map(() => ({
+      [...Array(particleCount)].map(() => ({
         initialX: Math.random() * 100,
         initialY: Math.random() * 100,
         moveX: Math.random() * 50 - 25,
@@ -161,73 +164,83 @@ export default function HorizontalScroll({ panels }: HorizontalScrollProps) {
         scrollTriggersRef.current.push(scrollTween.scrollTrigger)
       }
 
-      // Animate the line drawing with horizontal scroll
-      const pathElements = svg.querySelectorAll('path')
-      pathElements.forEach((pathElement) => {
-        const pathLength = pathElement.getTotalLength()
+      // Animate the line drawing with horizontal scroll - DISABLED ON MOBILE for performance
+      const isMobileDevice = window.innerWidth < 768
 
-        // Set up the initial state
-        pathElement.style.strokeDasharray = `${pathLength}`
-        pathElement.style.strokeDashoffset = `${pathLength}`
+      if (!isMobileDevice) {
+        const pathElements = svg.querySelectorAll('path')
+        pathElements.forEach((pathElement) => {
+          const pathLength = pathElement.getTotalLength()
 
-        // Animate the line in sync with horizontal scroll - slower on mobile, normal on desktop
-        const lineScrollMultiplier = window.innerWidth < 1024 ? 1.5 : 1
-        const lineTween = gsap.to(pathElement, {
-          strokeDashoffset: 0,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: section,
-            start: 'top top',
-            end: () => `+=${scrollWidth * lineScrollMultiplier}`,
-            scrub: 1,
-            onUpdate: (self) => {
-              const currentProgress = self.progress
-              const progressDelta = Math.abs(currentProgress - lastLineProgressRef.current)
+          // Set up the initial state
+          pathElement.style.strokeDasharray = `${pathLength}`
+          pathElement.style.strokeDashoffset = `${pathLength}`
 
-              lineProgressRef.current = currentProgress
+          // Animate the line in sync with horizontal scroll
+          const lineScrollMultiplier = window.innerWidth < 1024 ? 1.5 : 1
+          const lineTween = gsap.to(pathElement, {
+            strokeDashoffset: 0,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: section,
+              start: 'top top',
+              end: () => `+=${scrollWidth * lineScrollMultiplier}`,
+              scrub: 1,
+              onUpdate: (self) => {
+                const currentProgress = self.progress
+                const progressDelta = Math.abs(currentProgress - lastLineProgressRef.current)
 
-              // Spawn particles based on progress change
-              // More progress change = more particles (for smooth trail during fast scrolling)
-              if (currentProgress > 0 && currentProgress < 1 && progressDelta > 0.0005) {
-                const pos = getLinePosition()
-                if (pos) {
-                  // Create 1-2 particles per update
-                  const particleCount = Math.min(2, Math.ceil(progressDelta * 200))
-                  createParticles(pos.x, pos.y, particleCount, false)
-                }
-              }
+                lineProgressRef.current = currentProgress
 
-              lastLineProgressRef.current = currentProgress
-
-              // Trigger explosions at 20%, 40%, and 80%
-              const explosionPoints = [
-                { threshold: 0.20, key: 20 as const },
-                { threshold: 0.40, key: 40 as const },
-                { threshold: 0.80, key: 80 as const },
-              ]
-
-              explosionPoints.forEach(({ threshold, key }) => {
-                if (currentProgress >= threshold && !explosionsTriggeredRef.current[key]) {
-                  explosionsTriggeredRef.current[key] = true
+                // Spawn particles based on progress change
+                // More progress change = more particles (for smooth trail during fast scrolling)
+                if (currentProgress > 0 && currentProgress < 1 && progressDelta > 0.0005) {
                   const pos = getLinePosition()
                   if (pos) {
-                    createParticles(pos.x, pos.y, 20, true)
+                    // Create 1-2 particles per update
+                    const particleCount = Math.min(2, Math.ceil(progressDelta * 200))
+                    createParticles(pos.x, pos.y, particleCount, false)
                   }
                 }
 
-                // Reset explosion trigger when scrolling back past the point
-                if (currentProgress < threshold) {
-                  explosionsTriggeredRef.current[key] = false
-                }
-              })
-            },
-          },
-        })
+                lastLineProgressRef.current = currentProgress
 
-        if (lineTween.scrollTrigger) {
-          scrollTriggersRef.current.push(lineTween.scrollTrigger)
-        }
-      })
+                // Trigger explosions at 20%, 40%, and 80%
+                const explosionPoints = [
+                  { threshold: 0.20, key: 20 as const },
+                  { threshold: 0.40, key: 40 as const },
+                  { threshold: 0.80, key: 80 as const },
+                ]
+
+                explosionPoints.forEach(({ threshold, key }) => {
+                  if (currentProgress >= threshold && !explosionsTriggeredRef.current[key]) {
+                    explosionsTriggeredRef.current[key] = true
+                    const pos = getLinePosition()
+                    if (pos) {
+                      createParticles(pos.x, pos.y, 20, true)
+                    }
+                  }
+
+                  // Reset explosion trigger when scrolling back past the point
+                  if (currentProgress < threshold) {
+                    explosionsTriggeredRef.current[key] = false
+                  }
+                })
+              },
+            },
+          })
+
+          if (lineTween.scrollTrigger) {
+            scrollTriggersRef.current.push(lineTween.scrollTrigger)
+          }
+        })
+      } else {
+        // On mobile: hide the SVG line completely
+        const pathElements = svg.querySelectorAll('path')
+        pathElements.forEach((pathElement) => {
+          ;(pathElement as SVGPathElement).style.display = 'none'
+        })
+      }
 
       // Set initial state for all panels - hide them first with slight offset
       panels.forEach((_, index) => {
@@ -367,8 +380,13 @@ export default function HorizontalScroll({ panels }: HorizontalScrollProps) {
     }
   }, [panels])
 
-  // Particle animation loop - only updates particle positions/life
+  // Particle animation loop - DISABLED ON MOBILE for performance
   useEffect(() => {
+    const isMobileDevice = window.innerWidth < 768
+
+    // Skip particle animation entirely on mobile
+    if (isMobileDevice) return
+
     let lastTime = Date.now()
 
     const animate = () => {
@@ -405,9 +423,9 @@ export default function HorizontalScroll({ panels }: HorizontalScrollProps) {
       ref={sectionRef}
       className="relative bg-[#000000] overflow-hidden"
     >
-      {/* Animated gradient orbs in background */}
+      {/* Animated gradient orbs in background - HIDDEN ON MOBILE */}
       <motion.div
-        className="absolute top-1/4 left-1/4 w-[500px] h-[500px] rounded-full opacity-15 blur-3xl pointer-events-none"
+        className="absolute top-1/4 left-1/4 w-[500px] h-[500px] rounded-full opacity-15 blur-3xl pointer-events-none hidden md:block"
         style={{
           background: 'radial-gradient(circle, rgba(100, 180, 255, 0.3) 0%, rgba(80, 150, 255, 0.15) 50%, transparent 70%)',
         }}
@@ -424,7 +442,7 @@ export default function HorizontalScroll({ panels }: HorizontalScrollProps) {
       />
 
       <motion.div
-        className="absolute bottom-1/3 right-1/4 w-[400px] h-[400px] rounded-full opacity-15 blur-3xl pointer-events-none"
+        className="absolute bottom-1/3 right-1/4 w-[400px] h-[400px] rounded-full opacity-15 blur-3xl pointer-events-none hidden md:block"
         style={{
           background: 'radial-gradient(circle, rgba(120, 200, 255, 0.25) 0%, rgba(100, 180, 255, 0.12) 50%, transparent 70%)',
         }}
@@ -441,7 +459,7 @@ export default function HorizontalScroll({ panels }: HorizontalScrollProps) {
       />
 
       <motion.div
-        className="absolute top-1/2 right-1/3 w-[350px] h-[350px] rounded-full opacity-10 blur-3xl pointer-events-none"
+        className="absolute top-1/2 right-1/3 w-[350px] h-[350px] rounded-full opacity-10 blur-3xl pointer-events-none hidden md:block"
         style={{
           background: 'radial-gradient(circle, rgba(150, 220, 255, 0.3) 0%, rgba(120, 200, 255, 0.15) 50%, transparent 70%)',
         }}
