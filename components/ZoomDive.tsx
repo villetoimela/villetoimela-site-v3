@@ -95,9 +95,9 @@ export default function ZoomDive() {
 
         // Draw star with trail effect
         const gradient = ctx.createRadialGradient(x2d, y2d, 0, x2d, y2d, size * 2)
-        gradient.addColorStop(0, `rgba(255, 255, 255, ${brightness})`)
-        gradient.addColorStop(0.4, `rgba(160, 230, 255, ${brightness * 0.6})`)
-        gradient.addColorStop(1, 'rgba(140, 210, 255, 0)')
+        gradient.addColorStop(0, `rgba(160, 230, 255, ${brightness})`)
+        gradient.addColorStop(0.4, `rgba(120, 200, 255, ${brightness * 0.6})`)
+        gradient.addColorStop(1, 'rgba(100, 180, 255, 0)')
 
         ctx.fillStyle = gradient
         ctx.beginPath()
@@ -114,8 +114,8 @@ export default function ZoomDive() {
             const prevY = star.y * prevScale + centerY
 
             const trailGradient = ctx.createLinearGradient(prevX, prevY, x2d, y2d)
-            trailGradient.addColorStop(0, 'rgba(160, 230, 255, 0)')
-            trailGradient.addColorStop(1, `rgba(160, 230, 255, ${brightness * 0.3})`)
+            trailGradient.addColorStop(0, 'rgba(120, 200, 255, 0)')
+            trailGradient.addColorStop(1, `rgba(120, 200, 255, ${brightness * 0.3})`)
 
             ctx.strokeStyle = trailGradient
             ctx.lineWidth = size * 0.5

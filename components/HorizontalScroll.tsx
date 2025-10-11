@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useId } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { motion } from 'framer-motion'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -39,8 +40,32 @@ export default function HorizontalScroll({ panels }: HorizontalScrollProps) {
   const particleIdRef = useRef(0)
   const lineProgressRef = useRef(0)
   const lastLineProgressRef = useRef(0)
-  const explosionsTriggeredRef = useRef<{ 20: boolean; 50: boolean; 80: boolean }>({ 20: false, 50: false, 80: false })
+  const explosionsTriggeredRef = useRef<{ 20: boolean; 40: boolean; 80: boolean }>({ 20: false, 40: false, 80: false })
   const animationFrameRef = useRef<number>()
+
+  // Floating background particles
+  const [floatingParticles, setFloatingParticles] = useState<Array<{
+    initialX: number
+    initialY: number
+    moveX: number
+    duration: number
+    delay: number
+    size: number
+  }>>([])
+
+  // Initialize floating particles
+  useEffect(() => {
+    setFloatingParticles(
+      [...Array(30)].map(() => ({
+        initialX: Math.random() * 100,
+        initialY: Math.random() * 100,
+        moveX: Math.random() * 50 - 25,
+        duration: 10 + Math.random() * 10,
+        delay: Math.random() * 5,
+        size: Math.random() > 0.5 ? 1 : 0.5,
+      }))
+    )
+  }, [])
 
   // Helper to create particles
   const createParticles = (x: number, y: number, count: number, isExplosion = false) => {
@@ -174,10 +199,10 @@ export default function HorizontalScroll({ panels }: HorizontalScrollProps) {
 
               lastLineProgressRef.current = currentProgress
 
-              // Trigger explosions at 20%, 50%, and 80%
+              // Trigger explosions at 20%, 40%, and 80%
               const explosionPoints = [
                 { threshold: 0.20, key: 20 as const },
-                { threshold: 0.50, key: 50 as const },
+                { threshold: 0.40, key: 40 as const },
                 { threshold: 0.80, key: 80 as const },
               ]
 
@@ -380,6 +405,84 @@ export default function HorizontalScroll({ panels }: HorizontalScrollProps) {
       ref={sectionRef}
       className="relative bg-[#000000] overflow-hidden"
     >
+      {/* Animated gradient orbs in background */}
+      <motion.div
+        className="absolute top-1/4 left-1/4 w-[500px] h-[500px] rounded-full opacity-15 blur-3xl pointer-events-none"
+        style={{
+          background: 'radial-gradient(circle, rgba(100, 180, 255, 0.3) 0%, rgba(80, 150, 255, 0.15) 50%, transparent 70%)',
+        }}
+        animate={{
+          x: ['-10%', '10%', '-10%'],
+          y: ['-5%', '5%', '-5%'],
+          scale: [1, 1.1, 1],
+        }}
+        transition={{
+          x: { duration: 20, repeat: Infinity, ease: "easeInOut" },
+          y: { duration: 20, repeat: Infinity, ease: "easeInOut" },
+          scale: { duration: 20, repeat: Infinity, ease: "easeInOut" },
+        }}
+      />
+
+      <motion.div
+        className="absolute bottom-1/3 right-1/4 w-[400px] h-[400px] rounded-full opacity-15 blur-3xl pointer-events-none"
+        style={{
+          background: 'radial-gradient(circle, rgba(120, 200, 255, 0.25) 0%, rgba(100, 180, 255, 0.12) 50%, transparent 70%)',
+        }}
+        animate={{
+          x: ['10%', '-10%', '10%'],
+          y: ['5%', '-5%', '5%'],
+          scale: [1, 1.15, 1],
+        }}
+        transition={{
+          x: { duration: 25, repeat: Infinity, ease: "easeInOut" },
+          y: { duration: 25, repeat: Infinity, ease: "easeInOut" },
+          scale: { duration: 25, repeat: Infinity, ease: "easeInOut" },
+        }}
+      />
+
+      <motion.div
+        className="absolute top-1/2 right-1/3 w-[350px] h-[350px] rounded-full opacity-10 blur-3xl pointer-events-none"
+        style={{
+          background: 'radial-gradient(circle, rgba(150, 220, 255, 0.3) 0%, rgba(120, 200, 255, 0.15) 50%, transparent 70%)',
+        }}
+        animate={{
+          x: ['-15%', '15%', '-15%'],
+          y: ['10%', '-10%', '10%'],
+          scale: [1, 1.2, 1],
+        }}
+        transition={{
+          x: { duration: 18, repeat: Infinity, ease: "easeInOut" },
+          y: { duration: 18, repeat: Infinity, ease: "easeInOut" },
+          scale: { duration: 18, repeat: Infinity, ease: "easeInOut" },
+        }}
+      />
+
+      {/* Floating particles */}
+      {floatingParticles.map((particle, i) => (
+        <motion.div
+          key={i}
+          className="absolute bg-blue-400 rounded-full opacity-30 pointer-events-none"
+          style={{
+            left: `${particle.initialX}%`,
+            top: `${particle.initialY}%`,
+            width: `${particle.size * 3}px`,
+            height: `${particle.size * 3}px`,
+            boxShadow: '0 0 8px rgba(100, 180, 255, 0.5)',
+          }}
+          animate={{
+            y: [0, -100, 0],
+            x: [0, particle.moveX, 0],
+            opacity: [0.15, 0.4, 0.15],
+            scale: [1, 1.5, 1],
+          }}
+          transition={{
+            duration: particle.duration,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: particle.delay,
+          }}
+        />
+      ))}
 
       {/* Horizontal scroll container */}
       <div

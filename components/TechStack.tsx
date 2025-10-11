@@ -1,13 +1,38 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { motion } from 'framer-motion'
 
 gsap.registerPlugin(ScrollTrigger)
 
 const TechStack = () => {
   const sectionRef = useRef<HTMLDivElement>(null)
+
+  // Floating background particles
+  const [floatingParticles, setFloatingParticles] = useState<Array<{
+    initialX: number
+    initialY: number
+    moveX: number
+    duration: number
+    delay: number
+    size: number
+  }>>([])
+
+  // Initialize floating particles
+  useEffect(() => {
+    setFloatingParticles(
+      [...Array(30)].map(() => ({
+        initialX: Math.random() * 100,
+        initialY: Math.random() * 100,
+        moveX: Math.random() * 50 - 25,
+        duration: 10 + Math.random() * 10,
+        delay: Math.random() * 5,
+        size: Math.random() > 0.5 ? 1 : 0.5,
+      }))
+    )
+  }, [])
 
   const technologies = [
     { name: 'HTML', color: '#E34F26' },
@@ -90,11 +115,84 @@ const TechStack = () => {
       ref={sectionRef}
       className="relative bg-black py-32 overflow-hidden"
     >
-      {/* Background effects */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-1/2 left-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-[120px]" />
-        <div className="absolute bottom-1/4 right-1/3 w-96 h-96 bg-green-500/5 rounded-full blur-[120px]" />
-      </div>
+      {/* Animated gradient orbs in background */}
+      <motion.div
+        className="absolute top-1/4 left-1/4 w-[500px] h-[500px] rounded-full opacity-15 blur-3xl pointer-events-none"
+        style={{
+          background: 'radial-gradient(circle, rgba(100, 180, 255, 0.3) 0%, rgba(80, 150, 255, 0.15) 50%, transparent 70%)',
+        }}
+        animate={{
+          x: ['-10%', '10%', '-10%'],
+          y: ['-5%', '5%', '-5%'],
+          scale: [1, 1.1, 1],
+        }}
+        transition={{
+          x: { duration: 20, repeat: Infinity, ease: "easeInOut" },
+          y: { duration: 20, repeat: Infinity, ease: "easeInOut" },
+          scale: { duration: 20, repeat: Infinity, ease: "easeInOut" },
+        }}
+      />
+
+      <motion.div
+        className="absolute bottom-1/3 right-1/4 w-[400px] h-[400px] rounded-full opacity-15 blur-3xl pointer-events-none"
+        style={{
+          background: 'radial-gradient(circle, rgba(120, 200, 255, 0.25) 0%, rgba(100, 180, 255, 0.12) 50%, transparent 70%)',
+        }}
+        animate={{
+          x: ['10%', '-10%', '10%'],
+          y: ['5%', '-5%', '5%'],
+          scale: [1, 1.15, 1],
+        }}
+        transition={{
+          x: { duration: 25, repeat: Infinity, ease: "easeInOut" },
+          y: { duration: 25, repeat: Infinity, ease: "easeInOut" },
+          scale: { duration: 25, repeat: Infinity, ease: "easeInOut" },
+        }}
+      />
+
+      <motion.div
+        className="absolute top-1/2 right-1/3 w-[350px] h-[350px] rounded-full opacity-10 blur-3xl pointer-events-none"
+        style={{
+          background: 'radial-gradient(circle, rgba(150, 220, 255, 0.3) 0%, rgba(120, 200, 255, 0.15) 50%, transparent 70%)',
+        }}
+        animate={{
+          x: ['-15%', '15%', '-15%'],
+          y: ['10%', '-10%', '10%'],
+          scale: [1, 1.2, 1],
+        }}
+        transition={{
+          x: { duration: 18, repeat: Infinity, ease: "easeInOut" },
+          y: { duration: 18, repeat: Infinity, ease: "easeInOut" },
+          scale: { duration: 18, repeat: Infinity, ease: "easeInOut" },
+        }}
+      />
+
+      {/* Floating particles */}
+      {floatingParticles.map((particle, i) => (
+        <motion.div
+          key={i}
+          className="absolute bg-blue-400 rounded-full opacity-30 pointer-events-none"
+          style={{
+            left: `${particle.initialX}%`,
+            top: `${particle.initialY}%`,
+            width: `${particle.size * 3}px`,
+            height: `${particle.size * 3}px`,
+            boxShadow: '0 0 8px rgba(100, 180, 255, 0.5)',
+          }}
+          animate={{
+            y: [0, -100, 0],
+            x: [0, particle.moveX, 0],
+            opacity: [0.15, 0.4, 0.15],
+            scale: [1, 1.5, 1],
+          }}
+          transition={{
+            duration: particle.duration,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: particle.delay,
+          }}
+        />
+      ))}
 
       <div className="container mx-auto px-6 relative z-10">
         {/* Title */}
