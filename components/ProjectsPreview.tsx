@@ -33,10 +33,10 @@ const ProjectsPreview = () => {
     size: number
   }>>([])
 
-  // Initialize floating particles (reduced from 30 to 15 for performance)
+  // Initialize floating particles
   useEffect(() => {
     setFloatingParticles(
-      [...Array(15)].map(() => ({
+      [...Array(30)].map(() => ({
         initialX: Math.random() * 100,
         initialY: Math.random() * 100,
         moveX: Math.random() * 50 - 25,
