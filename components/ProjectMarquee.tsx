@@ -302,7 +302,7 @@ export default function ProjectMarquee() {
                 marqueeRefs.current[rowIndex] = el
               }}
               className="flex gap-3 md:gap-4 lg:gap-6 overflow-visible"
-              style={{ width: 'fit-content' }}
+              style={{ width: 'fit-content', willChange: 'transform' }}
             >
               {row.projects.map((project, index) => (
                 <a
@@ -310,7 +310,7 @@ export default function ProjectMarquee() {
                   href={project.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group relative block flex-shrink-0 transition-all duration-500 w-[300px] h-[170px] md:w-[450px] md:h-[255px] lg:w-[600px] lg:h-[340px]"
+                  className="group relative block flex-shrink-0 transition-all duration-300 w-[300px] h-[170px] md:w-[450px] md:h-[255px] lg:w-[600px] lg:h-[340px]"
                   onMouseEnter={() => handleMouseEnter(project.id, rowIndex)}
                   onMouseLeave={() => handleMouseLeave(rowIndex)}
                 >
@@ -320,25 +320,27 @@ export default function ProjectMarquee() {
                       src={project.image}
                       alt={project.title}
                       fill
-                      className="object-cover transition-all duration-700 brightness-50 grayscale-[30%] group-hover:brightness-100 group-hover:grayscale-0"
+                      className="object-cover transition-all duration-500 brightness-50 grayscale-[30%] group-hover:brightness-100 group-hover:grayscale-0"
                       sizes="(max-width: 768px) 300px, (max-width: 1024px) 450px, 600px"
+                      quality={70}
+                      loading="lazy"
                     />
 
                     {/* Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-60 group-hover:opacity-90 transition-opacity duration-500" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-60 group-hover:opacity-90 transition-opacity duration-300" />
 
                     {/* Content */}
                     <div className="absolute inset-0 p-6 flex flex-col justify-end">
                       {/* Title */}
                       <h3
-                        className="text-2xl font-light text-white mb-3 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500"
+                        className="text-2xl font-light text-white mb-3 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300"
                         style={{ fontFamily: 'var(--font-space-grotesk)' }}
                       >
                         {project.title}
                       </h3>
 
                       {/* Tags */}
-                      <div className="flex flex-wrap gap-2 opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500 delay-100">
+                      <div className="flex flex-wrap gap-2 opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 delay-75">
                         {project.tags.map((tag) => (
                           <span
                             key={tag}
@@ -352,7 +354,7 @@ export default function ProjectMarquee() {
                     </div>
 
                     {/* Hover glow effect */}
-                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
                       <div className="absolute inset-0 border-2 border-blue-400/50 rounded-lg" />
                       <div className="absolute inset-0 shadow-[0_0_30px_rgba(96,165,250,0.3)] rounded-lg" />
                     </div>
