@@ -350,14 +350,14 @@ const ContactFooter = () => {
                 Social
               </h3>
               <div className="space-y-2">
-                <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="block text-white/80 hover:text-white transition-colors duration-300">
+                <a href="https://github.com/villetoimela" target="_blank" rel="noopener noreferrer" className="block text-white/80 hover:text-white transition-colors duration-300">
                   GitHub
                 </a>
-                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="block text-white/80 hover:text-white transition-colors duration-300">
+                <a href="https://fi.linkedin.com/in/villetoimela" target="_blank" rel="noopener noreferrer" className="block text-white/80 hover:text-white transition-colors duration-300">
                   LinkedIn
                 </a>
-                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="block text-white/80 hover:text-white transition-colors duration-300">
-                  Twitter
+                <a href="https://www.instagram.com/villetoimela/" target="_blank" rel="noopener noreferrer" className="block text-white/80 hover:text-white transition-colors duration-300">
+                  Instagram
                 </a>
               </div>
             </div>
@@ -369,7 +369,7 @@ const ContactFooter = () => {
               </h3>
               <div className="space-y-2">
                 <a href="mailto:ville@example.com" className="block text-white/80 hover:text-white transition-colors duration-300">
-                  ville@example.com
+                  ville.toimela@gmail.com
                 </a>
                 <p className="text-white/60">
                   Based in Finland
