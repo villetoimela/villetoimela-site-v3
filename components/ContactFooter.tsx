@@ -246,11 +246,11 @@ const ContactFooter = () => {
               Get in Touch
             </p>
             <h2 className="text-4xl md:text-6xl lg:text-7xl font-light text-white mb-6">
-              Let's Work Together
+              Let's work together
             </h2>
             <p className="text-white/60 text-lg font-light max-w-2xl mx-auto">
-              I'm currently available for freelance work and full-time opportunities.
-              Drop me a line and let's create something amazing!
+              I'm open to freelance projects and full-time positions.
+              Got an idea or just want to chat? Send me a message!
             </p>
           </div>
 

@@ -61,10 +61,10 @@ export const projects: Project[] = [
   },
   {
     id: '7',
-    title: 'Eli juomapeli App',
+    title: 'Villetoimela Website v3',
     image: '/images/projects/project-elijuomapeli.png',
-    tags: ['React', 'Tailwind', 'UI/UX'],
-    link: 'https://www.elijuomapeli.com/',
+    tags: ['React', 'Next.js', 'Tailwind', 'UI/UX'],
+    link: 'https://www.villetoimela.com/',
     featured: true,
   },
   {
@@ -241,6 +241,14 @@ export const projects: Project[] = [
     image: '/images/projects/project-fin-terpuu.png',
     tags: ['WordPress', 'JavaScript', 'SCSS', 'PHP', 'ACF', 'UI/UX'],
     link: 'https://fin-terpuu.fi/',
+    featured: true,
+  },
+  {
+    id: '30',
+    title: 'Eli juomapeli App',
+    image: '/images/projects/project-elijuomapeli.png',
+    tags: ['React', 'Tailwind', 'UI/UX'],
+    link: 'https://www.elijuomapeli.com/',
     featured: true,
   },
 ]

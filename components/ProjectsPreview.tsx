@@ -237,7 +237,7 @@ const ProjectsPreview = () => {
             Recent Work
           </p>
           <h2 className="text-4xl md:text-6xl lg:text-7xl font-light text-white mb-4">
-            Sneak peek to some of my projects
+            A sneak peek at some of my projects
           </h2>
         </div>
 

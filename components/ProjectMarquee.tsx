@@ -372,7 +372,7 @@ export default function ProjectMarquee() {
           className="text-lg md:text-xl text-white/70 font-light"
           style={{ fontFamily: 'var(--font-space-grotesk)' }}
         >
-          ..And, of course, I've had the opportunity to work on many further development projects.
+          Plus a bunch of other projects — client sites, ongoing development work, maintenance, and random experiments.
         </p>
       </div>
 
