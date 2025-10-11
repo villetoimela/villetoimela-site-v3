@@ -123,7 +123,7 @@ const ContactFooter = () => {
           from_name: formData.name,
           from_email: formData.email,
           message: formData.message,
-          to_email: 'ville@example.com', // Replace with your email
+          to_email: 'ville.toimela@gmail.com',
         },
         publicKey
       )
