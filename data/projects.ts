@@ -22,7 +22,7 @@ export const projects: Project[] = [
   {
     id: '2',
     title: 'Villetoimela Website v2',
-    image: '/images/projects/project-villetoimela-v3.png',
+    image: '/images/projects/project-villetoimela-v2.png',
     tags: ['React', 'Next.js', 'SCSS', 'UI/UX'],
     link: 'https://villetoimela-site-v2.netlify.app/',
     featured: true,
@@ -62,7 +62,7 @@ export const projects: Project[] = [
   {
     id: '7',
     title: 'Villetoimela Website v3',
-    image: '/images/projects/project-elijuomapeli.png',
+    image: '/images/projects/project-villetoimela-v3.png',
     tags: ['React', 'Next.js', 'Tailwind', 'UI/UX'],
     link: 'https://www.villetoimela.com/',
     featured: true,
@@ -248,7 +248,7 @@ export const projects: Project[] = [
     title: 'Eli juomapeli App',
     image: '/images/projects/project-elijuomapeli.png',
     tags: ['React', 'Tailwind', 'UI/UX'],
-    link: 'https://www.elijuomapeli.com/',
+    link: 'https://classy-creponne-e06bae.netlify.app/',
     featured: true,
   },
   {
