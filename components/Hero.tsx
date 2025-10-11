@@ -29,8 +29,12 @@ export default function Hero() {
 
   // Initialize particles on client side only to avoid hydration mismatch
   useEffect(() => {
+    // Reduce particles on mobile for better performance
+    const isMobileDevice = window.innerWidth < 768
+    const particleCount = isMobileDevice ? 15 : 50
+
     setParticles(
-      [...Array(50)].map(() => ({
+      [...Array(particleCount)].map(() => ({
         initialX: Math.random() * 100,
         initialY: Math.random() * 100,
         moveX: Math.random() * 50 - 25,
@@ -71,6 +75,13 @@ export default function Hero() {
   // Smooth 3D Sphere that follows cursor
   useEffect(() => {
     if (!isLoaded) return // Don't start canvas animation until loaded
+
+    // Disable 3D canvas on mobile devices for better performance
+    const isMobileDevice = window.innerWidth < 768
+    if (isMobileDevice) {
+      console.log('[Hero] 3D Canvas disabled on mobile for performance')
+      return
+    }
 
     const canvas = canvasRef.current
     if (!canvas) return
@@ -469,10 +480,10 @@ export default function Hero() {
         />
       ))}
 
-      {/* 3D Canvas Background */}
+      {/* 3D Canvas Background - Hidden on mobile for performance */}
       <motion.canvas
         ref={canvasRef}
-        className="absolute inset-0"
+        className="absolute inset-0 hidden md:block"
         initial={{ opacity: 0 }}
         animate={{ opacity: isLoaded ? 1 : 0 }}
         transition={{ duration: 1.5, delay: 0.2 }}
