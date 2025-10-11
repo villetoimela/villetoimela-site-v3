@@ -246,7 +246,22 @@ export default function Hero() {
     if (!isLoaded) return
 
     const ctx = gsap.context(() => {
-      // Large title animation
+      // I AM intro text (comes first)
+      gsap.fromTo('.hero-intro',
+        {
+          opacity: 0,
+          y: 30,
+        },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 1.0,
+          ease: 'power3.out',
+          delay: 0.2,
+        }
+      )
+
+      // Large title animation (comes after I AM)
       gsap.fromTo('.hero-name-line',
         {
           opacity: 0,
@@ -257,14 +272,14 @@ export default function Hero() {
           opacity: 1,
           y: 0,
           rotateX: 0,
-          duration: 1.8,
+          duration: 1.6,
           stagger: 0.2,
           ease: 'power4.out',
-          delay: 0.3,
+          delay: 0.7,
         }
       )
 
-      // Subtitle
+      // Subtitle description
       gsap.fromTo('.hero-subtitle',
         {
           opacity: 0,
@@ -273,13 +288,13 @@ export default function Hero() {
         {
           opacity: 1,
           y: 0,
-          duration: 1.2,
+          duration: 1.0,
           ease: 'power3.out',
-          delay: 1.1,
+          delay: 1.8,
         }
       )
 
-      // Info items
+      // Info items (faster)
       gsap.fromTo('.hero-info',
         {
           opacity: 0,
@@ -288,8 +303,8 @@ export default function Hero() {
         {
           opacity: 1,
           x: 0,
-          duration: 1,
-          stagger: 0.1,
+          duration: 0.6,
+          stagger: 0.06,
           ease: 'power3.out',
           delay: 1.6,
         }
@@ -450,15 +465,16 @@ export default function Hero() {
       <div className="absolute inset-0 bg-gradient-radial from-transparent via-black/10 to-black/60 pointer-events-none" />
 
       {/* Mobile Top Info - Fixed at top */}
-      <div className="absolute top-4 left-4 right-4 z-20 md:hidden">
+      <div className="absolute top-4 left-4 right-4 z-30 md:hidden">
         <div className="grid grid-cols-2 gap-x-4 gap-y-3">
-          {/* Portfolio */}
+          {/* Languages */}
           <div className="hero-info">
             <div className="text-[9px] text-gray-500 tracking-[0.25em] font-mono mb-1 uppercase" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>
-              Portfolio
+              Languages
             </div>
-            <div className="text-[11px] text-gray-400 font-mono" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>
-              2025
+            <div className="text-[11px] text-gray-400 font-mono space-y-0.5">
+              <div style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>Finnish</div>
+              <div style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>English</div>
             </div>
           </div>
 
@@ -478,19 +494,19 @@ export default function Hero() {
               Contact
             </div>
             <div className="text-[11px] text-gray-400 font-mono space-y-0.5">
-              <div className="hover:text-gray-300 transition-colors cursor-pointer" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>Email</div>
-              <div className="hover:text-gray-300 transition-colors cursor-pointer" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>LinkedIn</div>
-              </div>
+              <a href="mailto:ville.toimela@gmail.com" className="block hover:text-gray-300 transition-colors cursor-pointer" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>Email</a>
+              <a href="tel:+358405137883" className="block hover:text-gray-300 transition-colors cursor-pointer" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>Phone</a>
+            </div>
           </div>
 
-          {/* Stack */}
+          {/* Links */}
           <div className="hero-info text-right">
             <div className="text-[9px] text-gray-500 tracking-[0.25em] font-mono mb-1 uppercase" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>
-              Stack
+              Links
             </div>
             <div className="text-[11px] text-gray-400 font-mono space-y-0.5">
-              <div style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>TypeScript</div>
-              <div style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>React</div>
+              <a href="https://github.com/villetoimela" target="_blank" rel="noopener noreferrer" className="block hover:text-gray-300 transition-colors cursor-pointer" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>GitHub</a>
+              <a href="https://fi.linkedin.com/in/villetoimela" target="_blank" rel="noopener noreferrer" className="block hover:text-gray-300 transition-colors cursor-pointer" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>LinkedIn</a>
             </div>
           </div>
         </div>
@@ -500,15 +516,16 @@ export default function Hero() {
       <div className="hero-content relative z-10 w-full max-w-[1800px] mx-auto px-6 md:px-12 lg:px-20">
 
         {/* Desktop: Top Info Bar in corners */}
-        <div className="absolute top-10 left-12 lg:left-20 right-12 lg:right-20 hidden md:flex justify-between items-start">
-          {/* Top Left - Portfolio & Contact */}
+        <div className="absolute top-10 left-12 lg:left-20 right-12 lg:right-20 hidden md:flex justify-between items-start z-30">
+          {/* Top Left - Languages & Contact */}
           <div className="flex flex-col gap-6">
             <div className="hero-info">
-              <div className="text-[10px] text-gray-500 tracking-[0.25em] font-mono mb-1 uppercase" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>
-                Portfolio
+              <div className="text-[10px] text-gray-500 tracking-[0.25em] font-mono mb-2 uppercase" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>
+                Languages
               </div>
-              <div className="text-xs text-gray-400 font-mono" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>
-                2025
+              <div className="text-xs text-gray-400 font-mono space-y-1">
+                <div style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>Finnish</div>
+                <div style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>English</div>
               </div>
             </div>
 
@@ -517,13 +534,13 @@ export default function Hero() {
                 Contact
               </div>
               <div className="text-xs text-gray-400 font-mono space-y-1">
-                <div className="hover:text-gray-300 transition-colors cursor-pointer" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>Email</div>
-                <div className="hover:text-gray-300 transition-colors cursor-pointer" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>LinkedIn</div>
+                <a href="mailto:ville.toimela@gmail.com" className="block hover:text-gray-300 transition-colors cursor-pointer" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>Email</a>
+                <a href="tel:+358405137883" className="block hover:text-gray-300 transition-colors cursor-pointer" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>Phone</a>
               </div>
             </div>
           </div>
 
-          {/* Top Right - Based in & Stack */}
+          {/* Top Right - Based in & Links */}
           <div className="flex flex-col gap-6 text-right">
             <div className="hero-info">
               <div className="text-[10px] text-gray-500 tracking-[0.25em] font-mono mb-1 uppercase" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>
@@ -536,11 +553,11 @@ export default function Hero() {
 
             <div className="hero-info">
               <div className="text-[10px] text-gray-500 tracking-[0.25em] font-mono mb-2 uppercase" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>
-                Stack
+                Links
               </div>
               <div className="text-xs text-gray-400 font-mono space-y-1">
-                <div style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>TypeScript</div>
-                <div style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>React</div>
+                <a href="https://github.com/villetoimela" target="_blank" rel="noopener noreferrer" className="block hover:text-gray-300 transition-colors cursor-pointer" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>GitHub</a>
+                <a href="https://fi.linkedin.com/in/villetoimela" target="_blank" rel="noopener noreferrer" className="block hover:text-gray-300 transition-colors cursor-pointer" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>LinkedIn</a>
               </div>
             </div>
           </div>
@@ -550,7 +567,16 @@ export default function Hero() {
         <div className="text-center" style={{ perspective: '2000px' }}>
           <h1 className="leading-[0.85] mb-8 md:mb-10 lg:mb-14">
             <div
-              className="hero-name-line block text-[20vw] md:text-[18vw] lg:text-[18vw] font-bold tracking-[-0.02em] text-gray-50 mb-1 md:mb-2"
+              className="hero-intro block text-[4vw] md:text-[3vw] lg:text-[2.5vw] font-light tracking-wide text-gray-400 mb-3 md:mb-4"
+              style={{
+                fontFamily: 'var(--font-space-grotesk)',
+                textShadow: '0 2px 8px rgba(0, 0, 0, 0.8)',
+              }}
+            >
+              I AM
+            </div>
+            <div
+              className="hero-name-line block text-[16vw] md:text-[14vw] lg:text-[12vw] font-bold tracking-[-0.02em] text-gray-50 mb-1 md:mb-2"
               style={{
                 fontFamily: 'var(--font-space-grotesk)',
                 transformStyle: 'preserve-3d',
@@ -559,7 +585,7 @@ export default function Hero() {
               VILLE
             </div>
             <div
-              className="hero-name-line block text-[20vw] md:text-[18vw] lg:text-[18vw] font-bold tracking-[-0.02em] text-gray-50"
+              className="hero-name-line block text-[16vw] md:text-[14vw] lg:text-[12vw] font-bold tracking-[-0.02em] text-gray-50"
               style={{
                 fontFamily: 'var(--font-space-grotesk)',
                 transformStyle: 'preserve-3d',
@@ -586,7 +612,7 @@ export default function Hero() {
       </div>
 
       {/* Bottom Info - 3 sections centered at bottom */}
-      <div className="hero-bottom-info absolute bottom-6 md:bottom-10 left-0 right-0 z-20 flex justify-center">
+      <div className="hero-bottom-info absolute bottom-6 md:bottom-10 left-0 right-0 z-30 flex justify-center">
           <div className="flex flex-col md:flex-row items-center gap-8 md:gap-16">
             {/* Role */}
             <div className="hero-info text-center">
@@ -594,7 +620,7 @@ export default function Hero() {
                 Role
               </div>
               <div className="text-[11px] md:text-xs text-gray-400 font-mono" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>
-                Front End Developer
+                Web Developer
               </div>
             </div>
 
@@ -618,13 +644,13 @@ export default function Hero() {
               </div>
             </div>
 
-            {/* Specialization */}
+            {/* Interest */}
             <div className="hero-info text-center">
               <div className="text-[9px] md:text-[10px] text-gray-500 tracking-[0.25em] font-mono mb-2 uppercase" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>
-                Specialization
+                Interest
               </div>
               <div className="text-[11px] md:text-xs text-gray-400 font-mono" style={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)' }}>
-                React · Next.js · GSAP
+                Modern Web Development
               </div>
             </div>
           </div>
