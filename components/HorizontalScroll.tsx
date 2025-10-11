@@ -39,7 +39,7 @@ export default function HorizontalScroll({ panels }: HorizontalScrollProps) {
   const particleIdRef = useRef(0)
   const lineProgressRef = useRef(0)
   const lastLineProgressRef = useRef(0)
-  const explosionTriggeredRef = useRef(false)
+  const explosionsTriggeredRef = useRef({ 20: false, 50: false, 80: false })
   const animationFrameRef = useRef<number>()
 
   // Helper to create particles
@@ -174,19 +174,27 @@ export default function HorizontalScroll({ panels }: HorizontalScrollProps) {
 
               lastLineProgressRef.current = currentProgress
 
-              // Trigger explosion at midpoint
-              if (currentProgress >= 0.5 && !explosionTriggeredRef.current) {
-                explosionTriggeredRef.current = true
-                const pos = getLinePosition()
-                if (pos) {
-                  createParticles(pos.x, pos.y, 20, true)
-                }
-              }
+              // Trigger explosions at 20%, 50%, and 80%
+              const explosionPoints = [
+                { threshold: 0.20, key: 20 as const },
+                { threshold: 0.50, key: 50 as const },
+                { threshold: 0.80, key: 80 as const },
+              ]
 
-              // Reset explosion trigger when scrolling back
-              if (currentProgress < 0.5) {
-                explosionTriggeredRef.current = false
-              }
+              explosionPoints.forEach(({ threshold, key }) => {
+                if (currentProgress >= threshold && !explosionsTriggeredRef.current[key]) {
+                  explosionsTriggeredRef.current[key] = true
+                  const pos = getLinePosition()
+                  if (pos) {
+                    createParticles(pos.x, pos.y, 20, true)
+                  }
+                }
+
+                // Reset explosion trigger when scrolling back past the point
+                if (currentProgress < threshold) {
+                  explosionsTriggeredRef.current[key] = false
+                }
+              })
             },
           },
         })
