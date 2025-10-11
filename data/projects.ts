@@ -21,10 +21,10 @@ export const projects: Project[] = [
   },
   {
     id: '2',
-    title: 'Portfolio Website',
-    image: '/images/projects/project-villetoimela.png',
+    title: 'Villetoimela Website v2',
+    image: '/images/projects/project-villetoimela-v3.png',
     tags: ['React', 'Next.js', 'SCSS', 'UI/UX'],
-    link: 'https://villetoimela.fi/',
+    link: 'https://villetoimela-site-v2.netlify.app/',
     featured: true,
   },
   {
@@ -249,6 +249,14 @@ export const projects: Project[] = [
     image: '/images/projects/project-elijuomapeli.png',
     tags: ['React', 'Tailwind', 'UI/UX'],
     link: 'https://www.elijuomapeli.com/',
+    featured: true,
+  },
+  {
+    id: '31',
+    title: 'Ez Game App',
+    image: '/images/projects/project-math-game.png',
+    tags: ['React', 'Tailwind', 'UI/UX'],
+    link: 'https://ez-math-game.netlify.app/',
     featured: true,
   },
 ]
