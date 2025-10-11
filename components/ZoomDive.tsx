@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
@@ -11,6 +11,36 @@ export default function ZoomDive() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const centerTextRef = useRef<HTMLDivElement>(null)
   const scrollTriggerRef = useRef<ScrollTrigger | null>(null)
+  const [isVisible, setIsVisible] = useState(false)
+  const isVisibleRef = useRef(false)
+  const animationFrameRef = useRef<number | null>(null)
+
+  // Intersection Observer to track visibility
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          setIsVisible(entry.isIntersecting)
+          isVisibleRef.current = entry.isIntersecting
+          console.log(`[ZoomDive] Visibility: ${entry.isIntersecting ? 'VISIBLE - rendering active' : 'HIDDEN - rendering paused'}`)
+        })
+      },
+      {
+        threshold: 0.1,
+        rootMargin: '100px',
+      }
+    )
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current)
+    }
+
+    return () => {
+      if (sectionRef.current) {
+        observer.unobserve(sectionRef.current)
+      }
+    }
+  }, [])
 
   useEffect(() => {
     const section = sectionRef.current
@@ -40,7 +70,9 @@ export default function ZoomDive() {
       speed: number
     }> = []
 
-    const starCount = 800
+    // Significantly reduce stars on mobile for better performance
+    const isMobileDevice = window.innerWidth < 768
+    const starCount = isMobileDevice ? 200 : 600 // 800 -> 600 desktop, 200 mobile
 
     // Initialize stars
     for (let i = 0; i < starCount; i++) {
@@ -60,8 +92,14 @@ export default function ZoomDive() {
     let lastProgress = 0
     let time = 0
 
-    // Render function - only updates visual representation
+    // Render function - only updates visual representation when visible
     const render = () => {
+      // Skip rendering if not visible
+      if (!isVisibleRef.current) {
+        animationFrameRef.current = requestAnimationFrame(render)
+        return
+      }
+
       ctx.fillStyle = 'rgba(0, 0, 0, 0.9)'
       ctx.fillRect(0, 0, canvas.width, canvas.height)
 
@@ -129,8 +167,8 @@ export default function ZoomDive() {
         ctx.arc(x2d, y2d, size, 0, Math.PI * 2)
         ctx.fill()
 
-        // Draw motion trail when moving fast
-        if (speed > 0.5 && progressDelta !== 0) {
+        // Draw motion trail when moving fast (disabled on mobile for performance)
+        if (!isMobileDevice && speed > 0.5 && progressDelta !== 0) {
           const trailDistance = progressDelta * 2000 * (1 + animationProgress * 2)
           const prevZ = star.z + trailDistance
           if (prevZ > 0 && prevZ < 2000) {
@@ -153,7 +191,7 @@ export default function ZoomDive() {
       })
 
       lastProgress = animationProgress
-      requestAnimationFrame(render)
+      animationFrameRef.current = requestAnimationFrame(render)
     }
 
     render()
@@ -195,6 +233,9 @@ export default function ZoomDive() {
     return () => {
       window.removeEventListener('resize', resizeCanvas)
       scrollTriggerRef.current?.kill()
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current)
+      }
     }
   }, [])
 
