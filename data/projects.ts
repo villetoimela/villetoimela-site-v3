@@ -77,18 +77,18 @@ export const projects: Project[] = [
   },
   {
     id: '9',
-    title: 'Data Magister Website',
-    image: '/images/projects/project-magister.png',
+    title: 'Pyöräliitto Website',
+    image: '/images/projects/project-pyoraliitto.png',
     tags: ['WordPress', 'JavaScript', 'SCSS', 'PHP', 'ACF'],
-    link: 'https://data.magister.fi/',
+    link: 'https://pyoraliitto.fi/',
     featured: true,
   },
   {
     id: '10',
-    title: 'Hiisi Digital Website',
-    image: '/images/projects/project-hiisi.png',
-    tags: ['React', 'Next.js', 'Tailwind', 'UI/UX'],
-    link: 'https://www.hiisi.digital/',
+    title: 'Tammermatic Oy Website',
+    image: '/images/projects/project-tammermatic.png',
+    tags: ['WordPress', 'JavaScript', 'SCSS', 'PHP', 'ACF'],
+    link: 'https://tammermatic.com/',
     featured: true,
   },
   {
@@ -101,10 +101,10 @@ export const projects: Project[] = [
   },
   {
     id: '12',
-    title: 'Jääkiekkomuseo Website',
-    image: '/images/projects/project-jaakiekkomuseo.png',
+    title: 'SNT Group Website',
+    image: '/images/projects/project-snt.png',
     tags: ['WordPress', 'JavaScript', 'SCSS', 'PHP', 'ACF'],
-    link: 'https://jaakiekkomuseo.fi/',
+    link: 'https://snt-group.fi/',
     featured: true,
   },
   {
@@ -173,10 +173,10 @@ export const projects: Project[] = [
   },
   {
     id: '21',
-    title: 'Pyöräliitto Website',
-    image: '/images/projects/project-pyoraliitto.png',
+    title: 'Data Magister Website',
+    image: '/images/projects/project-magister.png',
     tags: ['WordPress', 'JavaScript', 'SCSS', 'PHP', 'ACF'],
-    link: 'https://pyoraliitto.fi/',
+    link: 'https://data.magister.fi/',
     featured: true,
   },
   {
@@ -189,10 +189,10 @@ export const projects: Project[] = [
   },
   {
     id: '23',
-    title: 'SNT Group Website',
-    image: '/images/projects/project-snt.png',
+    title: 'Jääkiekkomuseo Website',
+    image: '/images/projects/project-jaakiekkomuseo.png',
     tags: ['WordPress', 'JavaScript', 'SCSS', 'PHP', 'ACF'],
-    link: 'https://snt-group.fi/',
+    link: 'https://jaakiekkomuseo.fi/',
     featured: true,
   },
   {
@@ -221,10 +221,10 @@ export const projects: Project[] = [
   },
   {
     id: '27',
-    title: 'Tammermatic Oy Website',
-    image: '/images/projects/project-tammermatic.png',
-    tags: ['WordPress', 'JavaScript', 'SCSS', 'PHP', 'ACF'],
-    link: 'https://tammermatic.com/',
+    title: 'Hiisi Digital Website',
+    image: '/images/projects/project-hiisi.png',
+    tags: ['React', 'Next.js', 'Tailwind', 'UI/UX'],
+    link: 'https://www.hiisi.digital/',
     featured: true,
   },
   {
