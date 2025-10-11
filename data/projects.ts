@@ -253,7 +253,7 @@ export const projects: Project[] = [
   },
   {
     id: '31',
-    title: 'Ez Game App',
+    title: 'Ez Math Game App',
     image: '/images/projects/project-math-game.png',
     tags: ['React', 'Tailwind', 'UI/UX'],
     link: 'https://ez-math-game.netlify.app/',
