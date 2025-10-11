@@ -260,6 +260,16 @@ export default function ProjectMarquee() {
         ))}
       </div>
 
+      {/* Additional text */}
+      <div className="container mx-auto px-8 md:px-16 mt-16">
+        <p
+          className="text-lg md:text-xl text-white/70 font-light"
+          style={{ fontFamily: 'var(--font-space-grotesk)' }}
+        >
+          ..And, of course, I've had the opportunity to work on many further development projects.
+        </p>
+      </div>
+
     </section>
   )
 }

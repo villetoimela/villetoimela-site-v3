@@ -10,17 +10,31 @@ const TechStack = () => {
   const sectionRef = useRef<HTMLDivElement>(null)
 
   const technologies = [
-    { name: 'TypeScript', color: '#3178C6' },
+    { name: 'HTML', color: '#E34F26' },
+    { name: 'CSS', color: '#1572B6' },
+    { name: 'JavaScript', color: '#F7DF1E' },
+    { name: 'Tailwind', color: '#06B6D4' },
     { name: 'React', color: '#61DAFB' },
+    { name: 'PHP', color: '#777BB4' },
+    { name: 'SCSS', color: '#CC6699' },
     { name: 'Next.js', color: '#FFFFFF' },
-    { name: 'Node.js', color: '#339933' },
-    { name: 'Tailwind CSS', color: '#06B6D4' },
-    { name: 'GSAP', color: '#88CE02' },
-    { name: 'Framer Motion', color: '#FF0055' },
-    { name: 'Three.js', color: '#000000' },
-    { name: 'PostgreSQL', color: '#4169E1' },
-    { name: 'MongoDB', color: '#47A248' },
     { name: 'Git', color: '#F05032' },
+    { name: 'WordPress', color: '#21759B' },
+    { name: 'jQuery', color: '#0769AD' },
+    { name: 'TypeScript', color: '#3178C6' },
+    { name: 'SQL', color: '#4479A1' },
+    { name: 'PostgreSQL', color: '#4169E1' },
+    { name: 'Bootstrap', color: '#7952B3' },
+    { name: 'GSAP', color: '#88CE02' },
+    { name: 'NPM', color: '#CB3837' },
+    { name: 'Yarn', color: '#2C8EBB' },
+    { name: 'ACF', color: '#00D3AE' },
+    { name: 'Gutenberg', color: '#00669B' },
+    { name: 'HubSpot', color: '#FF7A59' },
+    { name: 'REST API', color: '#00C7B7' },
+    { name: 'AI', color: '#FF6B9D' },
+    { name: 'UI/UX', color: '#9333EA' },
+    { name: 'Web Design', color: '#8B5CF6' },
     { name: 'Figma', color: '#F24E1E' },
   ]
 
@@ -97,7 +111,7 @@ const TechStack = () => {
         </div>
 
         {/* Tech List */}
-        <div className="tech-list max-w-4xl mx-auto">
+        <div className="tech-list max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 lg:gap-x-12">
           {technologies.map((tech, index) => (
             <div
               key={tech.name}
@@ -107,7 +121,7 @@ const TechStack = () => {
               <div className="absolute top-0 left-0 right-0 h-px bg-white/10" />
 
               {/* Tech row */}
-              <div className="relative py-8 cursor-pointer overflow-hidden">
+              <div className="relative py-6 cursor-pointer overflow-hidden">
                 {/* Background gradient on hover */}
                 <div
                   className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-[400ms]"
@@ -127,12 +141,12 @@ const TechStack = () => {
                 {/* Content */}
                 <div className="relative flex items-center justify-between">
                   {/* Tech name */}
-                  <h3 className="text-3xl md:text-5xl lg:text-6xl font-light text-white group-hover:translate-x-4 transition-transform duration-[400ms]">
+                  <h3 className="text-2xl md:text-3xl lg:text-4xl font-light text-white group-hover:translate-x-4 transition-transform duration-[400ms]">
                     {tech.name}
                   </h3>
 
                   {/* Number */}
-                  <div className="text-white/20 font-mono text-sm group-hover:text-white/40 transition-colors duration-[400ms]">
+                  <div className="text-white/20 font-mono text-xs group-hover:text-white/40 transition-colors duration-[400ms]">
                     {String(index + 1).padStart(2, '0')}
                   </div>
                 </div>
