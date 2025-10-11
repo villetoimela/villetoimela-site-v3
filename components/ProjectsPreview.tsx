@@ -33,10 +33,10 @@ const ProjectsPreview = () => {
     size: number
   }>>([])
 
-  // Initialize floating particles
+  // Initialize floating particles (reduced from 30 to 15 for performance)
   useEffect(() => {
     setFloatingParticles(
-      [...Array(30)].map(() => ({
+      [...Array(15)].map(() => ({
         initialX: Math.random() * 100,
         initialY: Math.random() * 100,
         moveX: Math.random() * 50 - 25,
@@ -140,26 +140,6 @@ const ProjectsPreview = () => {
           end: 'top top',
           scrub: 1,
         },
-      })
-
-      // Animate individual cards on hover
-      const cards = sectionRef.current?.querySelectorAll('.project-card')
-      cards?.forEach((card) => {
-        card.addEventListener('mouseenter', () => {
-          gsap.to(card, {
-            scale: 1.05,
-            duration: 0.4,
-            ease: 'power2.out',
-          })
-        })
-
-        card.addEventListener('mouseleave', () => {
-          gsap.to(card, {
-            scale: 1,
-            duration: 0.4,
-            ease: 'power2.out',
-          })
-        })
       })
     }, sectionRef)
 
@@ -271,7 +251,7 @@ const ProjectsPreview = () => {
               <div
                 ref={track1Ref}
                 className="flex gap-6"
-                style={{ width: 'fit-content' }}
+                style={{ width: 'fit-content', willChange: 'transform' }}
               >
                 {track1Projects.map((project, index) => (
                   <a
@@ -279,7 +259,7 @@ const ProjectsPreview = () => {
                     href={project.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="project-card track1-card flex-shrink-0 w-[400px] h-[225px] rounded-2xl overflow-hidden border border-white/10 cursor-pointer group"
+                    className="project-card track1-card flex-shrink-0 w-[400px] h-[225px] rounded-2xl overflow-hidden border border-white/10 cursor-pointer group hover:scale-105 transition-transform duration-300"
                   >
                     <div className="relative w-full h-full">
                       {/* Project Image */}
@@ -287,12 +267,14 @@ const ProjectsPreview = () => {
                         src={project.image}
                         alt={project.title}
                         fill
-                        className="object-cover transition-all duration-700 brightness-50 group-hover:brightness-100"
-                        sizes="400px"
+                        className="object-cover transition-all duration-500 brightness-50 group-hover:brightness-100"
+                        sizes="(max-width: 768px) 300px, 400px"
+                        quality={70}
+                        loading="lazy"
                       />
 
                       {/* Overlay */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
 
                       {/* Content */}
                       <div className="relative h-full p-8 flex flex-col justify-between">
@@ -308,14 +290,14 @@ const ProjectsPreview = () => {
                         </div>
 
                         <div>
-                          <h3 className="text-2xl font-light text-white mb-2 group-hover:translate-x-2 transition-transform duration-500">
+                          <h3 className="text-2xl font-light text-white mb-2 group-hover:translate-x-2 transition-transform duration-300">
                             {project.title}
                           </h3>
                         </div>
                       </div>
 
                       {/* Hover glow effect */}
-                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
+                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
                         <div className="absolute inset-0 border-2 border-blue-400/50 rounded-2xl" />
                       </div>
                     </div>
@@ -333,7 +315,7 @@ const ProjectsPreview = () => {
               <div
                 ref={track2Ref}
                 className="flex gap-6"
-                style={{ width: 'fit-content' }}
+                style={{ width: 'fit-content', willChange: 'transform' }}
               >
                 {track2Projects.map((project, index) => (
                   <a
@@ -341,7 +323,7 @@ const ProjectsPreview = () => {
                     href={project.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="project-card track2-card flex-shrink-0 w-[400px] h-[225px] rounded-2xl overflow-hidden border border-white/10 cursor-pointer group"
+                    className="project-card track2-card flex-shrink-0 w-[400px] h-[225px] rounded-2xl overflow-hidden border border-white/10 cursor-pointer group hover:scale-105 transition-transform duration-300"
                   >
                     <div className="relative w-full h-full">
                       {/* Project Image */}
@@ -349,12 +331,14 @@ const ProjectsPreview = () => {
                         src={project.image}
                         alt={project.title}
                         fill
-                        className="object-cover transition-all duration-700 brightness-50 group-hover:brightness-100"
-                        sizes="400px"
+                        className="object-cover transition-all duration-500 brightness-50 group-hover:brightness-100"
+                        sizes="(max-width: 768px) 300px, 400px"
+                        quality={70}
+                        loading="lazy"
                       />
 
                       {/* Overlay */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
 
                       {/* Content */}
                       <div className="relative h-full p-8 flex flex-col justify-between">
@@ -370,14 +354,14 @@ const ProjectsPreview = () => {
                         </div>
 
                         <div>
-                          <h3 className="text-2xl font-light text-white mb-2 group-hover:translate-x-2 transition-transform duration-500">
+                          <h3 className="text-2xl font-light text-white mb-2 group-hover:translate-x-2 transition-transform duration-300">
                             {project.title}
                           </h3>
                         </div>
                       </div>
 
                       {/* Hover glow effect */}
-                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
+                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
                         <div className="absolute inset-0 border-2 border-blue-400/50 rounded-2xl" />
                       </div>
                     </div>
