@@ -290,22 +290,7 @@ export default function Hero() {
     if (!isLoaded) return
 
     const ctx = gsap.context(() => {
-      // I AM intro text (comes first)
-      gsap.fromTo('.hero-intro',
-        {
-          opacity: 0,
-          y: 30,
-        },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 1.0,
-          ease: 'power3.out',
-          delay: 0.2,
-        }
-      )
-
-      // Large title animation (comes after I AM)
+      // All name lines animation (I Am, Ville, Toimela)
       gsap.fromTo('.hero-name-line',
         {
           opacity: 0,
@@ -319,7 +304,7 @@ export default function Hero() {
           duration: 1.6,
           stagger: 0.2,
           ease: 'power4.out',
-          delay: 0.7,
+          delay: 0.2,
         }
       )
 
@@ -334,7 +319,7 @@ export default function Hero() {
           y: 0,
           duration: 1.0,
           ease: 'power3.out',
-          delay: 1.8,
+          delay: 1.4,
         }
       )
 
@@ -350,7 +335,7 @@ export default function Hero() {
           duration: 0.6,
           stagger: 0.06,
           ease: 'power3.out',
-          delay: 1.6,
+          delay: 1.2,
         }
       )
 
@@ -599,13 +584,13 @@ export default function Hero() {
         <div className="text-center" style={{ perspective: '2000px' }}>
           <h1 className="leading-[0.85] mb-8 md:mb-10 lg:mb-14">
             <div
-              className="hero-intro block text-[4vw] md:text-[3vw] lg:text-[2.5vw] font-light tracking-wide text-gray-400 mb-3 md:mb-4"
+              className="hero-name-line block text-[6vw] md:text-[5vw] lg:text-[4vw] font-light tracking-wide text-gray-400 mb-3 md:mb-4"
               style={{
                 fontFamily: 'var(--font-space-grotesk)',
-                textShadow: '0 2px 8px rgba(0, 0, 0, 0.8)',
+                transformStyle: 'preserve-3d',
               }}
             >
-              I AM
+              I am
             </div>
             <div
               className="hero-name-line block text-[16vw] md:text-[14vw] lg:text-[12vw] font-bold tracking-[-0.02em] text-gray-50 mb-1 md:mb-2"
