@@ -13,6 +13,8 @@ export default function Hero() {
   const heroRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [mousePosition, setMousePosition] = useState({ x: 0.5, y: 0.5 })
+  const [isVisible, setIsVisible] = useState(true) // Track if hero is in viewport
+  const isVisibleRef = useRef(true) // Ref for animate function to check visibility
   const targetRotationRef = useRef({ x: 0, y: 0 })
   const currentRotationRef = useRef({ x: 0, y: 0 })
   const autoRotationRef = useRef(0)
@@ -39,6 +41,33 @@ export default function Hero() {
     )
   }, [])
 
+  // Intersection Observer to track visibility
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          setIsVisible(entry.isIntersecting)
+          isVisibleRef.current = entry.isIntersecting
+          console.log(`[Hero] Visibility changed: ${entry.isIntersecting ? 'VISIBLE - tracking active' : 'HIDDEN - tracking paused'}`)
+        })
+      },
+      {
+        threshold: 0.1, // Trigger when at least 10% is visible
+        rootMargin: '0px',
+      }
+    )
+
+    if (heroRef.current) {
+      observer.observe(heroRef.current)
+    }
+
+    return () => {
+      if (heroRef.current) {
+        observer.unobserve(heroRef.current)
+      }
+    }
+  }, [])
+
   // Smooth 3D Sphere that follows cursor
   useEffect(() => {
     if (!isLoaded) return // Don't start canvas animation until loaded
@@ -53,6 +82,7 @@ export default function Hero() {
     if (!ctx) return
 
     let animationFrameId: number
+    let isAnimating = true
 
     const resize = () => {
       const dpr = Math.min(window.devicePixelRatio, 2)
@@ -92,7 +122,13 @@ export default function Hero() {
     const centerY = window.innerHeight / 2
 
     function animate() {
-      if (!ctx || !canvas) return
+      if (!ctx || !canvas || !isAnimating) return
+
+      // Skip rendering if hero is not visible, but keep animation loop running
+      if (!isVisibleRef.current) {
+        animationFrameId = requestAnimationFrame(animate)
+        return
+      }
 
       ctx.clearRect(0, 0, window.innerWidth, window.innerHeight)
 
@@ -221,13 +257,21 @@ export default function Hero() {
     animate()
 
     return () => {
+      isAnimating = false
       window.removeEventListener('resize', resize)
       cancelAnimationFrame(animationFrameId)
     }
   }, [mousePosition, isLoaded])
 
-  // Smooth mouse tracking
+  // Smooth mouse tracking - only when visible
   useEffect(() => {
+    if (!isVisible) {
+      console.log('[Hero] Mouse tracking: OFF')
+      return // Don't track mouse when hero is not visible
+    }
+
+    console.log('[Hero] Mouse tracking: ON')
+
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({
         x: e.clientX / window.innerWidth,
@@ -239,7 +283,7 @@ export default function Hero() {
     return () => {
       window.removeEventListener('mousemove', handleMouseMove)
     }
-  }, [])
+  }, [isVisible])
 
   // GSAP Animations - only start when loader is complete
   useEffect(() => {
