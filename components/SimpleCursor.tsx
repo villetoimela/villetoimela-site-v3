@@ -20,7 +20,7 @@ function SimpleCursorInner() {
   const [particles, setParticles] = useState<Particle[]>([])
   const particleIdRef = useRef(0)
   const lastPositionRef = useRef({ x: 0, y: 0 })
-  const animationFrameRef = useRef<number>()
+  const animationFrameRef = useRef<number | undefined>(undefined)
 
   // Helper to create particles
   const createParticles = (x: number, y: number, count: number) => {

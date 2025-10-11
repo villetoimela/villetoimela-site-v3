@@ -41,7 +41,7 @@ export default function HorizontalScroll({ panels }: HorizontalScrollProps) {
   const lineProgressRef = useRef(0)
   const lastLineProgressRef = useRef(0)
   const explosionsTriggeredRef = useRef<{ 20: boolean; 40: boolean; 80: boolean }>({ 20: false, 40: false, 80: false })
-  const animationFrameRef = useRef<number>()
+  const animationFrameRef = useRef<number | undefined>(undefined)
 
   // Floating background particles
   const [floatingParticles, setFloatingParticles] = useState<Array<{
