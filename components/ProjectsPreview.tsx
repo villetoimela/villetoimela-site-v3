@@ -13,6 +13,7 @@ const ProjectsPreview = () => {
   const sectionRef = useRef<HTMLDivElement>(null)
   const track1Ref = useRef<HTMLDivElement>(null)
   const track2Ref = useRef<HTMLDivElement>(null)
+  const [isVisible, setIsVisible] = useState(false)
 
   // Split featured projects into two tracks
   const allFeatured = projects.filter(p => p.featured)
@@ -33,10 +34,39 @@ const ProjectsPreview = () => {
     size: number
   }>>([])
 
-  // Initialize floating particles
+  // Intersection Observer to track visibility
   useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          setIsVisible(entry.isIntersecting)
+          console.log(`[ProjectsPreview] Visibility: ${entry.isIntersecting ? 'VISIBLE - animations active' : 'HIDDEN - animations paused'}`)
+        })
+      },
+      {
+        threshold: 0.1, // Trigger when at least 10% is visible
+        rootMargin: '100px', // Start loading slightly before entering viewport
+      }
+    )
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current)
+    }
+
+    return () => {
+      if (sectionRef.current) {
+        observer.unobserve(sectionRef.current)
+      }
+    }
+  }, [])
+
+  // Initialize floating particles - reduce on mobile
+  useEffect(() => {
+    const isMobileDevice = window.innerWidth < 768
+    const particleCount = isMobileDevice ? 10 : 30
+
     setFloatingParticles(
-      [...Array(30)].map(() => ({
+      [...Array(particleCount)].map(() => ({
         initialX: Math.random() * 100,
         initialY: Math.random() * 100,
         moveX: Math.random() * 50 - 25,
@@ -151,17 +181,17 @@ const ProjectsPreview = () => {
       ref={sectionRef}
       className="relative bg-black py-32 overflow-hidden"
     >
-      {/* Animated gradient orbs in background */}
+      {/* Animated gradient orbs in background - only animate when visible */}
       <motion.div
         className="absolute top-1/4 left-1/4 w-[500px] h-[500px] rounded-full opacity-15 blur-3xl pointer-events-none"
         style={{
           background: 'radial-gradient(circle, rgba(100, 180, 255, 0.3) 0%, rgba(80, 150, 255, 0.15) 50%, transparent 70%)',
         }}
-        animate={{
+        animate={isVisible ? {
           x: ['-10%', '10%', '-10%'],
           y: ['-5%', '5%', '-5%'],
           scale: [1, 1.1, 1],
-        }}
+        } : {}}
         transition={{
           x: { duration: 20, repeat: Infinity, ease: "easeInOut" },
           y: { duration: 20, repeat: Infinity, ease: "easeInOut" },
@@ -174,11 +204,11 @@ const ProjectsPreview = () => {
         style={{
           background: 'radial-gradient(circle, rgba(120, 200, 255, 0.25) 0%, rgba(100, 180, 255, 0.12) 50%, transparent 70%)',
         }}
-        animate={{
+        animate={isVisible ? {
           x: ['10%', '-10%', '10%'],
           y: ['5%', '-5%', '5%'],
           scale: [1, 1.15, 1],
-        }}
+        } : {}}
         transition={{
           x: { duration: 25, repeat: Infinity, ease: "easeInOut" },
           y: { duration: 25, repeat: Infinity, ease: "easeInOut" },
@@ -191,11 +221,11 @@ const ProjectsPreview = () => {
         style={{
           background: 'radial-gradient(circle, rgba(150, 220, 255, 0.3) 0%, rgba(120, 200, 255, 0.15) 50%, transparent 70%)',
         }}
-        animate={{
+        animate={isVisible ? {
           x: ['-15%', '15%', '-15%'],
           y: ['10%', '-10%', '10%'],
           scale: [1, 1.2, 1],
-        }}
+        } : {}}
         transition={{
           x: { duration: 18, repeat: Infinity, ease: "easeInOut" },
           y: { duration: 18, repeat: Infinity, ease: "easeInOut" },
@@ -203,7 +233,7 @@ const ProjectsPreview = () => {
         }}
       />
 
-      {/* Floating particles */}
+      {/* Floating particles - only animate when visible */}
       {floatingParticles.map((particle, i) => (
         <motion.div
           key={i}
@@ -215,12 +245,12 @@ const ProjectsPreview = () => {
             height: `${particle.size * 3}px`,
             boxShadow: '0 0 8px rgba(100, 180, 255, 0.5)',
           }}
-          animate={{
+          animate={isVisible ? {
             y: [0, -100, 0],
             x: [0, particle.moveX, 0],
             opacity: [0.15, 0.4, 0.15],
             scale: [1, 1.5, 1],
-          }}
+          } : {}}
           transition={{
             duration: particle.duration,
             repeat: Infinity,
