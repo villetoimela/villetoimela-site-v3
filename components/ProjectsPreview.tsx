@@ -159,11 +159,8 @@ const ProjectsPreview = () => {
             Recent Work
           </p>
           <h2 className="text-4xl md:text-6xl lg:text-7xl font-light text-white mb-4">
-            Quick Showcase
+            Sneak peek to some of my projects
           </h2>
-          <p className="text-white/60 text-lg font-light">
-            A glimpse of my recent projects
-          </p>
         </div>
 
         {/* Diagonal scrolling tracks */}
