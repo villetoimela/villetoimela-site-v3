@@ -204,30 +204,100 @@ export default function HorizontalScroll({ panels }: HorizontalScrollProps) {
         }
       })
 
-      // Animate each panel's content dynamically
+      // Set initial state for all panels - hide them first with slight offset
       panels.forEach((_, index) => {
-        const panelTween = gsap.fromTo(section.querySelector(`.panel-content-${uniqueId}-${index}`),
-          {
-            opacity: 0,
-            y: 100,
-          },
-          {
+        gsap.set(section.querySelector(`.panel-title-${uniqueId}-${index}`), {
+          opacity: 0,
+          y: 50,
+        })
+
+        gsap.set(section.querySelector(`.panel-text-${uniqueId}-${index}`), {
+          opacity: 0,
+          y: 30,
+        })
+      })
+
+      // Fade in with subtle rise animations
+      panels.forEach((_, index) => {
+        const isFirstPanel = index === 0
+
+        if (isFirstPanel) {
+          // First panel: animate when section comes into view (normal vertical scroll)
+          const titleTween = gsap.to(section.querySelector(`.panel-title-${uniqueId}-${index}`), {
             opacity: 1,
             y: 0,
+            ease: 'power2.out',
             duration: 1,
-            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: section,
+              start: 'top 30%',
+              end: 'top top',
+              scrub: 1,
+            },
+          })
+
+          if (titleTween.scrollTrigger) {
+            scrollTriggersRef.current.push(titleTween.scrollTrigger)
+          }
+
+          const contentTween = gsap.to(section.querySelector(`.panel-text-${uniqueId}-${index}`), {
+            opacity: 1,
+            y: 0,
+            ease: 'power2.out',
+            duration: 1,
+            scrollTrigger: {
+              trigger: section,
+              start: 'top 25%',
+              end: 'top top',
+              scrub: 1,
+            },
+          })
+
+          if (contentTween.scrollTrigger) {
+            scrollTriggersRef.current.push(contentTween.scrollTrigger)
+          }
+        } else {
+          // Other panels: animate during horizontal scroll - start when more visible
+          const titleStart = 'left 30%'
+          const titleEnd = 'left left'
+          const contentStart = 'left 25%'
+          const contentEnd = 'left left'
+
+          // Fade in title with rise
+          const titleTween = gsap.to(section.querySelector(`.panel-title-${uniqueId}-${index}`), {
+            opacity: 1,
+            y: 0,
+            ease: 'power2.out',
             scrollTrigger: {
               trigger: section.querySelector(`.panel-${uniqueId}-${index}`),
               containerAnimation: scrollTween,
-              start: 'left right',
-              end: 'center center',
-              scrub: 1,
+              start: titleStart,
+              end: titleEnd,
+              scrub: true,
             },
-          }
-        )
+          })
 
-        if (panelTween.scrollTrigger) {
-          scrollTriggersRef.current.push(panelTween.scrollTrigger)
+          if (titleTween.scrollTrigger) {
+            scrollTriggersRef.current.push(titleTween.scrollTrigger)
+          }
+
+          // Fade in content text with rise
+          const contentTween = gsap.to(section.querySelector(`.panel-text-${uniqueId}-${index}`), {
+            opacity: 1,
+            y: 0,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: section.querySelector(`.panel-${uniqueId}-${index}`),
+              containerAnimation: scrollTween,
+              start: contentStart,
+              end: contentEnd,
+              scrub: true,
+            },
+          })
+
+          if (contentTween.scrollTrigger) {
+            scrollTriggersRef.current.push(contentTween.scrollTrigger)
+          }
         }
       })
 
@@ -367,18 +437,18 @@ export default function HorizontalScroll({ panels }: HorizontalScrollProps) {
             className={`panel-${uniqueId}-${index} h-screen flex items-center justify-center px-8 md:px-16 lg:px-24 relative z-20`}
             style={{ minWidth: index === 0 ? (isMobile ? '150vw' : '100vw') : (isMobile ? '180vw' : '150vw') }}
           >
-            <div className={`panel-content-${uniqueId}-${index}`} style={{ width: isMobile ? '100vw' : '100%', maxWidth: '1280px', paddingLeft: isMobile ? '2rem' : '0', paddingRight: isMobile ? '2rem' : '0' }}>
+            <div className={`panel-content-${uniqueId}-${index}`} style={{ width: isMobile ? '100vw' : '100%', maxWidth: '1280px', paddingLeft: isMobile ? '2rem' : '0', paddingRight: isMobile ? '2rem' : '0', perspective: '2000px' }}>
               <div className="flex flex-col lg:flex-row lg:items-start gap-8 lg:gap-32">
                 {/* Title on the left */}
                 <h2
-                  className="text-6xl md:text-8xl lg:text-9xl font-light text-white lg:min-w-[400px] xl:min-w-[500px] shrink-0"
-                  style={{ fontFamily: 'var(--font-space-grotesk)', lineHeight: 0.9 }}
+                  className={`panel-title-${uniqueId}-${index} text-6xl md:text-8xl lg:text-9xl font-light text-white lg:min-w-[400px] xl:min-w-[500px] shrink-0`}
+                  style={{ fontFamily: 'var(--font-space-grotesk)', lineHeight: 0.9, transformStyle: 'preserve-3d' }}
                 >
                   {panel.title}
                 </h2>
 
                 {/* Text on the right */}
-                <div className="lg:pt-32 pr-4 md:pr-0">
+                <div className={`panel-text-${uniqueId}-${index} lg:pt-32 pr-4 md:pr-0`}>
                   {typeof panel.content === 'string' ? (
                     <p
                       className="text-lg md:text-xl lg:text-2xl text-gray-300 leading-relaxed"
