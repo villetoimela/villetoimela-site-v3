@@ -47,27 +47,68 @@ export default function ProjectMarquee() {
     )
   }, [])
 
-  // Split projects into 6 rows
+  // Split projects into rows with smart distribution
   const rows = useMemo(() => {
     const featuredProjects = projects.filter(p => p.featured)
-    const row1 = featuredProjects.slice(0, 5)
-    const row2 = featuredProjects.slice(5, 10)
-    const row3 = featuredProjects.slice(10, 15)
-    const row4 = featuredProjects.slice(15, 20)
-    const row5 = featuredProjects.slice(20, 25)
-    const row6 = featuredProjects.slice(25, 29)
+    
+    // Shuffle projects for variety
+    const shuffledProjects = [...featuredProjects].sort(() => Math.random() - 0.5)
+    
+    const minProjectsPerRow = 5
+    const totalProjects = shuffledProjects.length
+    
+    // Calculate how many full rows we can make with min 5 projects each
+    const fullRows = Math.floor(totalProjects / minProjectsPerRow)
+    const remainingProjects = totalProjects % minProjectsPerRow
+    
+    // Determine actual number of rows
+    let actualRows = fullRows
+    if (remainingProjects >= 5) {
+      // If we have 5+ leftover projects, create an additional row
+      actualRows = fullRows + 1
+    }
+    
+    const rowsData = []
+    let projectsToDistribute = [...shuffledProjects]
+    
+    if (remainingProjects >= 5) {
+      // Create rows with equal distribution
+      const projectsPerRow = Math.floor(totalProjects / actualRows)
+      
+      for (let i = 0; i < actualRows; i++) {
+        const isLastRow = i === actualRows - 1
+        const projectsForThisRow = isLastRow 
+          ? projectsToDistribute // Last row gets all remaining projects
+          : projectsToDistribute.splice(0, projectsPerRow)
+        
+        rowsData.push(projectsForThisRow)
+      }
+    } else {
+      // Distribute leftover projects among existing rows
+      const projectsPerRow = minProjectsPerRow
+      
+      for (let i = 0; i < actualRows; i++) {
+        const isLastRow = i === actualRows - 1
+        const projectsForThisRow = isLastRow 
+          ? projectsToDistribute // Last row gets all remaining projects
+          : projectsToDistribute.splice(0, projectsPerRow)
+        
+        rowsData.push(projectsForThisRow)
+      }
+    }
 
     // Duplicate projects for infinite scroll effect
     const createInfiniteArray = (arr: Project[]) => [...arr, ...arr, ...arr, ...arr]
 
-    return [
-      { projects: createInfiniteArray(row1), speed: 35, direction: 'left' as const },
-      { projects: createInfiniteArray(row2), speed: 40, direction: 'right' as const },
-      { projects: createInfiniteArray(row3), speed: 37, direction: 'left' as const },
-      { projects: createInfiniteArray(row4), speed: 42, direction: 'right' as const },
-      { projects: createInfiniteArray(row5), speed: 38, direction: 'left' as const },
-      { projects: createInfiniteArray(row6), speed: 36, direction: 'right' as const },
-    ]
+    // Generate speeds and directions dynamically
+    const speeds = [35, 40, 37, 42, 38, 36, 33, 39, 41, 34]
+    const directions: ('left' | 'right')[] = ['left', 'right', 'left', 'right', 'left', 'right', 'left', 'right', 'left', 'right']
+
+    return rowsData.map((rowProjects, index) => ({
+      projects: createInfiniteArray(rowProjects),
+      speed: speeds[index] || 35, // Fallback speed
+      direction: directions[index] || 'left', // Fallback direction
+    }))
   }, [])
 
   useEffect(() => {
