@@ -3,6 +3,8 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import Image from 'next/image'
+import { projects } from '@/data/projects'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -11,71 +13,38 @@ const ProjectsPreview = () => {
   const track1Ref = useRef<HTMLDivElement>(null)
   const track2Ref = useRef<HTMLDivElement>(null)
 
-  const projects = [
-    {
-      id: 1,
-      title: 'E-commerce Platform',
-      year: '2024',
-      color: '#8B5CF6',
-    },
-    {
-      id: 2,
-      title: 'SaaS Dashboard',
-      year: '2024',
-      color: '#3B82F6',
-    },
-    {
-      id: 3,
-      title: 'Mobile App Design',
-      year: '2023',
-      color: '#EF4444',
-    },
-    {
-      id: 4,
-      title: 'Brand Identity',
-      year: '2023',
-      color: '#10B981',
-    },
-    {
-      id: 5,
-      title: 'Portfolio Website',
-      year: '2024',
-      color: '#6366F1',
-    },
-    {
-      id: 6,
-      title: 'Marketing Platform',
-      year: '2023',
-      color: '#F59E0B',
-    },
-  ]
+  // Split featured projects into two tracks
+  const allFeatured = projects.filter(p => p.featured)
+  const track1Featured = allFeatured.slice(0, 6)
+  const track2Featured = allFeatured.slice(6, 12)
 
   // Duplicate projects for seamless loop
-  const track1Projects = [...projects, ...projects]
-  const track2Projects = [...projects, ...projects]
+  const track1Projects = [...track1Featured, ...track1Featured]
+  const track2Projects = [...track2Featured, ...track2Featured]
 
   useEffect(() => {
     if (!sectionRef.current || !track1Ref.current || !track2Ref.current) return
 
     const ctx = gsap.context(() => {
+      // Set initial state for title
+      gsap.set('.showcase-title', {
+        opacity: 0,
+        y: 50,
+      })
+
       // Animate title
-      gsap.fromTo(
-        '.showcase-title',
-        {
-          y: 100,
-          opacity: 0,
+      gsap.to('.showcase-title', {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top 30%',
+          end: 'top top',
+          scrub: 1,
         },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 1.2,
-          ease: 'power4.out',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 80%',
-          },
-        }
-      )
+      })
 
       // First track - scroll left (top-left to bottom-right)
       gsap.to(track1Ref.current, {
@@ -106,6 +75,47 @@ const ProjectsPreview = () => {
           },
         }
       )
+
+      // Set initial state for project cards
+      gsap.set('.track1-card', {
+        opacity: 0,
+        y: 50,
+      })
+
+      gsap.set('.track2-card', {
+        opacity: 0,
+        y: 50,
+      })
+
+      // Animate track 1 cards in
+      gsap.to('.track1-card', {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        ease: 'power2.out',
+        stagger: 0.1,
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top 30%',
+          end: 'top top',
+          scrub: 1,
+        },
+      })
+
+      // Animate track 2 cards in (slight delay)
+      gsap.to('.track2-card', {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        ease: 'power2.out',
+        stagger: 0.1,
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top 25%',
+          end: 'top top',
+          scrub: 1,
+        },
+      })
 
       // Animate individual cards on hover
       const cards = sectionRef.current?.querySelectorAll('.project-card')
@@ -169,54 +179,52 @@ const ProjectsPreview = () => {
                 style={{ width: 'fit-content' }}
               >
                 {track1Projects.map((project, index) => (
-                  <div
+                  <a
                     key={`track1-${index}`}
-                    className="project-card flex-shrink-0 w-[400px] h-[280px] rounded-2xl overflow-hidden border border-white/10 cursor-pointer group"
+                    href={project.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="project-card track1-card flex-shrink-0 w-[400px] h-[225px] rounded-2xl overflow-hidden border border-white/10 cursor-pointer group"
                   >
                     <div className="relative w-full h-full">
-                      {/* Background gradient */}
-                      <div
-                        className="absolute inset-0 opacity-40 group-hover:opacity-60 transition-opacity duration-500"
-                        style={{
-                          background: `linear-gradient(135deg, ${project.color}33 0%, ${project.color}11 100%)`,
-                        }}
+                      {/* Project Image */}
+                      <Image
+                        src={project.image}
+                        alt={project.title}
+                        fill
+                        className="object-cover transition-all duration-700 brightness-50 group-hover:brightness-100"
+                        sizes="400px"
                       />
 
-                      {/* Grid overlay */}
-                      <div
-                        className="absolute inset-0 opacity-[0.05]"
-                        style={{
-                          backgroundImage: `linear-gradient(${project.color} 1px, transparent 1px), linear-gradient(90deg, ${project.color} 1px, transparent 1px)`,
-                          backgroundSize: '30px 30px',
-                        }}
-                      />
+                      {/* Overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
 
                       {/* Content */}
                       <div className="relative h-full p-8 flex flex-col justify-between">
-                        <div className="text-white/40 text-xs font-mono tracking-wider">
-                          {project.year}
+                        <div className="flex flex-wrap gap-2">
+                          {project.tags.slice(0, 3).map((tag) => (
+                            <span
+                              key={tag}
+                              className="px-2 py-1 text-xs text-blue-300 border border-blue-400/30 rounded-full backdrop-blur-sm bg-blue-950/30"
+                            >
+                              {tag}
+                            </span>
+                          ))}
                         </div>
 
                         <div>
-                          <h3 className="text-3xl font-light text-white mb-2 group-hover:translate-x-2 transition-transform duration-500">
+                          <h3 className="text-2xl font-light text-white mb-2 group-hover:translate-x-2 transition-transform duration-500">
                             {project.title}
                           </h3>
-                          <div
-                            className="w-16 h-0.5 transition-all duration-500 group-hover:w-24"
-                            style={{ backgroundColor: project.color }}
-                          />
-                        </div>
-
-                        {/* Project number */}
-                        <div
-                          className="absolute top-8 right-8 text-6xl font-light opacity-10 group-hover:opacity-20 transition-opacity duration-500"
-                          style={{ color: project.color }}
-                        >
-                          {String(project.id).padStart(2, '0')}
                         </div>
                       </div>
+
+                      {/* Hover glow effect */}
+                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
+                        <div className="absolute inset-0 border-2 border-blue-400/50 rounded-2xl" />
+                      </div>
                     </div>
-                  </div>
+                  </a>
                 ))}
               </div>
             </div>
@@ -233,65 +241,56 @@ const ProjectsPreview = () => {
                 style={{ width: 'fit-content' }}
               >
                 {track2Projects.map((project, index) => (
-                  <div
+                  <a
                     key={`track2-${index}`}
-                    className="project-card flex-shrink-0 w-[400px] h-[280px] rounded-2xl overflow-hidden border border-white/10 cursor-pointer group"
+                    href={project.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="project-card track2-card flex-shrink-0 w-[400px] h-[225px] rounded-2xl overflow-hidden border border-white/10 cursor-pointer group"
                   >
                     <div className="relative w-full h-full">
-                      {/* Background gradient */}
-                      <div
-                        className="absolute inset-0 opacity-40 group-hover:opacity-60 transition-opacity duration-500"
-                        style={{
-                          background: `linear-gradient(135deg, ${project.color}33 0%, ${project.color}11 100%)`,
-                        }}
+                      {/* Project Image */}
+                      <Image
+                        src={project.image}
+                        alt={project.title}
+                        fill
+                        className="object-cover transition-all duration-700 brightness-50 group-hover:brightness-100"
+                        sizes="400px"
                       />
 
-                      {/* Grid overlay */}
-                      <div
-                        className="absolute inset-0 opacity-[0.05]"
-                        style={{
-                          backgroundImage: `linear-gradient(${project.color} 1px, transparent 1px), linear-gradient(90deg, ${project.color} 1px, transparent 1px)`,
-                          backgroundSize: '30px 30px',
-                        }}
-                      />
+                      {/* Overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
 
                       {/* Content */}
                       <div className="relative h-full p-8 flex flex-col justify-between">
-                        <div className="text-white/40 text-xs font-mono tracking-wider">
-                          {project.year}
+                        <div className="flex flex-wrap gap-2">
+                          {project.tags.slice(0, 3).map((tag) => (
+                            <span
+                              key={tag}
+                              className="px-2 py-1 text-xs text-blue-300 border border-blue-400/30 rounded-full backdrop-blur-sm bg-blue-950/30"
+                            >
+                              {tag}
+                            </span>
+                          ))}
                         </div>
 
                         <div>
-                          <h3 className="text-3xl font-light text-white mb-2 group-hover:translate-x-2 transition-transform duration-500">
+                          <h3 className="text-2xl font-light text-white mb-2 group-hover:translate-x-2 transition-transform duration-500">
                             {project.title}
                           </h3>
-                          <div
-                            className="w-16 h-0.5 transition-all duration-500 group-hover:w-24"
-                            style={{ backgroundColor: project.color }}
-                          />
-                        </div>
-
-                        {/* Project number */}
-                        <div
-                          className="absolute top-8 right-8 text-6xl font-light opacity-10 group-hover:opacity-20 transition-opacity duration-500"
-                          style={{ color: project.color }}
-                        >
-                          {String(project.id).padStart(2, '0')}
                         </div>
                       </div>
+
+                      {/* Hover glow effect */}
+                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
+                        <div className="absolute inset-0 border-2 border-blue-400/50 rounded-2xl" />
+                      </div>
                     </div>
-                  </div>
+                  </a>
                 ))}
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Bottom text */}
-        <div className="mt-32 text-center">
-          <p className="text-white/40 text-sm">
-            View all projects →
-          </p>
         </div>
       </div>
     </section>
