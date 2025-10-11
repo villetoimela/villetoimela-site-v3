@@ -121,51 +121,29 @@ export default function Loader({
 
             {/* Scroll indicator */}
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{
-                opacity: [0.3, 0.7, 0.3],
-                y: [0, 10, 0]
-              }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               transition={{
-                delay: 1.0,
-                duration: 2,
-                repeat: Infinity,
-                ease: 'easeInOut'
+                delay: 1.2,
+                duration: 0.8,
+                ease: [0.25, 0.1, 0.25, 1]
               }}
-              className="flex flex-col items-center gap-3"
+              className="flex flex-col items-center gap-3 text-gray-400 text-sm font-mono pointer-events-none"
             >
-              <p className="text-sm text-white/40 font-mono tracking-widest uppercase">Scroll</p>
-              <svg
-                width="24"
-                height="40"
-                viewBox="0 0 24 40"
-                className="text-white/30"
-              >
-                <rect
-                  x="1"
-                  y="1"
-                  width="22"
-                  height="38"
-                  rx="11"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                />
-                <motion.circle
-                  cx="12"
-                  cy="12"
-                  r="3"
-                  fill="currentColor"
+              <span className="text-xs tracking-wider">SCROLL</span>
+              <div className="h-16 w-px bg-gray-600 relative overflow-hidden">
+                <motion.div
+                  className="absolute inset-0 bg-blue-400"
                   animate={{
-                    cy: [12, 24, 12]
+                    y: ['-100%', '100%']
                   }}
                   transition={{
-                    duration: 2,
+                    duration: 1.5,
                     repeat: Infinity,
-                    ease: 'easeInOut'
+                    ease: "easeInOut"
                   }}
                 />
-              </svg>
+              </div>
             </motion.div>
           </motion.div>
         </motion.section>

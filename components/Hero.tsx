@@ -310,18 +310,6 @@ export default function Hero() {
         }
       )
 
-      // Scroll indicator
-      gsap.fromTo('.scroll-indicator',
-        {
-          opacity: 0,
-        },
-        {
-          opacity: 1,
-          duration: 1,
-          ease: 'power3.out',
-          delay: 2.1,
-        }
-      )
 
       // Parallax on scroll
       gsap.to('.hero-content', {

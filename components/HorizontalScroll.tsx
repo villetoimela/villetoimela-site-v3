@@ -39,7 +39,7 @@ export default function HorizontalScroll({ panels }: HorizontalScrollProps) {
   const particleIdRef = useRef(0)
   const lineProgressRef = useRef(0)
   const lastLineProgressRef = useRef(0)
-  const explosionsTriggeredRef = useRef({ 20: false, 50: false, 80: false })
+  const explosionsTriggeredRef = useRef<{ 20: boolean; 50: boolean; 80: boolean }>({ 20: false, 50: false, 80: false })
   const animationFrameRef = useRef<number>()
 
   // Helper to create particles
@@ -230,6 +230,29 @@ export default function HorizontalScroll({ panels }: HorizontalScrollProps) {
           scrollTriggersRef.current.push(panelTween.scrollTrigger)
         }
       })
+
+      // Animate scroll indicator to show during entire horizontal scroll section
+      const scrollIndicator = section.querySelector('.scroll-indicator')
+      if (scrollIndicator) {
+        gsap.set(scrollIndicator, { opacity: 0 })
+
+        const indicatorTween = gsap.to(scrollIndicator, {
+          opacity: 1,
+          duration: 0.4,
+          scrollTrigger: {
+            trigger: section,
+            start: 'top bottom-=100',
+            end: () => `+=${scrollWidth}`,
+            toggleActions: 'play none none reverse',
+            onLeave: () => gsap.to(scrollIndicator, { opacity: 0, duration: 0.3 }),
+            onEnterBack: () => gsap.to(scrollIndicator, { opacity: 1, duration: 0.3 }),
+          },
+        })
+
+        if (indicatorTween.scrollTrigger) {
+          scrollTriggersRef.current.push(indicatorTween.scrollTrigger)
+        }
+      }
     }
 
     // Initial setup
@@ -395,7 +418,7 @@ export default function HorizontalScroll({ panels }: HorizontalScrollProps) {
       ))}
 
       {/* Scroll indicator - appears on the right */}
-      <div className="fixed bottom-10 right-10 z-50 text-gray-400 text-sm font-mono hidden md:block pointer-events-none">
+      <div className="scroll-indicator fixed bottom-10 right-10 z-50 text-gray-400 text-sm font-mono hidden md:block pointer-events-none opacity-0">
         <div className="flex items-center gap-3">
           <span className="text-xs tracking-wider">SCROLL →</span>
           <div className="w-16 h-px bg-gray-600 relative overflow-hidden">
