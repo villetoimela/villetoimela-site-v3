@@ -544,7 +544,7 @@ export default function HorizontalScroll({ panels }: HorizontalScrollProps) {
               <div className="flex flex-col lg:flex-row lg:items-start gap-8 lg:gap-32">
                 {/* Title on the left */}
                 <h2
-                  className={`panel-title-${uniqueId}-${index} text-6xl md:text-8xl lg:text-9xl font-light text-white lg:min-w-[400px] xl:min-w-[500px] shrink-0`}
+                  className={`panel-title-${uniqueId}-${index} text-6xl md:text-8xl lg:text-8xl font-light text-white lg:min-w-[400px] xl:min-w-[500px] shrink-0`}
                   style={{ fontFamily: 'var(--font-space-grotesk)', lineHeight: 0.9, transformStyle: 'preserve-3d' }}
                 >
                   {panel.title}
