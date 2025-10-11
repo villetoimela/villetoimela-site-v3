@@ -22,14 +22,15 @@ export default function ProjectMarquee() {
     setIsMounted(true)
   }, [])
 
-  // Split projects into 5 rows
+  // Split projects into 6 rows
   const rows = useMemo(() => {
     const featuredProjects = projects.filter(p => p.featured)
-    const row1 = featuredProjects.slice(0, 6)
-    const row2 = featuredProjects.slice(6, 12)
-    const row3 = featuredProjects.slice(12, 18)
-    const row4 = featuredProjects.slice(18, 24)
-    const row5 = featuredProjects.slice(24, 30)
+    const row1 = featuredProjects.slice(0, 5)
+    const row2 = featuredProjects.slice(5, 10)
+    const row3 = featuredProjects.slice(10, 15)
+    const row4 = featuredProjects.slice(15, 20)
+    const row5 = featuredProjects.slice(20, 25)
+    const row6 = featuredProjects.slice(25, 29)
 
     // Duplicate projects for infinite scroll effect
     const createInfiniteArray = (arr: Project[]) => [...arr, ...arr, ...arr, ...arr]
@@ -40,6 +41,7 @@ export default function ProjectMarquee() {
       { projects: createInfiniteArray(row3), speed: 37, direction: 'left' as const },
       { projects: createInfiniteArray(row4), speed: 42, direction: 'right' as const },
       { projects: createInfiniteArray(row5), speed: 38, direction: 'left' as const },
+      { projects: createInfiniteArray(row6), speed: 36, direction: 'right' as const },
     ]
   }, [])
 
