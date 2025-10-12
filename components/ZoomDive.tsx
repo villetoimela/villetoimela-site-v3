@@ -197,7 +197,9 @@ export default function ZoomDive() {
     render()
 
     // GSAP ScrollTrigger animation - creates virtual scroll height
-    const scrollDistance = window.innerHeight * 2 // 2x viewport height of scroll
+    const scrollDistance = isMobileDevice
+      ? window.innerHeight * 1.5  // Shorter on mobile
+      : window.innerHeight * 2
 
     const tl = gsap.timeline({
       scrollTrigger: {
@@ -206,6 +208,9 @@ export default function ZoomDive() {
         end: `+=${scrollDistance}`,
         scrub: 1,
         pin: true,
+        pinSpacing: true,
+        anticipatePin: 1,
+        invalidateOnRefresh: true,
         onUpdate: (self) => {
           animationProgress = self.progress
         },
@@ -229,9 +234,18 @@ export default function ZoomDive() {
       }
     )
 
+    // Handle resize to refresh ScrollTrigger (important for mobile viewport changes)
+    const handleResize = () => {
+      resizeCanvas()
+      ScrollTrigger.refresh()
+    }
+
+    window.removeEventListener('resize', resizeCanvas) // Remove old listener
+    window.addEventListener('resize', handleResize)
+
     // Cleanup
     return () => {
-      window.removeEventListener('resize', resizeCanvas)
+      window.removeEventListener('resize', handleResize)
       scrollTriggerRef.current?.kill()
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current)
