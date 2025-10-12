@@ -232,6 +232,20 @@ export default function ZoomDive() {
             console.log('[ZoomDive] ScrollTrigger LEFT - animation finished')
           }
         },
+        onEnterBack: () => {
+          if (isMobileDevice) {
+            console.log('[ZoomDive] ScrollTrigger ENTERED BACK (scrolling up)', 'scrollY:', window.scrollY)
+          }
+          // Refresh to recalculate positions when scrolling back up
+          ScrollTrigger.refresh()
+        },
+        onLeaveBack: () => {
+          if (isMobileDevice) {
+            console.log('[ZoomDive] ScrollTrigger LEFT BACK (scrolling up past)', 'scrollY:', window.scrollY)
+          }
+          // Refresh to recalculate positions when leaving back
+          ScrollTrigger.refresh()
+        },
         onRefresh: () => {
           if (isMobileDevice) {
             console.log('[ZoomDive] ScrollTrigger REFRESHED')
