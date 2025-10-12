@@ -126,7 +126,10 @@ export default function HorizontalScroll({ panels }: HorizontalScrollProps) {
         ease: 'none',
         scrollTrigger: {
           trigger: section,
+          start: 'top top',
           pin: true,
+          pinSpacing: true,
+          anticipatePin: 1,
           scrub: 1,
           end: () => `+=${scrollWidth}`,
           invalidateOnRefresh: true,
@@ -343,6 +346,7 @@ export default function HorizontalScroll({ panels }: HorizontalScrollProps) {
     // Re-setup on window resize
     const handleResize = () => {
       setupAnimations()
+      ScrollTrigger.refresh()
     }
 
     window.addEventListener('resize', handleResize)
