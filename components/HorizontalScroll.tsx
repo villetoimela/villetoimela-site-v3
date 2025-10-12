@@ -141,9 +141,9 @@ export default function HorizontalScroll({ panels }: HorizontalScrollProps) {
       }
 
       // Animate the line drawing with horizontal scroll - DISABLED ON MOBILE for performance
-      const isMobileDevice = window.innerWidth < 768
+      const isSmallMobile = window.innerWidth < 768
 
-      if (!isMobileDevice) {
+      if (!isSmallMobile) {
         const pathElements = svg.querySelectorAll('path')
         pathElements.forEach((pathElement) => {
           const pathLength = pathElement.getTotalLength()
@@ -232,6 +232,8 @@ export default function HorizontalScroll({ panels }: HorizontalScrollProps) {
       })
 
       // Fade in with subtle rise animations
+      const isMobileTablet = window.innerWidth < 1024
+
       panels.forEach((_, index) => {
         const isFirstPanel = index === 0
 
@@ -271,11 +273,11 @@ export default function HorizontalScroll({ panels }: HorizontalScrollProps) {
             scrollTriggersRef.current.push(contentTween.scrollTrigger)
           }
         } else {
-          // Other panels: animate during horizontal scroll - start when more visible
-          const titleStart = 'left 30%'
-          const titleEnd = 'left left'
-          const contentStart = 'left 25%'
-          const contentEnd = 'left left'
+          // Other panels: use containerAnimation for both mobile and desktop
+          const titleStart = isMobileTablet ? 'left 50%' : 'left 30%'
+          const titleEnd = isMobileTablet ? 'left 20%' : 'left left'
+          const contentStart = isMobileTablet ? 'left 45%' : 'left 25%'
+          const contentEnd = isMobileTablet ? 'left 15%' : 'left left'
 
           // Fade in title with rise
           const titleTween = gsap.to(section.querySelector(`.panel-title-${uniqueId}-${index}`), {

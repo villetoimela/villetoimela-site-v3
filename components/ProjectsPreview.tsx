@@ -188,7 +188,7 @@ const ProjectsPreview = () => {
   return (
     <section
       ref={sectionRef}
-      className="relative bg-black py-32 overflow-hidden"
+      className="relative bg-black py-16 md:py-32 overflow-hidden"
     >
       {/* Animated gradient orbs in background - only animate when visible */}
       <motion.div
@@ -259,7 +259,7 @@ const ProjectsPreview = () => {
         </div>
 
         {/* Diagonal scrolling tracks */}
-        <div className="preview-tracks-container relative h-[600px]">
+        <div className="preview-tracks-container relative h-[300px] md:h-[600px]">
           {/* Track 1 - Top-left to bottom-right, scrolls left */}
           <div className="preview-track absolute top-0 left-0 w-full origin-top-left rotate-[8deg] translate-x-[5%] translate-y-[5%]">
             <div className="relative overflow-hidden">
