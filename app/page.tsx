@@ -1,23 +1,12 @@
-'use client'
-
-import { useEffect, useState } from 'react'
 import Hero from '@/components/Hero'
 import HorizontalScroll from '@/components/HorizontalScroll'
-import ZoomDive from '@/components/ZoomDive'
+import ConditionalZoomDive from '@/components/ConditionalZoomDive'
 import ProjectMarquee from '@/components/ProjectMarquee'
 import ProjectsPreview from '@/components/ProjectsPreview'
 import TechStack from '@/components/TechStack'
 import ContactFooter from '@/components/ContactFooter'
 
 export default function Home() {
-  const [isDesktop, setIsDesktop] = useState(true)
-
-  useEffect(() => {
-    const checkDevice = () => setIsDesktop(window.innerWidth >= 768)
-    checkDevice()
-    window.addEventListener('resize', checkDevice)
-    return () => window.removeEventListener('resize', checkDevice)
-  }, [])
   // Calculate dynamic age and years
   const currentYear = new Date().getFullYear()
   const birthYear = 1995
@@ -75,7 +64,7 @@ export default function Home() {
           }
         ]}
       />
-      {isDesktop && <ZoomDive />}
+      <ConditionalZoomDive />
       <ProjectMarquee />
       <TechStack />
       <ContactFooter />

@@ -301,6 +301,25 @@ export default function ProjectMarquee() {
 
   return (
     <section ref={sectionRef} className="relative bg-black pt-0 pb-20 overflow-x-hidden overflow-y-visible">
+      {/* Mobile-only title */}
+      <div className="md:hidden container mx-auto px-8 pb-8">
+        <h2
+          className="text-6xl font-light text-white"
+          style={{ fontFamily: 'var(--font-space-grotesk)', lineHeight: 0.9 }}
+        >
+          Check out<br />my work
+        </h2>
+        <div className="mt-6 flex items-center gap-4">
+          <div className="w-12 h-px bg-gradient-to-r from-transparent via-blue-400 to-transparent" />
+          <p
+            className="text-sm text-gray-400 tracking-widest"
+            style={{ fontFamily: 'var(--font-space-grotesk)' }}
+          >
+            FEATURED PROJECTS
+          </p>
+          <div className="w-12 h-px bg-gradient-to-r from-transparent via-blue-400 to-transparent" />
+        </div>
+      </div>
       {/* Animated gradient orbs in background - only animate when visible */}
       <motion.div
         className="absolute top-1/4 left-1/4 w-[500px] h-[500px] rounded-full opacity-15 blur-3xl pointer-events-none"
