@@ -24,17 +24,15 @@ export default function ZoomDiveNew() {
     if (!section || !text || !background) return
 
     // Simple approach: just animate text scale and background
-    // No complex canvas or pinning conflicts
+    // Try WITHOUT pinning to see if that's causing the issue
     const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
     
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: section,
-        start: 'top top',
+        start: 'top bottom',
         end: 'bottom top',
         scrub: true,
-        pin: true,
-        pinSpacing: true,
         id: 'zoom-dive-new',
         markers: isMobile, // Debug markers on mobile
         onRefresh: (self) => {
@@ -77,7 +75,6 @@ export default function ZoomDiveNew() {
     <section
       ref={sectionRef}
       className="relative bg-black overflow-hidden h-screen"
-      style={{ marginTop: isMobile ? '100vh' : 0 }}
     >
       {/* Animated starfield background using CSS only */}
       <div 
