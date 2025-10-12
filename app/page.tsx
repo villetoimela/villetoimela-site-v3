@@ -1,6 +1,6 @@
 import Hero from '@/components/Hero'
 import HorizontalScroll from '@/components/HorizontalScroll'
-import ZoomDive from '@/components/ZoomDiveNew'
+import ZoomDiveNew from '@/components/ZoomDiveNew'
 import ProjectMarquee from '@/components/ProjectMarquee'
 import ProjectsPreview from '@/components/ProjectsPreview'
 import TechStack from '@/components/TechStack'
@@ -66,6 +66,7 @@ export default function Home() {
       />
       {/* Small spacer to ensure proper pinSpacing calculation on mobile */}
       <div className="h-1" />
+      <ZoomDiveNew />
       <ProjectMarquee />
       <TechStack />
       <ContactFooter />
