@@ -11,6 +11,7 @@ gsap.registerPlugin(ScrollTrigger)
 
 const ContactFooter = () => {
   const sectionRef = useRef<HTMLDivElement>(null)
+  const titleRef = useRef<HTMLDivElement>(null)
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -23,21 +24,66 @@ const ContactFooter = () => {
     if (!sectionRef.current) return
 
     const ctx = gsap.context(() => {
-      // Animate title
+      // Animate subtitle
+      gsap.fromTo(
+        '.contact-subtitle',
+        {
+          opacity: 0,
+          y: 30,
+        },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: titleRef.current,
+            start: 'top 80%',
+            once: true,
+          },
+        }
+      )
+
+      // Animate main title with 3D effect
       gsap.fromTo(
         '.contact-title',
         {
-          y: 100,
           opacity: 0,
+          y: 60,
+          rotateX: 45,
         },
         {
-          y: 0,
           opacity: 1,
+          y: 0,
+          rotateX: 0,
           duration: 1.2,
           ease: 'power4.out',
+          delay: 0.2,
           scrollTrigger: {
-            trigger: sectionRef.current,
+            trigger: titleRef.current,
             start: 'top 80%',
+            once: true,
+          },
+        }
+      )
+
+      // Animate description
+      gsap.fromTo(
+        '.contact-description',
+        {
+          opacity: 0,
+          y: 30,
+        },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: 'power3.out',
+          delay: 0.4,
+          scrollTrigger: {
+            trigger: titleRef.current,
+            start: 'top 80%',
+            once: true,
           },
         }
       )
@@ -198,14 +244,14 @@ const ContactFooter = () => {
         {/* Contact Section */}
         <div className="max-w-4xl mx-auto mb-32">
           {/* Title */}
-          <div className="contact-title text-center mb-16">
-            <p className="text-white/40 text-xs uppercase tracking-[0.3em] mb-4 font-light">
+          <div ref={titleRef} className="text-center mb-16" style={{ perspective: '1000px' }}>
+            <p className="contact-subtitle text-white/40 text-xs uppercase tracking-[0.3em] mb-4 font-light">
               Get in Touch
             </p>
-            <h2 className="text-4xl md:text-6xl lg:text-7xl font-light text-white mb-6">
+            <h2 className="contact-title text-4xl md:text-6xl lg:text-7xl font-light text-white mb-6" style={{ transformStyle: 'preserve-3d' }}>
               Let's work together
             </h2>
-            <p className="text-white/60 text-lg font-light max-w-2xl mx-auto">
+            <p className="contact-description text-white/60 text-lg font-light max-w-2xl mx-auto">
               I'm open to freelance projects and full-time positions.
               Got an idea or just want to chat? Send me a message!
             </p>

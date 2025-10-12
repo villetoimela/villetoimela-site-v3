@@ -10,6 +10,7 @@ gsap.registerPlugin(ScrollTrigger)
 
 const TechStack = () => {
   const sectionRef = useRef<HTMLDivElement>(null)
+  const titleRef = useRef<HTMLDivElement>(null)
 
   const technologies = [
     { name: 'HTML', color: '#E34F26' },
@@ -44,21 +45,66 @@ const TechStack = () => {
     if (!sectionRef.current) return
 
     const ctx = gsap.context(() => {
-      // Animate title
+      // Animate subtitle
+      gsap.fromTo(
+        '.tech-subtitle',
+        {
+          opacity: 0,
+          y: 30,
+        },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: titleRef.current,
+            start: 'top 80%',
+            once: true,
+          },
+        }
+      )
+
+      // Animate main title with 3D effect
       gsap.fromTo(
         '.tech-title',
         {
-          y: 80,
           opacity: 0,
+          y: 60,
+          rotateX: 45,
         },
         {
-          y: 0,
           opacity: 1,
+          y: 0,
+          rotateX: 0,
           duration: 1.2,
           ease: 'power4.out',
+          delay: 0.2,
           scrollTrigger: {
-            trigger: sectionRef.current,
+            trigger: titleRef.current,
             start: 'top 80%',
+            once: true,
+          },
+        }
+      )
+
+      // Animate description
+      gsap.fromTo(
+        '.tech-description',
+        {
+          opacity: 0,
+          y: 30,
+        },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: 'power3.out',
+          delay: 0.4,
+          scrollTrigger: {
+            trigger: titleRef.current,
+            start: 'top 80%',
+            once: true,
           },
         }
       )
@@ -151,14 +197,14 @@ const TechStack = () => {
 
       <div className="container mx-auto px-6 relative z-10">
         {/* Title */}
-        <div className="tech-title text-center mb-20">
-          <p className="text-white/40 text-xs uppercase tracking-[0.3em] mb-4 font-light">
+        <div ref={titleRef} className="text-center mb-20" style={{ perspective: '1000px' }}>
+          <p className="tech-subtitle text-white/40 text-xs uppercase tracking-[0.3em] mb-4 font-light">
             Tech Stack
           </p>
-          <h2 className="text-4xl md:text-6xl lg:text-7xl font-light text-white mb-4">
+          <h2 className="tech-title text-4xl md:text-6xl lg:text-7xl font-light text-white mb-4" style={{ transformStyle: 'preserve-3d' }}>
             Technologies
           </h2>
-          <p className="text-white/60 text-lg font-light">
+          <p className="tech-description text-white/60 text-lg font-light">
             Tools and frameworks I work with
           </p>
         </div>

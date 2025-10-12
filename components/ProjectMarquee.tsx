@@ -2,15 +2,19 @@
 
 import { useEffect, useRef, useState, useMemo } from 'react'
 import { motion } from 'framer-motion'
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { projects, Project } from '@/data/projects'
 import Image from 'next/image'
 
+gsap.registerPlugin(ScrollTrigger)
+
 export default function ProjectMarquee() {
-  const [hoveredId, setHoveredId] = useState<string | null>(null)
   const [isMounted, setIsMounted] = useState(false)
   const [isVisible, setIsVisible] = useState(false)
   const marqueeRefs = useRef<(HTMLDivElement | null)[]>([])
   const sectionRef = useRef<HTMLDivElement>(null)
+  const titleRef = useRef<HTMLDivElement>(null)
   const isVisibleRef = useRef(false)
   const targetSpeed = useRef(0.3)
   const currentSpeed = useRef(0.3)
@@ -267,7 +271,6 @@ export default function ProjectMarquee() {
 
   const handleMouseEnter = (id: string, index: number) => {
     if (typeof window === 'undefined') return
-    setHoveredId(id)
     const hoverState = hoverStates.current.get(index)
     if (hoverState) {
       hoverState.target = 0.15 // Slow down to 15% when hovering
@@ -276,12 +279,83 @@ export default function ProjectMarquee() {
 
   const handleMouseLeave = (index: number) => {
     if (typeof window === 'undefined') return
-    setHoveredId(null)
     const hoverState = hoverStates.current.get(index)
     if (hoverState) {
       hoverState.target = 1 // Return to normal multiplier
     }
   }
+
+  // GSAP Scroll Animations
+  useEffect(() => {
+    if (!isMounted) return
+
+    const ctx = gsap.context(() => {
+      // Mobile title animation
+      gsap.fromTo('.marquee-title',
+        {
+          opacity: 0,
+          y: 60,
+          rotateX: 45,
+        },
+        {
+          opacity: 1,
+          y: 0,
+          rotateX: 0,
+          duration: 1.2,
+          ease: 'power4.out',
+          scrollTrigger: {
+            trigger: titleRef.current,
+            start: 'top 80%',
+            once: true,
+          },
+        }
+      )
+
+      // Subtitle animation
+      gsap.fromTo('.marquee-subtitle',
+        {
+          opacity: 0,
+          y: 30,
+        },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: 'power3.out',
+          delay: 0.2,
+          scrollTrigger: {
+            trigger: titleRef.current,
+            start: 'top 80%',
+            once: true,
+          },
+        }
+      )
+
+      // Marquee rows staggered animation
+      gsap.fromTo('.marquee-row',
+        {
+          opacity: 0,
+          y: 40,
+        },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 1,
+          stagger: 0.15,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 70%',
+            once: true,
+          },
+        }
+      )
+    }, sectionRef)
+
+    return () => {
+      ctx.revert()
+    }
+  }, [isMounted])
 
   // Don't render until mounted on client
   if (!isMounted) {
@@ -302,14 +376,18 @@ export default function ProjectMarquee() {
   return (
     <section ref={sectionRef} className="relative bg-black pt-0 pb-20 overflow-x-hidden overflow-y-visible">
       {/* Mobile-only title */}
-      <div className="md:hidden container mx-auto px-8 pb-8">
+      <div ref={titleRef} className="md:hidden container mx-auto px-8 pb-8" style={{ perspective: '1000px' }}>
         <h2
-          className="text-6xl font-light text-white"
-          style={{ fontFamily: 'var(--font-space-grotesk)', lineHeight: 0.9 }}
+          className="marquee-title text-6xl font-light text-white"
+          style={{
+            fontFamily: 'var(--font-space-grotesk)',
+            lineHeight: 0.9,
+            transformStyle: 'preserve-3d',
+          }}
         >
           Check out<br />my work
         </h2>
-        <div className="mt-6 flex items-center gap-4">
+        <div className="marquee-subtitle mt-6 flex items-center gap-4">
           <div className="w-12 h-px bg-gradient-to-r from-transparent via-blue-400 to-transparent" />
           <p
             className="text-sm text-gray-400 tracking-widest"
@@ -405,7 +483,7 @@ export default function ProjectMarquee() {
         {rows.map((row, rowIndex) => (
           <div
             key={rowIndex}
-            className="relative overflow-visible"
+            className="marquee-row relative overflow-visible"
             style={{
               maskImage: 'linear-gradient(to right, transparent, black 5%, black 95%, transparent)',
               WebkitMaskImage: 'linear-gradient(to right, transparent, black 5%, black 95%, transparent)',

@@ -2,12 +2,17 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Image from 'next/image'
 import { projects } from '@/data/projects'
 import FloatingCanvasParticles from './FloatingCanvasParticles'
 
+gsap.registerPlugin(ScrollTrigger)
+
 const ProjectsPreview = () => {
   const sectionRef = useRef<HTMLDivElement>(null)
+  const titleRef = useRef<HTMLDivElement>(null)
   const track1Ref = useRef<HTMLDivElement>(null)
   const track2Ref = useRef<HTMLDivElement>(null)
   const [isVisible, setIsVisible] = useState(false)
@@ -108,6 +113,78 @@ const ProjectsPreview = () => {
     }
   }, [isMounted])
 
+  // GSAP Scroll Animations
+  useEffect(() => {
+    if (!isMounted) return
+
+    const ctx = gsap.context(() => {
+      // Title animation
+      gsap.fromTo('.preview-title',
+        {
+          opacity: 0,
+          y: 60,
+          rotateX: 45,
+        },
+        {
+          opacity: 1,
+          y: 0,
+          rotateX: 0,
+          duration: 1.2,
+          ease: 'power4.out',
+          scrollTrigger: {
+            trigger: titleRef.current,
+            start: 'top 80%',
+            once: true,
+          },
+        }
+      )
+
+      // Subtitle animation
+      gsap.fromTo('.preview-subtitle',
+        {
+          opacity: 0,
+          y: 30,
+        },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: 'power3.out',
+          delay: 0.2,
+          scrollTrigger: {
+            trigger: titleRef.current,
+            start: 'top 80%',
+            once: true,
+          },
+        }
+      )
+
+      // Tracks staggered animation
+      gsap.fromTo('.preview-track',
+        {
+          opacity: 0,
+          y: 50,
+        },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 1.2,
+          stagger: 0.2,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: '.preview-tracks-container',
+            start: 'top 70%',
+            once: true,
+          },
+        }
+      )
+    }, sectionRef)
+
+    return () => {
+      ctx.revert()
+    }
+  }, [isMounted])
+
   return (
     <section
       ref={sectionRef}
@@ -172,19 +249,19 @@ const ProjectsPreview = () => {
 
       <div className="container mx-auto px-6 relative z-10">
         {/* Title */}
-        <div className="text-center mb-32">
-          <p className="text-white/40 text-xs uppercase tracking-[0.3em] mb-4 font-light">
+        <div ref={titleRef} className="text-center mb-32" style={{ perspective: '1000px' }}>
+          <p className="preview-subtitle text-white/40 text-xs uppercase tracking-[0.3em] mb-4 font-light">
             Recent Work
           </p>
-          <h2 className="text-4xl md:text-6xl lg:text-7xl font-light text-white mb-4">
+          <h2 className="preview-title text-4xl md:text-6xl lg:text-7xl font-light text-white mb-4" style={{ transformStyle: 'preserve-3d' }}>
             A sneak peek at some of my projects
           </h2>
         </div>
 
         {/* Diagonal scrolling tracks */}
-        <div className="relative h-[600px]">
+        <div className="preview-tracks-container relative h-[600px]">
           {/* Track 1 - Top-left to bottom-right, scrolls left */}
-          <div className="absolute top-0 left-0 w-full origin-top-left rotate-[8deg] translate-x-[5%] translate-y-[5%]">
+          <div className="preview-track absolute top-0 left-0 w-full origin-top-left rotate-[8deg] translate-x-[5%] translate-y-[5%]">
             <div className="relative overflow-hidden">
               {/* Fade gradient mask */}
               <div className="absolute inset-0 pointer-events-none z-10 bg-gradient-to-r from-black via-transparent to-black" />
@@ -248,7 +325,7 @@ const ProjectsPreview = () => {
           </div>
 
           {/* Track 2 - Top-right to bottom-left, scrolls right */}
-          <div className="absolute top-0 right-0 w-full origin-top-right -rotate-[8deg] translate-x-[-5%] translate-y-[35%]">
+          <div className="preview-track absolute top-0 right-0 w-full origin-top-right -rotate-[8deg] translate-x-[-5%] translate-y-[35%]">
             <div className="relative overflow-hidden">
               {/* Fade gradient mask */}
               <div className="absolute inset-0 pointer-events-none z-10 bg-gradient-to-r from-black via-transparent to-black" />
