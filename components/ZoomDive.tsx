@@ -201,20 +201,23 @@ export default function ZoomDive() {
       ? window.innerHeight * 1.5  // Shorter on mobile
       : window.innerHeight * 2
 
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        id: 'zoom-dive', // Unique ID to prevent conflicts
-        trigger: section,
-        start: 'top top',
-        end: `+=${scrollDistance}`,
-        scrub: 1,
-        pin: true,
-        pinSpacing: true,
-        anticipatePin: 0, // Disable anticipatePin to prevent conflicts with other pinned sections
-        invalidateOnRefresh: true,
-        fastScrollEnd: true, // Prevent snapping issues
-        preventOverlaps: true, // KEY FIX: Prevent this from overlapping with previous ScrollTriggers
-        markers: isMobileDevice, // Show markers on mobile for debugging
+    // Wait a bit before initializing ScrollTrigger to ensure previous sections are ready
+    // This prevents initialization order issues on page reload
+    const initScrollTrigger = () => {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          id: 'zoom-dive', // Unique ID to prevent conflicts
+          trigger: section,
+          start: 'top top',
+          end: `+=${scrollDistance}`,
+          scrub: 1,
+          pin: true,
+          pinSpacing: true,
+          anticipatePin: 0, // Disable anticipatePin to prevent conflicts with other pinned sections
+          invalidateOnRefresh: true,
+          fastScrollEnd: true, // Prevent snapping issues
+          preventOverlaps: true, // KEY FIX: Prevent this from overlapping with previous ScrollTriggers
+          markers: isMobileDevice, // Show markers on mobile for debugging
         onUpdate: (self) => {
           animationProgress = self.progress
           if (isMobileDevice && self.progress === 0) {
@@ -251,25 +254,32 @@ export default function ZoomDive() {
             console.log('[ZoomDive] ScrollTrigger REFRESHED')
           }
         },
-      },
-    })
+        },
+      })
 
-    scrollTriggerRef.current = tl.scrollTrigger as ScrollTrigger
+      scrollTriggerRef.current = tl.scrollTrigger as ScrollTrigger
 
-    // Animate center text
-    tl.fromTo(
-      centerText,
-      {
-        scale: 1,
-        opacity: 1,
-      },
-      {
-        scale: 5,
-        opacity: 0,
-        duration: 1,
-        ease: 'power2.in',
-      }
-    )
+      // Animate center text
+      tl.fromTo(
+        centerText,
+        {
+          scale: 1,
+          opacity: 1,
+        },
+        {
+          scale: 5,
+          opacity: 0,
+          duration: 1,
+          ease: 'power2.in',
+        }
+      )
+    }
+
+    // Delay initialization slightly to ensure previous ScrollTriggers are ready
+    // Especially important for mobile where multiple pinned sections can conflict
+    const initDelay = setTimeout(() => {
+      initScrollTrigger()
+    }, 100)
 
     // Handle resize to refresh ScrollTrigger (important for mobile viewport changes)
     const handleResize = () => {
@@ -295,6 +305,7 @@ export default function ZoomDive() {
 
     // Cleanup
     return () => {
+      clearTimeout(initDelay)
       window.removeEventListener('resize', handleResize)
       if (window.visualViewport) {
         window.visualViewport.removeEventListener('resize', handleVisualViewportResize)
