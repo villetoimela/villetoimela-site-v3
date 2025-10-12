@@ -120,11 +120,6 @@ export default function HorizontalScroll({ panels }: HorizontalScrollProps) {
       // Calculate total scroll width
       const scrollWidth = scrollContainer.scrollWidth - window.innerWidth
 
-      // Debug logging to see what's happening
-      console.log(`[HorizontalScroll ${uniqueId}] scrollContainer.scrollWidth: ${scrollContainer.scrollWidth}`)
-      console.log(`[HorizontalScroll ${uniqueId}] window.innerWidth: ${window.innerWidth}`)
-      console.log(`[HorizontalScroll ${uniqueId}] calculated scrollWidth: ${scrollWidth}`)
-
       // Create horizontal scroll animation
       const scrollTween = gsap.to(scrollContainer, {
         x: -scrollWidth,
@@ -138,12 +133,6 @@ export default function HorizontalScroll({ panels }: HorizontalScrollProps) {
           scrub: 1,
           end: () => `+=${scrollWidth}`,
           invalidateOnRefresh: true,
-          onRefresh: (self) => {
-            const isMobile = window.innerWidth < 768
-            if (isMobile) {
-              console.log(`[HorizontalScroll ${uniqueId}] REFRESHED - start: ${self.start}, end: ${self.end}, pinned: ${self.pin ? 'yes' : 'no'}`)
-            }
-          },
         },
       })
 
@@ -360,7 +349,6 @@ export default function HorizontalScroll({ panels }: HorizontalScrollProps) {
 
     // IMPORTANT: Listen to visualViewport changes (mobile URL bar hide/show)
     const handleVisualViewportResize = () => {
-      console.log('[HorizontalScroll] visualViewport changed, refreshing ScrollTrigger')
       ScrollTrigger.refresh()
     }
 

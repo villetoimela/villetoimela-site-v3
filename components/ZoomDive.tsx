@@ -22,7 +22,6 @@ export default function ZoomDive() {
         entries.forEach((entry) => {
           setIsVisible(entry.isIntersecting)
           isVisibleRef.current = entry.isIntersecting
-          console.log(`[ZoomDive] Visibility: ${entry.isIntersecting ? 'VISIBLE - rendering active' : 'HIDDEN - rendering paused'}`)
         })
       },
       {
@@ -203,16 +202,14 @@ export default function ZoomDive() {
 
     const tl = gsap.timeline({
       scrollTrigger: {
-        id: 'zoom-dive', // Unique ID to prevent conflicts
         trigger: section,
         start: 'top top',
         end: `+=${scrollDistance}`,
         scrub: 1,
         pin: true,
         pinSpacing: true,
-        anticipatePin: isMobileDevice ? 0 : 1, // Disable on mobile to prevent conflicts
+        anticipatePin: 1,
         invalidateOnRefresh: true,
-        preventOverlaps: true, // Prevent overlapping with previous pinned sections
         onUpdate: (self) => {
           animationProgress = self.progress
         },
@@ -244,7 +241,6 @@ export default function ZoomDive() {
 
     // IMPORTANT: Listen to visualViewport changes (mobile URL bar hide/show)
     const handleVisualViewportResize = () => {
-      console.log('[ZoomDive] visualViewport changed, refreshing ScrollTrigger')
       ScrollTrigger.refresh()
     }
 
