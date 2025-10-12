@@ -4,38 +4,12 @@ import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { motion } from 'framer-motion'
+import FloatingCanvasParticles from './FloatingCanvasParticles'
 
 gsap.registerPlugin(ScrollTrigger)
 
 const TechStack = () => {
   const sectionRef = useRef<HTMLDivElement>(null)
-
-  // Floating background particles
-  const [floatingParticles, setFloatingParticles] = useState<Array<{
-    initialX: number
-    initialY: number
-    moveX: number
-    duration: number
-    delay: number
-    size: number
-  }>>([])
-
-  // Initialize floating particles - DISABLED ON MOBILE for performance
-  useEffect(() => {
-    const isMobileDevice = window.innerWidth < 768
-    const particleCount = isMobileDevice ? 0 : 20 // 0 on mobile, 20 on desktop
-
-    setFloatingParticles(
-      [...Array(particleCount)].map(() => ({
-        initialX: Math.random() * 100,
-        initialY: Math.random() * 100,
-        moveX: Math.random() * 50 - 25,
-        duration: 10 + Math.random() * 10,
-        delay: Math.random() * 5,
-        size: Math.random() > 0.5 ? 1 : 0.5,
-      }))
-    )
-  }, [])
 
   const technologies = [
     { name: 'HTML', color: '#E34F26' },
@@ -120,7 +94,7 @@ const TechStack = () => {
     >
       {/* Animated gradient orbs in background */}
       <motion.div
-        className="absolute top-1/4 left-1/4 w-[500px] h-[500px] rounded-full opacity-15 blur-3xl pointer-events-none"
+        className="absolute top-1/4 left-1/4 w-[500px] h-[500px] rounded-full opacity-15 blur-3xl pointer-events-none hidden md:block"
         style={{
           background: 'radial-gradient(circle, rgba(100, 180, 255, 0.3) 0%, rgba(80, 150, 255, 0.15) 50%, transparent 70%)',
         }}
@@ -137,7 +111,7 @@ const TechStack = () => {
       />
 
       <motion.div
-        className="absolute bottom-1/3 right-1/4 w-[400px] h-[400px] rounded-full opacity-15 blur-3xl pointer-events-none"
+        className="absolute bottom-1/3 right-1/4 w-[400px] h-[400px] rounded-full opacity-15 blur-3xl pointer-events-none hidden md:block"
         style={{
           background: 'radial-gradient(circle, rgba(120, 200, 255, 0.25) 0%, rgba(100, 180, 255, 0.12) 50%, transparent 70%)',
         }}
@@ -154,7 +128,7 @@ const TechStack = () => {
       />
 
       <motion.div
-        className="absolute top-1/2 right-1/3 w-[350px] h-[350px] rounded-full opacity-10 blur-3xl pointer-events-none"
+        className="absolute top-1/2 right-1/3 w-[350px] h-[350px] rounded-full opacity-10 blur-3xl pointer-events-none hidden md:block"
         style={{
           background: 'radial-gradient(circle, rgba(150, 220, 255, 0.3) 0%, rgba(120, 200, 255, 0.15) 50%, transparent 70%)',
         }}
@@ -170,32 +144,10 @@ const TechStack = () => {
         }}
       />
 
-      {/* Floating particles */}
-      {floatingParticles.map((particle, i) => (
-        <motion.div
-          key={i}
-          className="absolute bg-blue-400 rounded-full opacity-30 pointer-events-none"
-          style={{
-            left: `${particle.initialX}%`,
-            top: `${particle.initialY}%`,
-            width: `${particle.size * 3}px`,
-            height: `${particle.size * 3}px`,
-            boxShadow: '0 0 8px rgba(100, 180, 255, 0.5)',
-          }}
-          animate={{
-            y: [0, -100, 0],
-            x: [0, particle.moveX, 0],
-            opacity: [0.15, 0.4, 0.15],
-            scale: [1, 1.5, 1],
-          }}
-          transition={{
-            duration: particle.duration,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: particle.delay,
-          }}
-        />
-      ))}
+      {/* Floating particles - Canvas based for better performance */}
+      {typeof window !== 'undefined' && window.innerWidth >= 768 && (
+        <FloatingCanvasParticles particleCount={15} />
+      )}
 
       <div className="container mx-auto px-6 relative z-10">
         {/* Title */}

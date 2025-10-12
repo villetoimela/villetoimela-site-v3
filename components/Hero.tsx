@@ -5,6 +5,7 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { motion } from 'framer-motion'
 import { useLoader } from './LoaderWrapper'
+import FloatingCanvasParticles from './FloatingCanvasParticles'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -18,32 +19,6 @@ export default function Hero() {
   const targetRotationRef = useRef({ x: 0, y: 0 })
   const currentRotationRef = useRef({ x: 0, y: 0 })
   const autoRotationRef = useRef(0)
-  const [particles, setParticles] = useState<Array<{
-    initialX: number
-    initialY: number
-    moveX: number
-    duration: number
-    delay: number
-    size: number
-  }>>([])
-
-  // Initialize particles on client side only to avoid hydration mismatch
-  useEffect(() => {
-    // DISABLE particles completely on mobile for better performance
-    const isMobileDevice = window.innerWidth < 768
-    const particleCount = isMobileDevice ? 0 : 30 // 0 on mobile, 30 on desktop
-
-    setParticles(
-      [...Array(particleCount)].map(() => ({
-        initialX: Math.random() * 100,
-        initialY: Math.random() * 100,
-        moveX: Math.random() * 50 - 25,
-        duration: 10 + Math.random() * 10,
-        delay: Math.random() * 5,
-        size: Math.random() > 0.5 ? 1 : 0.5,
-      }))
-    )
-  }, [])
 
   // Intersection Observer to track visibility
   useEffect(() => {
@@ -394,7 +369,7 @@ export default function Hero() {
     >
       {/* Animated gradient orbs in background */}
       <motion.div
-        className="absolute top-0 left-0 w-[600px] h-[600px] rounded-full opacity-20 blur-3xl"
+        className="absolute top-0 left-0 w-[600px] h-[600px] rounded-full opacity-20 blur-3xl hidden md:block"
         style={{
           background: 'radial-gradient(circle, rgba(100, 180, 255, 0.4) 0%, rgba(80, 150, 255, 0.2) 50%, transparent 70%)',
         }}
@@ -414,7 +389,7 @@ export default function Hero() {
       />
 
       <motion.div
-        className="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full opacity-20 blur-3xl"
+        className="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full opacity-20 blur-3xl hidden md:block"
         style={{
           background: 'radial-gradient(circle, rgba(120, 200, 255, 0.3) 0%, rgba(100, 180, 255, 0.15) 50%, transparent 70%)',
         }}
@@ -434,7 +409,7 @@ export default function Hero() {
       />
 
       <motion.div
-        className="absolute top-1/3 right-1/4 w-[400px] h-[400px] rounded-full opacity-15 blur-3xl"
+        className="absolute top-1/3 right-1/4 w-[400px] h-[400px] rounded-full opacity-15 blur-3xl hidden md:block"
         style={{
           background: 'radial-gradient(circle, rgba(150, 220, 255, 0.35) 0%, rgba(120, 200, 255, 0.18) 50%, transparent 70%)',
         }}
@@ -453,32 +428,10 @@ export default function Hero() {
         }}
       />
 
-      {/* Floating particles */}
-      {particles.map((particle, i) => (
-        <motion.div
-          key={i}
-          className="absolute bg-blue-400 rounded-full opacity-40"
-          style={{
-            left: `${particle.initialX}%`,
-            top: `${particle.initialY}%`,
-            width: `${particle.size * 4}px`,
-            height: `${particle.size * 4}px`,
-            boxShadow: '0 0 10px rgba(100, 180, 255, 0.6)',
-          }}
-          animate={{
-            y: [0, -100, 0],
-            x: [0, particle.moveX, 0],
-            opacity: [0.2, 0.6, 0.2],
-            scale: [1, 1.5, 1],
-          }}
-          transition={{
-            duration: particle.duration,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: particle.delay,
-          }}
-        />
-      ))}
+      {/* Floating particles - Canvas based for better performance */}
+      {typeof window !== 'undefined' && window.innerWidth >= 768 && (
+        <FloatingCanvasParticles particleCount={20} />
+      )}
 
       {/* 3D Canvas Background - Hidden on mobile for performance */}
       <motion.canvas
