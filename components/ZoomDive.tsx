@@ -205,15 +205,35 @@ export default function ZoomDive() {
       scrollTrigger: {
         id: 'zoom-dive', // Unique ID to prevent conflicts
         trigger: section,
-        start: 'top top',
+        start: isMobileDevice ? 'top+=100 top' : 'top top', // Start later on mobile - section needs to be 100px into viewport
         end: `+=${scrollDistance}`,
         scrub: 1,
         pin: true,
         pinSpacing: true,
-        anticipatePin: 1,
+        anticipatePin: isMobileDevice ? 0 : 1, // Disable anticipatePin on mobile
         invalidateOnRefresh: true,
+        markers: isMobileDevice, // Show markers on mobile for debugging
         onUpdate: (self) => {
           animationProgress = self.progress
+          if (isMobileDevice && self.progress === 0) {
+            console.log('[ZoomDive] Animation at start position')
+          }
+        },
+        // Debug callbacks for mobile
+        onEnter: () => {
+          if (isMobileDevice) {
+            console.log('[ZoomDive] ScrollTrigger ENTERED - animation starting')
+          }
+        },
+        onLeave: () => {
+          if (isMobileDevice) {
+            console.log('[ZoomDive] ScrollTrigger LEFT - animation finished')
+          }
+        },
+        onRefresh: () => {
+          if (isMobileDevice) {
+            console.log('[ZoomDive] ScrollTrigger REFRESHED')
+          }
         },
       },
     })
