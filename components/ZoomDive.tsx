@@ -201,85 +201,42 @@ export default function ZoomDive() {
       ? window.innerHeight * 1.5  // Shorter on mobile
       : window.innerHeight * 2
 
-    // Wait a bit before initializing ScrollTrigger to ensure previous sections are ready
-    // This prevents initialization order issues on page reload
-    const initScrollTrigger = () => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          id: 'zoom-dive', // Unique ID to prevent conflicts
-          trigger: section,
-          start: 'top top',
-          end: `+=${scrollDistance}`,
-          scrub: 1,
-          pin: true,
-          pinSpacing: true,
-          anticipatePin: 0, // Disable anticipatePin to prevent conflicts with other pinned sections
-          invalidateOnRefresh: true,
-          fastScrollEnd: true, // Prevent snapping issues
-          preventOverlaps: true, // KEY FIX: Prevent this from overlapping with previous ScrollTriggers
-          markers: isMobileDevice, // Show markers on mobile for debugging
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        id: 'zoom-dive', // Unique ID to prevent conflicts
+        trigger: section,
+        start: 'top top',
+        end: `+=${scrollDistance}`,
+        scrub: 1,
+        pin: true,
+        pinSpacing: true,
+        anticipatePin: 0, // Disable anticipatePin to prevent conflicts with other pinned sections
+        invalidateOnRefresh: true,
+        fastScrollEnd: true, // Prevent snapping issues
+        preventOverlaps: true, // KEY FIX: Prevent this from overlapping with previous ScrollTriggers
+        markers: isMobileDevice, // Show markers on mobile for debugging
         onUpdate: (self) => {
           animationProgress = self.progress
-          if (isMobileDevice && self.progress === 0) {
-            console.log('[ZoomDive] Animation at start position')
-          }
         },
-        // Debug callbacks for mobile
-        onEnter: () => {
-          if (isMobileDevice) {
-            console.log('[ZoomDive] ScrollTrigger ENTERED - animation starting', 'scrollY:', window.scrollY)
-          }
-        },
-        onLeave: () => {
-          if (isMobileDevice) {
-            console.log('[ZoomDive] ScrollTrigger LEFT - animation finished')
-          }
-        },
-        onEnterBack: () => {
-          if (isMobileDevice) {
-            console.log('[ZoomDive] ScrollTrigger ENTERED BACK (scrolling up)', 'scrollY:', window.scrollY)
-          }
-          // Refresh to recalculate positions when scrolling back up
-          ScrollTrigger.refresh()
-        },
-        onLeaveBack: () => {
-          if (isMobileDevice) {
-            console.log('[ZoomDive] ScrollTrigger LEFT BACK (scrolling up past)', 'scrollY:', window.scrollY)
-          }
-          // Refresh to recalculate positions when leaving back
-          ScrollTrigger.refresh()
-        },
-        onRefresh: () => {
-          if (isMobileDevice) {
-            console.log('[ZoomDive] ScrollTrigger REFRESHED')
-          }
-        },
-        },
-      })
+      },
+    })
 
-      scrollTriggerRef.current = tl.scrollTrigger as ScrollTrigger
+    scrollTriggerRef.current = tl.scrollTrigger as ScrollTrigger
 
-      // Animate center text
-      tl.fromTo(
-        centerText,
-        {
-          scale: 1,
-          opacity: 1,
-        },
-        {
-          scale: 5,
-          opacity: 0,
-          duration: 1,
-          ease: 'power2.in',
-        }
-      )
-    }
-
-    // Delay initialization slightly to ensure previous ScrollTriggers are ready
-    // Especially important for mobile where multiple pinned sections can conflict
-    const initDelay = setTimeout(() => {
-      initScrollTrigger()
-    }, 100)
+    // Animate center text
+    tl.fromTo(
+      centerText,
+      {
+        scale: 1,
+        opacity: 1,
+      },
+      {
+        scale: 5,
+        opacity: 0,
+        duration: 1,
+        ease: 'power2.in',
+      }
+    )
 
     // Handle resize to refresh ScrollTrigger (important for mobile viewport changes)
     const handleResize = () => {
@@ -305,7 +262,6 @@ export default function ZoomDive() {
 
     // Cleanup
     return () => {
-      clearTimeout(initDelay)
       window.removeEventListener('resize', handleResize)
       if (window.visualViewport) {
         window.visualViewport.removeEventListener('resize', handleVisualViewportResize)
