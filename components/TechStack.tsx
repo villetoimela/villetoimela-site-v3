@@ -20,10 +20,13 @@ const TechStack = () => {
     size: number
   }>>([])
 
-  // Initialize floating particles
+  // Initialize floating particles - DISABLED ON MOBILE for performance
   useEffect(() => {
+    const isMobileDevice = window.innerWidth < 768
+    const particleCount = isMobileDevice ? 0 : 20 // 0 on mobile, 20 on desktop
+
     setFloatingParticles(
-      [...Array(30)].map(() => ({
+      [...Array(particleCount)].map(() => ({
         initialX: Math.random() * 100,
         initialY: Math.random() * 100,
         moveX: Math.random() * 50 - 25,
