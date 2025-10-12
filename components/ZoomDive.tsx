@@ -203,6 +203,7 @@ export default function ZoomDive() {
 
     const tl = gsap.timeline({
       scrollTrigger: {
+        id: 'zoom-dive', // Unique ID to prevent conflicts
         trigger: section,
         start: 'top top',
         end: `+=${scrollDistance}`,
@@ -240,12 +241,28 @@ export default function ZoomDive() {
       ScrollTrigger.refresh()
     }
 
-    window.removeEventListener('resize', resizeCanvas) // Remove old listener
+    // IMPORTANT: Listen to visualViewport changes (mobile URL bar hide/show)
+    const handleVisualViewportResize = () => {
+      console.log('[ZoomDive] visualViewport changed, refreshing ScrollTrigger')
+      ScrollTrigger.refresh()
+    }
+
+    // Remove the initial resize listener that was added above
+    window.removeEventListener('resize', resizeCanvas)
+    // Add the new comprehensive resize handler
     window.addEventListener('resize', handleResize)
+
+    // Add visualViewport listener for mobile URL bar changes
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', handleVisualViewportResize)
+    }
 
     // Cleanup
     return () => {
       window.removeEventListener('resize', handleResize)
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', handleVisualViewportResize)
+      }
       scrollTriggerRef.current?.kill()
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current)

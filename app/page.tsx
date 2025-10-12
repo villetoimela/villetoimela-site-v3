@@ -48,7 +48,6 @@ export default function Home() {
         ]}
       />
       <ProjectsPreview />
-      <ZoomDive />
       <HorizontalScroll
         panels={[
           {
@@ -65,6 +64,7 @@ export default function Home() {
           }
         ]}
       />
+      <ZoomDive />
       <ProjectMarquee />
       <TechStack />
       <ContactFooter />
