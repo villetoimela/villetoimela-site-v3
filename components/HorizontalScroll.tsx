@@ -33,6 +33,7 @@ export default function HorizontalScroll({ panels }: HorizontalScrollProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const svgRef = useRef<SVGSVGElement>(null)
   const scrollTriggersRef = useRef<ScrollTrigger[]>([])
+  const setupTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const [isMobile, setIsMobile] = useState(false)
   const uniqueId = useId().replace(/:/g, '-')
 
@@ -117,8 +118,15 @@ export default function HorizontalScroll({ panels }: HorizontalScrollProps) {
       scrollTriggersRef.current.forEach(st => st.kill())
       scrollTriggersRef.current = []
 
-      // Calculate total scroll width
+      // Calculate total scroll width - wait a frame to ensure layout is complete
       const scrollWidth = scrollContainer.scrollWidth - window.innerWidth
+
+      // Ensure scrollWidth is valid (prevents issues during initial render)
+      if (scrollWidth <= 0) {
+        console.warn('[HorizontalScroll] Invalid scrollWidth, will retry on next frame')
+        requestAnimationFrame(setupAnimations)
+        return
+      }
 
       // Create horizontal scroll animation
       const scrollTween = gsap.to(scrollContainer, {
@@ -133,7 +141,6 @@ export default function HorizontalScroll({ panels }: HorizontalScrollProps) {
           scrub: 1,
           end: () => `+=${scrollWidth}`,
           invalidateOnRefresh: true,
-          onRefresh: (self) => scrollTriggersRef.current.push(self),
         },
       })
 
@@ -340,18 +347,29 @@ export default function HorizontalScroll({ panels }: HorizontalScrollProps) {
       }
     }
 
-    // Initial setup
-    setupAnimations()
+    // Initial setup - delay to ensure DOM is fully rendered
+    setupTimeoutRef.current = setTimeout(() => {
+      setupAnimations()
+    }, 100)
 
     // Re-setup on window resize
     const handleResize = () => {
-      setupAnimations()
-      ScrollTrigger.refresh()
+      // Clear any pending setup
+      if (setupTimeoutRef.current) {
+        clearTimeout(setupTimeoutRef.current)
+      }
+      // Wait for resize to complete before re-calculating
+      setupTimeoutRef.current = setTimeout(() => {
+        setupAnimations()
+      }, 150)
     }
 
     window.addEventListener('resize', handleResize)
 
     return () => {
+      if (setupTimeoutRef.current) {
+        clearTimeout(setupTimeoutRef.current)
+      }
       window.removeEventListener('resize', handleResize)
       scrollTriggersRef.current.forEach(st => st.kill())
       scrollTriggersRef.current = []
