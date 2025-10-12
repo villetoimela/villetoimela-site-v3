@@ -210,11 +210,9 @@ export default function ZoomDive() {
         scrub: 1,
         pin: true,
         pinSpacing: true,
-        anticipatePin: 0, // Disable anticipatePin to prevent conflicts with other pinned sections
+        anticipatePin: isMobileDevice ? 0 : 1, // Disable on mobile to prevent conflicts
         invalidateOnRefresh: true,
-        fastScrollEnd: true, // Prevent snapping issues
-        preventOverlaps: true, // KEY FIX: Prevent this from overlapping with previous ScrollTriggers
-        markers: isMobileDevice, // Show markers on mobile for debugging
+        preventOverlaps: true, // Prevent overlapping with previous pinned sections
         onUpdate: (self) => {
           animationProgress = self.progress
         },
