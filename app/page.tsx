@@ -1,6 +1,6 @@
 import Hero from '@/components/Hero'
 import HorizontalScroll from '@/components/HorizontalScroll'
-import ZoomDive from '@/components/ZoomDive'
+import ZoomDive from '@/components/ZoomDiveNew'
 import ProjectMarquee from '@/components/ProjectMarquee'
 import ProjectsPreview from '@/components/ProjectsPreview'
 import TechStack from '@/components/TechStack'
