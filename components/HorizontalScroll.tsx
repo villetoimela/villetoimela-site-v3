@@ -134,9 +134,16 @@ export default function HorizontalScroll({ panels }: HorizontalScrollProps) {
           trigger: section,
           start: 'top top',
           pin: true,
+          pinSpacing: true, // Explicitly set pinSpacing
           scrub: 1,
           end: () => `+=${scrollWidth}`,
           invalidateOnRefresh: true,
+          onRefresh: (self) => {
+            const isMobile = window.innerWidth < 768
+            if (isMobile) {
+              console.log(`[HorizontalScroll ${uniqueId}] REFRESHED - start: ${self.start}, end: ${self.end}, pinSpacing: ${self.pin?.spacer ? 'yes' : 'no'}`)
+            }
+          },
         },
       })
 

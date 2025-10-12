@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
@@ -10,6 +10,11 @@ export default function ZoomDiveNew() {
   const sectionRef = useRef<HTMLDivElement>(null)
   const textRef = useRef<HTMLDivElement>(null)
   const backgroundRef = useRef<HTMLDivElement>(null)
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 768)
+  }, [])
 
   useEffect(() => {
     const section = sectionRef.current
@@ -20,6 +25,8 @@ export default function ZoomDiveNew() {
 
     // Simple approach: just animate text scale and background
     // No complex canvas or pinning conflicts
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
+    
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: section,
@@ -28,6 +35,18 @@ export default function ZoomDiveNew() {
         scrub: true,
         pin: true,
         pinSpacing: true,
+        id: 'zoom-dive-new',
+        markers: isMobile, // Debug markers on mobile
+        onRefresh: (self) => {
+          if (isMobile) {
+            console.log('[ZoomDiveNew] REFRESHED - start:', self.start, 'end:', self.end, 'trigger element top:', section.getBoundingClientRect().top + window.scrollY)
+          }
+        },
+        onEnter: () => {
+          if (isMobile) {
+            console.log('[ZoomDiveNew] ENTERED at scrollY:', window.scrollY)
+          }
+        },
       }
     })
 
@@ -58,6 +77,7 @@ export default function ZoomDiveNew() {
     <section
       ref={sectionRef}
       className="relative bg-black overflow-hidden h-screen"
+      style={{ marginTop: isMobile ? '100vh' : 0 }}
     >
       {/* Animated starfield background using CSS only */}
       <div 

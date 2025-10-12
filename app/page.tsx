@@ -64,6 +64,8 @@ export default function Home() {
           }
         ]}
       />
+      {/* Small spacer to ensure proper pinSpacing calculation on mobile */}
+      <div className="h-1" />
       <ZoomDive />
       <ProjectMarquee />
       <TechStack />
