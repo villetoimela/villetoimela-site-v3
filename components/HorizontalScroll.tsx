@@ -141,7 +141,7 @@ export default function HorizontalScroll({ panels }: HorizontalScrollProps) {
           onRefresh: (self) => {
             const isMobile = window.innerWidth < 768
             if (isMobile) {
-              console.log(`[HorizontalScroll ${uniqueId}] REFRESHED - start: ${self.start}, end: ${self.end}, pinSpacing: ${self.pin?.spacer ? 'yes' : 'no'}`)
+              console.log(`[HorizontalScroll ${uniqueId}] REFRESHED - start: ${self.start}, end: ${self.end}, pinned: ${self.pin ? 'yes' : 'no'}`)
             }
           },
         },
