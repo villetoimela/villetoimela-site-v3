@@ -319,6 +319,7 @@ export default function ProjectMarquee() {
           </p>
           <div className="w-12 h-px bg-gradient-to-r from-transparent via-blue-400 to-transparent" />
         </div>
+        <div className="h-20" />
       </div>
       {/* Animated gradient orbs in background - only animate when visible */}
       <motion.div
@@ -423,7 +424,7 @@ export default function ProjectMarquee() {
                   href={project.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group relative block flex-shrink-0 transition-all duration-300 w-[300px] h-[170px] md:w-[450px] md:h-[255px] lg:w-[600px] lg:h-[340px]"
+                  className="group relative block flex-shrink-0 transition-all duration-300 w-[240px] h-[135px] md:w-[450px] md:h-[255px] lg:w-[600px] lg:h-[340px]"
                   onMouseEnter={() => handleMouseEnter(project.id, rowIndex)}
                   onMouseLeave={() => handleMouseLeave(rowIndex)}
                 >
@@ -440,24 +441,24 @@ export default function ProjectMarquee() {
                     />
 
                     {/* Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-60 group-hover:opacity-90 transition-opacity duration-300" />
+                    <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/50 to-black/80 opacity-60 group-hover:opacity-90 transition-opacity duration-300" />
 
                     {/* Content */}
-                    <div className="absolute inset-0 p-6 flex flex-col justify-end">
+                    <div className="absolute inset-0 p-4 md:p-6 flex flex-col justify-between">
                       {/* Title */}
                       <h3
-                        className="text-2xl font-light text-white mb-3 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300"
+                        className="text-base md:text-2xl font-light text-white transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300"
                         style={{ fontFamily: 'var(--font-space-grotesk)' }}
                       >
                         {project.title}
                       </h3>
 
                       {/* Tags */}
-                      <div className="flex flex-wrap gap-2 opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 delay-75">
+                      <div className="flex flex-wrap gap-1.5 md:gap-2 opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 delay-75">
                         {project.tags.map((tag) => (
                           <span
                             key={tag}
-                            className="px-3 py-1 text-xs text-blue-300 border border-blue-400/30 rounded-full backdrop-blur-sm bg-blue-950/30"
+                            className="px-2 md:px-3 py-0.5 md:py-1 text-[10px] md:text-xs text-blue-300 border border-blue-400/30 rounded-full backdrop-blur-sm bg-blue-950/30"
                             style={{ fontFamily: 'var(--font-space-grotesk)' }}
                           >
                             {tag}

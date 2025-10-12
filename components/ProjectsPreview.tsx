@@ -199,7 +199,7 @@ const ProjectsPreview = () => {
                     href={project.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-shrink-0 w-[400px] h-[225px] rounded-2xl overflow-hidden border border-white/10 cursor-pointer group hover:scale-105 transition-transform duration-300"
+                    className="flex-shrink-0 w-[280px] h-[158px] md:w-[400px] md:h-[225px] rounded-2xl overflow-hidden border border-white/10 cursor-pointer group hover:scale-105 transition-transform duration-300"
                   >
                     <div className="relative w-full h-full">
                       {/* Project Image */}
@@ -214,25 +214,25 @@ const ProjectsPreview = () => {
                       />
 
                       {/* Overlay */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
+                      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/50 to-black/80 opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
 
                       {/* Content */}
-                      <div className="relative h-full p-8 flex flex-col justify-between">
-                        <div className="flex flex-wrap gap-2">
+                      <div className="relative h-full p-4 md:p-8 flex flex-col justify-between">
+                        <div>
+                          <h3 className="text-lg md:text-2xl font-light text-white group-hover:translate-x-2 transition-transform duration-300">
+                            {project.title}
+                          </h3>
+                        </div>
+
+                        <div className="flex flex-wrap gap-1.5 md:gap-2">
                           {project.tags.slice(0, 3).map((tag) => (
                             <span
                               key={tag}
-                              className="px-2 py-1 text-xs text-blue-300 border border-blue-400/30 rounded-full backdrop-blur-sm bg-blue-950/30"
+                              className="px-2 py-0.5 md:py-1 text-[10px] md:text-xs text-blue-300 border border-blue-400/30 rounded-full backdrop-blur-sm bg-blue-950/30"
                             >
                               {tag}
                             </span>
                           ))}
-                        </div>
-
-                        <div>
-                          <h3 className="text-2xl font-light text-white mb-2 group-hover:translate-x-2 transition-transform duration-300">
-                            {project.title}
-                          </h3>
                         </div>
                       </div>
 
@@ -263,7 +263,7 @@ const ProjectsPreview = () => {
                     href={project.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-shrink-0 w-[400px] h-[225px] rounded-2xl overflow-hidden border border-white/10 cursor-pointer group hover:scale-105 transition-transform duration-300"
+                    className="flex-shrink-0 w-[280px] h-[158px] md:w-[400px] md:h-[225px] rounded-2xl overflow-hidden border border-white/10 cursor-pointer group hover:scale-105 transition-transform duration-300"
                   >
                     <div className="relative w-full h-full">
                       {/* Project Image */}
@@ -278,25 +278,25 @@ const ProjectsPreview = () => {
                       />
 
                       {/* Overlay */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
+                      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/50 to-black/80 opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
 
                       {/* Content */}
-                      <div className="relative h-full p-8 flex flex-col justify-between">
-                        <div className="flex flex-wrap gap-2">
+                      <div className="relative h-full p-4 md:p-8 flex flex-col justify-between">
+                        <div>
+                          <h3 className="text-lg md:text-2xl font-light text-white group-hover:translate-x-2 transition-transform duration-300">
+                            {project.title}
+                          </h3>
+                        </div>
+
+                        <div className="flex flex-wrap gap-1.5 md:gap-2">
                           {project.tags.slice(0, 3).map((tag) => (
                             <span
                               key={tag}
-                              className="px-2 py-1 text-xs text-blue-300 border border-blue-400/30 rounded-full backdrop-blur-sm bg-blue-950/30"
+                              className="px-2 py-0.5 md:py-1 text-[10px] md:text-xs text-blue-300 border border-blue-400/30 rounded-full backdrop-blur-sm bg-blue-950/30"
                             >
                               {tag}
                             </span>
                           ))}
-                        </div>
-
-                        <div>
-                          <h3 className="text-2xl font-light text-white mb-2 group-hover:translate-x-2 transition-transform duration-300">
-                            {project.title}
-                          </h3>
                         </div>
                       </div>
 
