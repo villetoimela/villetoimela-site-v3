@@ -29,9 +29,9 @@ export default function Hero() {
 
   // Initialize particles on client side only to avoid hydration mismatch
   useEffect(() => {
-    // Reduce particles on mobile for better performance
+    // DISABLE particles completely on mobile for better performance
     const isMobileDevice = window.innerWidth < 768
-    const particleCount = isMobileDevice ? 15 : 50
+    const particleCount = isMobileDevice ? 0 : 30 // 0 on mobile, 30 on desktop
 
     setParticles(
       [...Array(particleCount)].map(() => ({
@@ -392,9 +392,9 @@ export default function Hero() {
       suppressHydrationWarning
       style={{ opacity: isLoaded ? 1 : 0, transition: 'opacity 0.5s ease-out' }}
     >
-      {/* Animated gradient orbs in background */}
+      {/* Animated gradient orbs in background - HIDDEN ON MOBILE */}
       <motion.div
-        className="absolute top-0 left-0 w-[600px] h-[600px] rounded-full opacity-20 blur-3xl"
+        className="absolute top-0 left-0 w-[600px] h-[600px] rounded-full opacity-20 blur-3xl hidden md:block"
         style={{
           background: 'radial-gradient(circle, rgba(100, 180, 255, 0.4) 0%, rgba(80, 150, 255, 0.2) 50%, transparent 70%)',
         }}
@@ -414,7 +414,7 @@ export default function Hero() {
       />
 
       <motion.div
-        className="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full opacity-20 blur-3xl"
+        className="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full opacity-20 blur-3xl hidden md:block"
         style={{
           background: 'radial-gradient(circle, rgba(120, 200, 255, 0.3) 0%, rgba(100, 180, 255, 0.15) 50%, transparent 70%)',
         }}
@@ -434,7 +434,7 @@ export default function Hero() {
       />
 
       <motion.div
-        className="absolute top-1/3 right-1/4 w-[400px] h-[400px] rounded-full opacity-15 blur-3xl"
+        className="absolute top-1/3 right-1/4 w-[400px] h-[400px] rounded-full opacity-15 blur-3xl hidden md:block"
         style={{
           background: 'radial-gradient(circle, rgba(150, 220, 255, 0.35) 0%, rgba(120, 200, 255, 0.18) 50%, transparent 70%)',
         }}
