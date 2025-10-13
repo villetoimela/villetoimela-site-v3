@@ -2,7 +2,7 @@ import Hero from '@/components/Hero'
 import HorizontalScroll from '@/components/HorizontalScroll'
 import ConditionalZoomDive from '@/components/ConditionalZoomDive'
 import ProjectMarquee from '@/components/ProjectMarquee'
-import ProjectsStack3D from '@/components/ProjectsStack3D'
+import ParallaxRevealLayers from '@/components/ParallaxRevealLayers'
 import TechStack from '@/components/TechStack'
 import ContactFooter from '@/components/ContactFooter'
 
@@ -47,9 +47,9 @@ export default function Home() {
           }
         ]}
       />
-      {/* Spacer between HorizontalScroll and ProjectsStack3D */}
+      {/* Spacer between HorizontalScroll and ParallaxRevealLayers */}
       <div className="h-16 sm:h-24 md:h-32 lg:h-40 bg-black" />
-      <ProjectsStack3D projectIds={['1','3','7','9','11']} />
+      <ParallaxRevealLayers projectIds={['1','2','3','5','6','7','9','10','11','12','13','14','15','16','17','18','19','20','21','22','24','25','27','28']} />
       <HorizontalScroll
         panels={[
           {
