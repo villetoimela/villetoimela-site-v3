@@ -33,8 +33,6 @@ export default function HorizontalScroll({ panels }: HorizontalScrollProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const svgRef = useRef<SVGSVGElement>(null)
   const scrollTriggersRef = useRef<ScrollTrigger[]>([])
-  const [isMobile, setIsMobile] = useState(false)
-  const [isSmallMobile, setIsSmallMobile] = useState(false)
   const uniqueId = useId().replace(/:/g, '-')
 
   // Particle system state
@@ -98,16 +96,6 @@ export default function HorizontalScroll({ panels }: HorizontalScrollProps) {
       y: svgRect.top + point.y * scaleY,
     }
   }
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 1024)
-      setIsSmallMobile(window.innerWidth < 768)
-    }
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
-  }, [])
 
   useEffect(() => {
     const section = sectionRef.current
@@ -528,19 +516,18 @@ export default function HorizontalScroll({ panels }: HorizontalScrollProps) {
         {panels.map((panel, index) => (
           <div
             key={index}
-            className={`panel-${uniqueId}-${index} h-screen flex items-center justify-center px-8 md:px-16 lg:px-24 relative z-20`}
-            style={{ minWidth: index === 0 ? (isSmallMobile ? '160vw' : (isMobile ? '150vw' : '100vw')) : (isSmallMobile ? '160vw' : (isMobile ? '180vw' : '150vw')) }}
+            className={`panel-${uniqueId}-${index} h-screen flex items-center justify-center px-4 sm:px-8 md:px-16 lg:px-24 relative z-20`}
+            style={{ minWidth: index === 0 ? '100vw' : '150vw' }}
           >
-            <div className={`panel-content-${uniqueId}-${index}`} style={{ width: isSmallMobile ? '160vw' : (isMobile ? '100vw' : '100%'), maxWidth: isSmallMobile ? 'none' : '1280px', paddingLeft: isMobile ? '2rem' : '0', paddingRight: isMobile ? '2rem' : '0', perspective: '2000px' }}>
-              <div className="flex flex-row md:flex-col lg:flex-row lg:items-start gap-0 md:gap-8 lg:gap-32">
+            <div className={`panel-content-${uniqueId}-${index} w-full max-w-xs sm:max-w-md md:max-w-2xl lg:max-w-4xl xl:max-w-7xl px-4 sm:px-8 md:px-0`} style={{ perspective: '2000px' }}>
+              <div className="flex flex-row items-start gap-4 sm:gap-6 md:gap-8 lg:gap-32">
                 {/* Title on the left */}
                 <h2
-                  className={`panel-title-${uniqueId}-${index} text-6xl md:text-8xl lg:text-8xl font-light text-white md:min-w-0 lg:min-w-[400px] xl:min-w-[500px] shrink-0`}
+                  className={`panel-title-${uniqueId}-${index} text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-light text-white min-w-[40%] sm:min-w-[45%] md:min-w-[50%] lg:min-w-[400px] xl:min-w-[500px] shrink-0 leading-tight`}
                   style={{
                     fontFamily: 'var(--font-space-grotesk)',
                     lineHeight: 0.9,
-                    transformStyle: 'preserve-3d',
-                    width: isSmallMobile ? '80vw' : 'auto'
+                    transformStyle: 'preserve-3d'
                   }}
                 >
                   {panel.title}
@@ -548,12 +535,11 @@ export default function HorizontalScroll({ panels }: HorizontalScrollProps) {
 
                 {/* Text on the right */}
                 <div
-                  className={`panel-text-${uniqueId}-${index} lg:pt-32 pr-4 md:pr-0 shrink-0 max-w-[600px]`}
-                  style={{ width: isSmallMobile ? '80vw' : 'auto' }}
+                  className={`panel-text-${uniqueId}-${index} lg:pt-32 shrink-0 max-w-xs sm:max-w-md md:max-w-lg lg:max-w-[600px]`}
                 >
                   {typeof panel.content === 'string' ? (
                     <p
-                      className="text-sm md:text-xl lg:text-2xl text-gray-300 leading-relaxed"
+                      className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl text-gray-300 leading-relaxed"
                       style={{ fontFamily: 'var(--font-space-grotesk)' }}
                     >
                       {panel.content}
@@ -568,7 +554,7 @@ export default function HorizontalScroll({ panels }: HorizontalScrollProps) {
         ))}
 
         {/* End spacer */}
-        <div className="h-screen" style={{ minWidth: isSmallMobile ? '20vw' : (isMobile ? '50vw' : '30vw') }} />
+        <div className="h-screen w-16 sm:w-24 md:w-32 lg:w-[30vw]" />
       </div>
 
       {/* Particles - rendered as fixed positioned elements */}
