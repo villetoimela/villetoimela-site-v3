@@ -109,15 +109,15 @@ export default function Hero() {
       suppressHydrationWarning
       style={{ opacity: isLoaded ? 1 : 0, transition: 'opacity 0.5s ease-out' }}
     >
-      {/* Animated gradient orbs in background */}
+      {/* Animated gradient orbs in background - More visible in hero */}
       <motion.div
-        className="absolute top-0 left-0 w-[600px] h-[600px] rounded-full opacity-20 blur-3xl hidden md:block"
+        className="absolute top-0 left-0 w-[600px] h-[600px] rounded-full opacity-35 blur-3xl hidden md:block"
         style={{
-          background: 'radial-gradient(circle, rgba(100, 180, 255, 0.4) 0%, rgba(80, 150, 255, 0.2) 50%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(100, 180, 255, 0.6) 0%, rgba(80, 150, 255, 0.3) 50%, transparent 70%)',
         }}
         initial={{ opacity: 0 }}
         animate={{
-          opacity: isLoaded ? 0.2 : 0,
+          opacity: isLoaded ? 0.35 : 0,
           x: isLoaded ? ['-10%', '10%', '-10%'] : 0,
           y: isLoaded ? ['-5%', '5%', '-5%'] : 0,
           scale: isLoaded ? [1, 1.1, 1] : 1,
@@ -131,13 +131,13 @@ export default function Hero() {
       />
 
       <motion.div
-        className="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full opacity-20 blur-3xl hidden md:block"
+        className="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full opacity-30 blur-3xl hidden md:block"
         style={{
-          background: 'radial-gradient(circle, rgba(120, 200, 255, 0.3) 0%, rgba(100, 180, 255, 0.15) 50%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(120, 200, 255, 0.5) 0%, rgba(100, 180, 255, 0.25) 50%, transparent 70%)',
         }}
         initial={{ opacity: 0 }}
         animate={{
-          opacity: isLoaded ? 0.2 : 0,
+          opacity: isLoaded ? 0.3 : 0,
           x: isLoaded ? ['10%', '-10%', '10%'] : 0,
           y: isLoaded ? ['5%', '-5%', '5%'] : 0,
           scale: isLoaded ? [1, 1.15, 1] : 1,
@@ -151,13 +151,13 @@ export default function Hero() {
       />
 
       <motion.div
-        className="absolute top-1/3 right-1/4 w-[400px] h-[400px] rounded-full opacity-15 blur-3xl hidden md:block"
+        className="absolute top-1/3 right-1/4 w-[400px] h-[400px] rounded-full opacity-28 blur-3xl hidden md:block"
         style={{
-          background: 'radial-gradient(circle, rgba(150, 220, 255, 0.35) 0%, rgba(120, 200, 255, 0.18) 50%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(150, 220, 255, 0.5) 0%, rgba(120, 200, 255, 0.28) 50%, transparent 70%)',
         }}
         initial={{ opacity: 0 }}
         animate={{
-          opacity: isLoaded ? 0.15 : 0,
+          opacity: isLoaded ? 0.28 : 0,
           x: isLoaded ? ['-15%', '15%', '-15%'] : 0,
           y: isLoaded ? ['10%', '-10%', '10%'] : 0,
           scale: isLoaded ? [1, 1.2, 1] : 1,
