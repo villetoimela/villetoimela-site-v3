@@ -12,16 +12,6 @@ interface ParallaxRevealLayersProps {
   projectIds?: string[]
 }
 
-// Fisher-Yates shuffle algorithm
-const shuffleArray = <T,>(array: T[]): T[] => {
-  const shuffled = [...array]
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
-  }
-  return shuffled
-}
-
 export default function ParallaxRevealLayers({ projectIds }: ParallaxRevealLayersProps) {
   const sectionRef = useRef<HTMLDivElement>(null)
   const imagesRef = useRef<HTMLDivElement[]>([])
@@ -30,15 +20,16 @@ export default function ParallaxRevealLayers({ projectIds }: ParallaxRevealLayer
   const selectedProjects: Project[] = useMemo(() => {
     if (projectIds && projectIds.length > 0) {
       const set = new Set(projectIds)
-      return allProjects.filter(p => set.has(p.id)).slice(0, 24)
+      return allProjects.filter(p => set.has(p.id))
     }
-    // Get all projects that have valid images and shuffle them randomly
-    const projectsWithImages = allProjects.filter(project => {
-      // Check if the image file exists by checking the filename pattern
+    // Use all projects, but filter out any that might have invalid image paths
+    return allProjects.filter(project => {
       const imageName = project.image.split('/').pop()
-      return imageName && imageName !== 'README.md'
+      return imageName && 
+             imageName !== 'README.md' && 
+             imageName !== '.gitkeep' &&
+             (imageName.endsWith('.png') || imageName.endsWith('.jpg') || imageName.endsWith('.jpeg') || imageName.endsWith('.webp'))
     })
-    return shuffleArray(projectsWithImages).slice(0, 24)
   }, [projectIds])
 
   useEffect(() => {
@@ -50,7 +41,7 @@ export default function ParallaxRevealLayers({ projectIds }: ParallaxRevealLayer
         scrollTrigger: {
           trigger: section,
           start: 'top top',
-          end: `+=${window.innerHeight * 3.2}`,
+          end: `+=${window.innerHeight * 3.5}`,
           scrub: 0.8,
           pin: true,
           anticipatePin: 1,
@@ -88,8 +79,8 @@ export default function ParallaxRevealLayers({ projectIds }: ParallaxRevealLayer
       imagesRef.current.forEach((img, index) => {
         if (!img) return
 
-        // Define different speed groups - more moderate speeds, less extreme
-        const speedVariations = [1.8, 1.4, 2.0, 1.6, 1.9, 1.5, 2.1, 1.7, 1.8, 1.5, 1.9, 1.6, 2.0, 1.7, 1.8, 1.6, 1.9, 1.5, 2.0, 1.6, 1.8, 1.7, 1.9, 1.4]
+        // Define different speed groups - more moderate speeds, removed fastest ones
+        const speedVariations = [1.8, 1.4, 2.0, 1.6, 1.9, 1.5, 2.1, 1.7, 1.8, 1.5, 1.9, 1.6]
         const speedMultiplier = speedVariations[index % speedVariations.length]
         
         // Start below screen
@@ -104,8 +95,8 @@ export default function ParallaxRevealLayers({ projectIds }: ParallaxRevealLayer
           opacity: 0,
         })
 
-        // Stagger start times - tighter for more images, start after text begins
-        const startTime = 0.3 + index * 0.08
+        // Stagger start times - tighter spacing, start after text begins
+        const startTime = 0.3 + index * 0.10
         
         // Calculate duration based on speed - fast ones have shorter duration
         const duration = 2.5 / speedMultiplier
@@ -113,7 +104,7 @@ export default function ParallaxRevealLayers({ projectIds }: ParallaxRevealLayer
         // Fade in
         tl.to(img, {
           opacity: 1,
-          duration: 0.25,
+          duration: 0.3,
         }, startTime)
         
         // Slide up
@@ -123,7 +114,7 @@ export default function ParallaxRevealLayers({ projectIds }: ParallaxRevealLayer
           ease: 'none',
         }, startTime)
         
-        // Fade out near the end of its journey
+        // Fade out near the end
         tl.to(img, {
           opacity: 0,
           duration: 0.3,
@@ -135,42 +126,46 @@ export default function ParallaxRevealLayers({ projectIds }: ParallaxRevealLayer
     return () => ctx.revert()
   }, [selectedProjects.length])
 
-  // Define image positions and sizes - mobile-optimized balance
+  // Define image positions and sizes
   const imageConfigs = selectedProjects.map((_, index) => {
     const positions = [
-      { left: '2%', size: 'large' },    // vasen
-      { left: '35%', size: 'small' },    // oikea
-      { left: '8%', size: 'medium' },   // vasen
-      { left: '42%', size: 'medium' },   // oikea
-      { left: '5%', size: 'small' },    // vasen
-      { left: '38%', size: 'large' },   // oikea
-      { left: '12%', size: 'small' },   // vasen
-      { left: '45%', size: 'medium' },   // oikea
-      { left: '6%', size: 'medium' },   // vasen
-      { left: '32%', size: 'small' },   // oikea
-      { left: '18%', size: 'large' },   // vasen
-      { left: '48%', size: 'medium' },   // oikea
-      { left: '3%', size: 'small' },    // vasen
-      { left: '40%', size: 'small' },   // oikea
-      { left: '10%', size: 'medium' },   // vasen
-      { left: '35%', size: 'large' },   // oikea
-      { left: '1%', size: 'small' },   // vasen
-      { left: '42%', size: 'small' },   // oikea
-      { left: '15%', size: 'large' },   // vasen
-      { left: '38%', size: 'medium' },   // oikea
-      { left: '7%', size: 'medium' },   // vasen
-      { left: '32%', size: 'small' },   // oikea
-      { left: '4%', size: 'large' },   // vasen
-      { left: '45%', size: 'medium' },   // oikea
+      { left: '5%', size: 'large' },
+      { left: '75%', size: 'small' },
+      { left: '25%', size: 'medium' },
+      { left: '65%', size: 'medium' },
+      { left: '10%', size: 'small' },
+      { left: '55%', size: 'large' },
+      { left: '35%', size: 'small' },
+      { left: '15%', size: 'medium' },
+      { left: '70%', size: 'small' },
+      { left: '40%', size: 'large' },
+      { left: '60%', size: 'medium' },
+      { left: '20%', size: 'small' },
     ]
     return positions[index % positions.length]
   })
 
+  // Mobile-specific position adjustment
+  const getMobileAdjustedPosition = (originalLeft: string) => {
+    const numericValue = parseFloat(originalLeft)
+    // Shift positions left by 20% on mobile (but keep them within bounds)
+    const adjustedValue = Math.max(2, numericValue - 20)
+    return `${adjustedValue}%`
+  }
+
   return (
-    <section 
-      ref={sectionRef} 
-      className="relative bg-black h-screen overflow-hidden"
-    >
+    <>
+      <style jsx>{`
+        @media (max-width: 767px) {
+          .img-small, .img-medium, .img-large {
+            left: var(--mobile-left) !important;
+          }
+        }
+      `}</style>
+      <section 
+        ref={sectionRef} 
+        className="relative bg-black h-screen overflow-hidden"
+      >
       {/* Sliding Text */}
       <div 
         ref={textRef}
@@ -189,9 +184,9 @@ export default function ParallaxRevealLayers({ projectIds }: ParallaxRevealLayer
         {selectedProjects.map((project, idx) => {
           const config = imageConfigs[idx]
           const sizeClasses = {
-            small: 'w-[50vw] md:w-[32vw] lg:w-[24vw] aspect-[16/9]',
-            medium: 'w-[65vw] md:w-[42vw] lg:w-[34vw] aspect-[16/9]',
-            large: 'w-[75vw] md:w-[52vw] lg:w-[42vw] aspect-[16/9]',
+            small: 'w-[60vw] md:w-[40vw] lg:w-[30vw] aspect-[16/9]',
+            medium: 'w-[80vw] md:w-[56vw] lg:w-[44vw] aspect-[16/9]',
+            large: 'w-[100vw] md:w-[70vw] lg:w-[56vw] aspect-[16/9]',
           }
 
           return (
@@ -202,7 +197,8 @@ export default function ParallaxRevealLayers({ projectIds }: ParallaxRevealLayer
               style={{ 
                 left: config.left,
                 top: 0,
-              }}
+                '--mobile-left': getMobileAdjustedPosition(config.left),
+              } as React.CSSProperties & { '--mobile-left': string }}
             >
               <div className="relative w-full h-full rounded-xl md:rounded-2xl overflow-hidden shadow-[0_20px_60px_-15px_rgba(0,0,0,0.8)] border border-white/10">
                 <Image
@@ -227,7 +223,8 @@ export default function ParallaxRevealLayers({ projectIds }: ParallaxRevealLayer
       
       {/* Bottom fade */}
       <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-black to-transparent pointer-events-none z-10" />
-    </section>
+      </section>
+    </>
   )
 }
 
