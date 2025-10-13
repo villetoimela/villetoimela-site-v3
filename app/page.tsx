@@ -2,7 +2,7 @@ import Hero from '@/components/Hero'
 import HorizontalScroll from '@/components/HorizontalScroll'
 import ConditionalZoomDive from '@/components/ConditionalZoomDive'
 import ProjectMarquee from '@/components/ProjectMarquee'
-import ProjectsPreview from '@/components/ProjectsPreview'
+import ProjectsStack3D from '@/components/ProjectsStack3D'
 import TechStack from '@/components/TechStack'
 import ContactFooter from '@/components/ContactFooter'
 
@@ -47,7 +47,7 @@ export default function Home() {
           }
         ]}
       />
-      <ProjectsPreview />
+      <ProjectsStack3D projectIds={['1','2','3','4','5']} />
       <HorizontalScroll
         panels={[
           {
