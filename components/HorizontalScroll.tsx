@@ -114,7 +114,8 @@ export default function HorizontalScroll({ panels }: HorizontalScrollProps) {
       
       // Mobile needs more vertical scroll distance because panels are wider
       const isMobileDevice = window.innerWidth < 768
-      const scrollMultiplier = isMobileDevice ? 1.4 : 1
+      const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024
+      const scrollMultiplier = isMobileDevice ? 2.5 : isTablet ? 1.3 : 1
 
       // Create horizontal scroll animation
       const scrollTween = gsap.to(scrollContainer, {
