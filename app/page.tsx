@@ -31,13 +31,13 @@ export default function Home() {
             content: (
               <>
                 <p
-                  className="text-lg md:text-xl lg:text-2xl text-gray-300 leading-relaxed mb-6"
+                  className="text-sm md:text-xl lg:text-2xl text-gray-300 leading-relaxed mb-6"
                   style={{ fontFamily: 'var(--font-space-grotesk)' }}
                 >
                   After completing a two-year Software Developer program, I got to work at one of Finland's top marketing agencies. There I built all kinds of websites for different clients — mostly custom WordPress themes, but also some more complex projects. It's been great for learning not just the technical side, but also how to work with teams and communicate with clients who may not speak "developer."
                 </p>
                 <p
-                  className="text-lg md:text-xl lg:text-2xl text-gray-300 leading-relaxed"
+                  className="text-sm md:text-xl lg:text-2xl text-gray-300 leading-relaxed"
                   style={{ fontFamily: 'var(--font-space-grotesk)' }}
                 >
                   My brother and I also started our own company during my studies. This means I can take on freelance projects outside of regular work hours and invoice them through the company. I've worked on some pretty cool projects over the years.
