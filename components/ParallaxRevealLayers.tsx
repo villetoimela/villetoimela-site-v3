@@ -4,7 +4,9 @@ import { useEffect, useMemo, useRef } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Image from 'next/image'
+import { motion } from 'framer-motion'
 import { projects as allProjects, Project } from '@/data/projects'
+import FloatingCanvasParticles from './FloatingCanvasParticles'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -96,7 +98,7 @@ export default function ParallaxRevealLayers({ projectIds }: ParallaxRevealLayer
         })
 
         // Stagger start times - tighter spacing, start after text begins
-        const startTime = 0.3 + index * 0.10
+        const startTime = 0.6 + index * 0.10
         
         // Calculate duration based on speed - fast ones have shorter duration
         const duration = 2.5 / speedMultiplier
@@ -166,6 +168,63 @@ export default function ParallaxRevealLayers({ projectIds }: ParallaxRevealLayer
         ref={sectionRef} 
         className="relative bg-black h-screen overflow-hidden"
       >
+      {/* Animated gradient blobs in background */}
+      <motion.div
+        className="absolute top-0 left-0 w-[600px] h-[600px] rounded-full opacity-15 blur-3xl hidden md:block"
+        style={{
+          background: 'radial-gradient(circle, rgba(100, 180, 255, 0.3) 0%, rgba(80, 150, 255, 0.15) 50%, transparent 70%)',
+        }}
+        animate={{
+          x: ['-10%', '10%', '-10%'],
+          y: ['-5%', '5%', '-5%'],
+          scale: [1, 1.1, 1],
+        }}
+        transition={{
+          x: { duration: 20, repeat: Infinity, ease: "easeInOut" },
+          y: { duration: 20, repeat: Infinity, ease: "easeInOut" },
+          scale: { duration: 20, repeat: Infinity, ease: "easeInOut" },
+        }}
+      />
+
+      <motion.div
+        className="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full opacity-12 blur-3xl hidden md:block"
+        style={{
+          background: 'radial-gradient(circle, rgba(120, 200, 255, 0.25) 0%, rgba(100, 180, 255, 0.12) 50%, transparent 70%)',
+        }}
+        animate={{
+          x: ['10%', '-10%', '10%'],
+          y: ['5%', '-5%', '5%'],
+          scale: [1, 1.15, 1],
+        }}
+        transition={{
+          x: { duration: 25, repeat: Infinity, ease: "easeInOut" },
+          y: { duration: 25, repeat: Infinity, ease: "easeInOut" },
+          scale: { duration: 25, repeat: Infinity, ease: "easeInOut" },
+        }}
+      />
+
+      <motion.div
+        className="absolute top-1/3 right-1/4 w-[400px] h-[400px] rounded-full opacity-10 blur-3xl hidden md:block"
+        style={{
+          background: 'radial-gradient(circle, rgba(150, 220, 255, 0.25) 0%, rgba(120, 200, 255, 0.12) 50%, transparent 70%)',
+        }}
+        animate={{
+          x: ['-15%', '15%', '-15%'],
+          y: ['10%', '-10%', '10%'],
+          scale: [1, 1.2, 1],
+        }}
+        transition={{
+          x: { duration: 18, repeat: Infinity, ease: "easeInOut" },
+          y: { duration: 18, repeat: Infinity, ease: "easeInOut" },
+          scale: { duration: 18, repeat: Infinity, ease: "easeInOut" },
+        }}
+      />
+
+      {/* Floating particles - Canvas based for better performance */}
+      {typeof window !== 'undefined' && window.innerWidth >= 768 && (
+        <FloatingCanvasParticles particleCount={15} />
+      )}
+
       {/* Sliding Text */}
       <div 
         ref={textRef}
@@ -217,6 +276,9 @@ export default function ParallaxRevealLayers({ projectIds }: ParallaxRevealLayer
           )
         })}
       </div>
+
+      {/* Vignette */}
+      <div className="absolute inset-0 bg-gradient-radial from-transparent via-black/10 to-black/60 pointer-events-none" />
 
       {/* Top fade */}
       <div className="absolute top-0 left-0 right-0 h-40 bg-gradient-to-b from-black to-transparent pointer-events-none z-10" />
