@@ -12,6 +12,16 @@ interface ParallaxRevealLayersProps {
   projectIds?: string[]
 }
 
+// Fisher-Yates shuffle algorithm
+const shuffleArray = <T,>(array: T[]): T[] => {
+  const shuffled = [...array]
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+  }
+  return shuffled
+}
+
 export default function ParallaxRevealLayers({ projectIds }: ParallaxRevealLayersProps) {
   const sectionRef = useRef<HTMLDivElement>(null)
   const imagesRef = useRef<HTMLDivElement[]>([])
@@ -22,8 +32,13 @@ export default function ParallaxRevealLayers({ projectIds }: ParallaxRevealLayer
       const set = new Set(projectIds)
       return allProjects.filter(p => set.has(p.id)).slice(0, 24)
     }
-    // Fallback: first 24 featured
-    return allProjects.filter(p => p.featured).slice(0, 24)
+    // Get all projects that have valid images and shuffle them randomly
+    const projectsWithImages = allProjects.filter(project => {
+      // Check if the image file exists by checking the filename pattern
+      const imageName = project.image.split('/').pop()
+      return imageName && imageName !== 'README.md'
+    })
+    return shuffleArray(projectsWithImages).slice(0, 24)
   }, [projectIds])
 
   useEffect(() => {
@@ -35,7 +50,7 @@ export default function ParallaxRevealLayers({ projectIds }: ParallaxRevealLayer
         scrollTrigger: {
           trigger: section,
           start: 'top top',
-          end: `+=${window.innerHeight * 4}`,
+          end: `+=${window.innerHeight * 3.2}`,
           scrub: 0.8,
           pin: true,
           anticipatePin: 1,
@@ -90,7 +105,7 @@ export default function ParallaxRevealLayers({ projectIds }: ParallaxRevealLayer
         })
 
         // Stagger start times - tighter for more images, start after text begins
-        const startTime = 0.3 + index * 0.10
+        const startTime = 0.3 + index * 0.08
         
         // Calculate duration based on speed - fast ones have shorter duration
         const duration = 2.5 / speedMultiplier
@@ -120,33 +135,33 @@ export default function ParallaxRevealLayers({ projectIds }: ParallaxRevealLayer
     return () => ctx.revert()
   }, [selectedProjects.length])
 
-  // Define image positions and sizes - more variety and spread, some go slightly off-screen
+  // Define image positions and sizes - mobile-optimized balance
   const imageConfigs = selectedProjects.map((_, index) => {
     const positions = [
-      { left: '5%', size: 'large' },
-      { left: '68%', size: 'small' },
-      { left: '20%', size: 'medium' },
-      { left: '58%', size: 'medium' },
-      { left: '-5%', size: 'small' },
-      { left: '48%', size: 'large' },
-      { left: '78%', size: 'small' },
-      { left: '32%', size: 'medium' },
-      { left: '0%', size: 'small' },
-      { left: '62%', size: 'large' },
-      { left: '28%', size: 'medium' },
-      { left: '52%', size: 'small' },
-      { left: '15%', size: 'medium' },
-      { left: '72%', size: 'small' },
-      { left: '38%', size: 'large' },
-      { left: '82%', size: 'medium' },
-      { left: '8%', size: 'small' },
-      { left: '55%', size: 'medium' },
-      { left: '10%', size: 'large' },
-      { left: '70%', size: 'small' },
-      { left: '25%', size: 'medium' },
-      { left: '65%', size: 'small' },
-      { left: '42%', size: 'large' },
-      { left: '3%', size: 'medium' },
+      { left: '2%', size: 'large' },    // vasen
+      { left: '35%', size: 'small' },    // oikea
+      { left: '8%', size: 'medium' },   // vasen
+      { left: '42%', size: 'medium' },   // oikea
+      { left: '5%', size: 'small' },    // vasen
+      { left: '38%', size: 'large' },   // oikea
+      { left: '12%', size: 'small' },   // vasen
+      { left: '45%', size: 'medium' },   // oikea
+      { left: '6%', size: 'medium' },   // vasen
+      { left: '32%', size: 'small' },   // oikea
+      { left: '18%', size: 'large' },   // vasen
+      { left: '48%', size: 'medium' },   // oikea
+      { left: '3%', size: 'small' },    // vasen
+      { left: '40%', size: 'small' },   // oikea
+      { left: '10%', size: 'medium' },   // vasen
+      { left: '35%', size: 'large' },   // oikea
+      { left: '1%', size: 'small' },   // vasen
+      { left: '42%', size: 'small' },   // oikea
+      { left: '15%', size: 'large' },   // vasen
+      { left: '38%', size: 'medium' },   // oikea
+      { left: '7%', size: 'medium' },   // vasen
+      { left: '32%', size: 'small' },   // oikea
+      { left: '4%', size: 'large' },   // vasen
+      { left: '45%', size: 'medium' },   // oikea
     ]
     return positions[index % positions.length]
   })
