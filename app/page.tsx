@@ -1,6 +1,6 @@
 import Hero from '@/components/Hero'
 import HorizontalScroll from '@/components/HorizontalScroll'
-import ZoomDive from '@/components/ZoomDive'
+import ConditionalZoomDive from '@/components/ConditionalZoomDive'
 import ProjectMarquee from '@/components/ProjectMarquee'
 import ParallaxRevealLayers from '@/components/ParallaxRevealLayers'
 import TechStack from '@/components/TechStack'
@@ -62,7 +62,7 @@ export default function Home() {
           }
         ]}
       />
-      <ZoomDive />
+      <ConditionalZoomDive />
       <ProjectMarquee />
       <TechStack />
       <ContactFooter />
