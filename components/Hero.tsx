@@ -111,7 +111,7 @@ export default function Hero() {
     >
       {/* Animated gradient orbs in background - More visible in hero */}
       <motion.div
-        className="absolute top-0 left-0 w-[600px] h-[600px] rounded-full opacity-35 blur-3xl hidden md:block"
+        className="absolute top-0 left-0 w-[600px] h-[600px] rounded-full opacity-25 blur-3xl hidden md:block"
         style={{
           background: 'radial-gradient(circle, rgba(100, 180, 255, 0.6) 0%, rgba(80, 150, 255, 0.3) 50%, transparent 70%)',
         }}
@@ -131,7 +131,7 @@ export default function Hero() {
       />
 
       <motion.div
-        className="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full opacity-30 blur-3xl hidden md:block"
+        className="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full opacity-20 blur-3xl hidden md:block"
         style={{
           background: 'radial-gradient(circle, rgba(120, 200, 255, 0.5) 0%, rgba(100, 180, 255, 0.25) 50%, transparent 70%)',
         }}
@@ -151,7 +151,7 @@ export default function Hero() {
       />
 
       <motion.div
-        className="absolute top-1/3 right-1/4 w-[400px] h-[400px] rounded-full opacity-28 blur-3xl hidden md:block"
+        className="absolute top-1/3 right-1/4 w-[400px] h-[400px] rounded-full opacity-23 blur-3xl hidden md:block"
         style={{
           background: 'radial-gradient(circle, rgba(150, 220, 255, 0.5) 0%, rgba(120, 200, 255, 0.28) 50%, transparent 70%)',
         }}

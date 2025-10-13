@@ -132,16 +132,16 @@ export default function ParallaxRevealLayers({ projectIds }: ParallaxRevealLayer
   const imageConfigs = selectedProjects.map((_, index) => {
     const positions = [
       { left: '5%', size: 'large' },
-      { left: '75%', size: 'small' },
+      { left: '50%', size: 'small' },
       { left: '25%', size: 'medium' },
-      { left: '65%', size: 'medium' },
-      { left: '10%', size: 'small' },
-      { left: '55%', size: 'large' },
-      { left: '35%', size: 'small' },
-      { left: '15%', size: 'medium' },
-      { left: '70%', size: 'small' },
-      { left: '40%', size: 'large' },
       { left: '60%', size: 'medium' },
+      { left: '10%', size: 'small' },
+      { left: '40%', size: 'large' },
+      { left: '70%', size: 'small' },
+      { left: '15%', size: 'medium' },
+      { left: '55%', size: 'small' },
+      { left: '30%', size: 'large' },
+      { left: '65%', size: 'medium' },
       { left: '20%', size: 'small' },
     ]
     return positions[index % positions.length]
@@ -269,8 +269,14 @@ export default function ParallaxRevealLayers({ projectIds }: ParallaxRevealLayer
                   quality={70}
                 />
                 
-                {/* Subtle overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                {/* Dark overlay to reduce brightness */}
+                <div className="absolute inset-0 bg-black/40" />
+                
+                {/* Electric blue tint overlay */}
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 via-cyan-400/10 to-blue-600/20 mix-blend-overlay" />
+                
+                {/* Bottom gradient for depth */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
               </div>
             </div>
           )
