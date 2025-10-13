@@ -516,11 +516,10 @@ export default function HorizontalScroll({ panels }: HorizontalScrollProps) {
         {panels.map((panel, index) => (
           <div
             key={index}
-            className={`panel-${uniqueId}-${index} h-screen flex items-center justify-center px-4 sm:px-8 md:px-16 lg:px-24 relative z-20`}
-            style={{ minWidth: index === 0 ? '100vw' : '150vw' }}
+            className={`panel-${uniqueId}-${index} h-screen flex items-center justify-center px-6 sm:px-12 md:px-20 lg:px-32 relative z-20 ${index === 0 ? 'min-w-[120vw] md:min-w-[100vw]' : 'min-w-[180vw] md:min-w-[150vw]'}`}
           >
             <div className={`panel-content-${uniqueId}-${index} w-full max-w-xs sm:max-w-md md:max-w-2xl lg:max-w-4xl xl:max-w-7xl px-4 sm:px-8 md:px-0`} style={{ perspective: '2000px' }}>
-              <div className="flex flex-row items-start gap-4 sm:gap-6 md:gap-8 lg:gap-32">
+              <div className="flex flex-row items-start gap-8 sm:gap-12 md:gap-16 lg:gap-32">
                 {/* Title on the left */}
                 <h2
                   className={`panel-title-${uniqueId}-${index} text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-light text-white min-w-[40%] sm:min-w-[45%] md:min-w-[50%] lg:min-w-[400px] xl:min-w-[500px] shrink-0 leading-tight`}
@@ -554,7 +553,7 @@ export default function HorizontalScroll({ panels }: HorizontalScrollProps) {
         ))}
 
         {/* End spacer */}
-        <div className="h-screen w-16 sm:w-24 md:w-32 lg:w-[30vw]" />
+        <div className="h-screen w-32 sm:w-48 md:w-[50vw] lg:w-[30vw]" />
       </div>
 
       {/* Particles - rendered as fixed positioned elements */}
