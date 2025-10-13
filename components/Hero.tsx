@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { motion } from 'framer-motion'
@@ -12,264 +12,6 @@ gsap.registerPlugin(ScrollTrigger)
 export default function Hero() {
   const isLoaded = useLoader()
   const heroRef = useRef<HTMLDivElement>(null)
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const [mousePosition, setMousePosition] = useState({ x: 0.5, y: 0.5 })
-  const [isVisible, setIsVisible] = useState(true) // Track if hero is in viewport
-  const isVisibleRef = useRef(true) // Ref for animate function to check visibility
-  const targetRotationRef = useRef({ x: 0, y: 0 })
-  const currentRotationRef = useRef({ x: 0, y: 0 })
-  const autoRotationRef = useRef(0)
-
-  // Intersection Observer to track visibility
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          setIsVisible(entry.isIntersecting)
-          isVisibleRef.current = entry.isIntersecting
-          console.log(`[Hero] Visibility changed: ${entry.isIntersecting ? 'VISIBLE - tracking active' : 'HIDDEN - tracking paused'}`)
-        })
-      },
-      {
-        threshold: 0.1, // Trigger when at least 10% is visible
-        rootMargin: '0px',
-      }
-    )
-
-    if (heroRef.current) {
-      observer.observe(heroRef.current)
-    }
-
-    return () => {
-      if (heroRef.current) {
-        observer.unobserve(heroRef.current)
-      }
-    }
-  }, [])
-
-  // Smooth 3D Sphere that follows cursor
-  useEffect(() => {
-    if (!isLoaded) return // Don't start canvas animation until loaded
-
-    // Disable 3D canvas on mobile devices for better performance
-    const isMobileDevice = window.innerWidth < 768
-    if (isMobileDevice) {
-      console.log('[Hero] 3D Canvas disabled on mobile for performance')
-      return
-    }
-
-    const canvas = canvasRef.current
-    if (!canvas) return
-
-    const ctx = canvas.getContext('2d', {
-      alpha: true,
-      desynchronized: true
-    })
-    if (!ctx) return
-
-    let animationFrameId: number
-    let isAnimating = true
-
-    const resize = () => {
-      const dpr = Math.min(window.devicePixelRatio, 2)
-      canvas.width = window.innerWidth * dpr
-      canvas.height = window.innerHeight * dpr
-      canvas.style.width = `${window.innerWidth}px`
-      canvas.style.height = `${window.innerHeight}px`
-      ctx.scale(dpr, dpr)
-    }
-    resize()
-    window.addEventListener('resize', resize)
-
-    const particles: Array<{
-      x: number
-      y: number
-      z: number
-      size: number
-    }> = []
-
-    // Create sphere - smaller on mobile
-    const isMobile = window.innerWidth < 768
-    const radius = isMobile ? 150 : 200
-    const segments = 50
-
-    for (let i = 0; i < segments; i++) {
-      const theta = (i / segments) * Math.PI * 2
-      for (let j = 0; j < segments / 2; j++) {
-        const phi = (j / (segments / 2)) * Math.PI
-        const x = radius * Math.sin(phi) * Math.cos(theta)
-        const y = radius * Math.sin(phi) * Math.sin(theta)
-        const z = radius * Math.cos(phi)
-        particles.push({ x, y, z, size: 2.5 })
-      }
-    }
-
-    const centerX = window.innerWidth / 2
-    const centerY = window.innerHeight / 2
-
-    function animate() {
-      if (!ctx || !canvas || !isAnimating) return
-
-      // Skip rendering if hero is not visible, but keep animation loop running
-      if (!isVisibleRef.current) {
-        animationFrameId = requestAnimationFrame(animate)
-        return
-      }
-
-      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight)
-
-      const isMobileDevice = window.innerWidth < 768
-
-      if (isMobileDevice) {
-        // On mobile: slow auto-rotation
-        autoRotationRef.current += 0.002
-        currentRotationRef.current.x = Math.sin(autoRotationRef.current * 0.5) * 0.3
-        currentRotationRef.current.y = autoRotationRef.current
-      } else {
-        // On desktop: follow mouse
-        targetRotationRef.current.x = (mousePosition.y - 0.5) * Math.PI * 0.6  // Vertical follows mouse
-        targetRotationRef.current.y = -(mousePosition.x - 0.5) * Math.PI * 0.6 // Horizontal inverted
-
-        // Smooth interpolation with easing
-        const ease = 0.08
-        const dx = targetRotationRef.current.x - currentRotationRef.current.x
-        const dy = targetRotationRef.current.y - currentRotationRef.current.y
-
-        // Only update if there's a meaningful difference (prevents micro-movements)
-        if (Math.abs(dx) > 0.0001 || Math.abs(dy) > 0.0001) {
-          currentRotationRef.current.x += dx * ease
-          currentRotationRef.current.y += dy * ease
-        }
-      }
-
-      // Project all particles
-      const projected = particles.map((p) => {
-        const cosY = Math.cos(currentRotationRef.current.y)
-        const sinY = Math.sin(currentRotationRef.current.y)
-        const cosX = Math.cos(currentRotationRef.current.x)
-        const sinX = Math.sin(currentRotationRef.current.x)
-
-        let x = p.x
-        let y = p.y
-        let z = p.z
-
-        // Rotate Y axis (horizontal mouse movement)
-        let tempZ = z * cosY - x * sinY
-        let tempX = z * sinY + x * cosY
-        x = tempX
-        z = tempZ
-
-        // Rotate X axis (vertical mouse movement)
-        let tempY = y * cosX - z * sinX
-        tempZ = y * sinX + z * cosX
-        y = tempY
-        z = tempZ
-
-        const scale = 400 / (400 + z)
-        return {
-          x: x * scale + centerX,
-          y: y * scale + centerY,
-          scale: scale,
-          z: z,
-          size: p.size
-        }
-      })
-
-      // Sort by Z for proper depth
-      projected.sort((a, b) => a.z - b.z)
-
-      // Draw connections
-      let connectionCount = 0
-      const maxConnections = 150
-
-      for (let i = 0; i < projected.length && connectionCount < maxConnections; i++) {
-        const p = projected[i]
-        if (p.scale < 0.5) continue
-
-        for (let j = i + 1; j < projected.length && connectionCount < maxConnections; j++) {
-          const p2 = projected[j]
-          if (p2.scale < 0.5) continue
-
-          const dx = p.x - p2.x
-          const dy = p.y - p2.y
-          const distance = Math.sqrt(dx * dx + dy * dy)
-
-          if (distance < 70) {
-            const lineOpacity = 0.08 * (1 - distance / 70) * p.scale
-            ctx.beginPath()
-            ctx.strokeStyle = `rgba(100, 180, 255, ${lineOpacity})`
-            ctx.lineWidth = 0.8
-            ctx.moveTo(p.x, p.y)
-            ctx.lineTo(p2.x, p2.y)
-            ctx.stroke()
-            connectionCount++
-          }
-        }
-      }
-
-      // Draw particles with glow (reduced opacity)
-      projected.forEach((p) => {
-        if (p.scale < 0.3) return
-
-        const baseOpacity = Math.max(0.1, Math.min(0.4, p.scale * 0.4))
-        const size = p.size * p.scale
-
-        // Outer glow
-        const glowGradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, size * 3)
-        glowGradient.addColorStop(0, `rgba(100, 180, 255, ${baseOpacity * 0.3})`)
-        glowGradient.addColorStop(0.5, `rgba(80, 150, 255, ${baseOpacity * 0.15})`)
-        glowGradient.addColorStop(1, 'rgba(80, 150, 255, 0)')
-
-        ctx.beginPath()
-        ctx.arc(p.x, p.y, size * 3, 0, Math.PI * 2)
-        ctx.fillStyle = glowGradient
-        ctx.fill()
-
-        // Main particle
-        const particleGradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, size)
-        particleGradient.addColorStop(0, `rgba(200, 230, 255, ${baseOpacity * 0.8})`)
-        particleGradient.addColorStop(0.6, `rgba(120, 180, 255, ${baseOpacity * 0.7})`)
-        particleGradient.addColorStop(1, `rgba(80, 150, 255, ${baseOpacity * 0.4})`)
-
-        ctx.beginPath()
-        ctx.arc(p.x, p.y, size, 0, Math.PI * 2)
-        ctx.fillStyle = particleGradient
-        ctx.fill()
-      })
-
-      animationFrameId = requestAnimationFrame(animate)
-    }
-
-    animate()
-
-    return () => {
-      isAnimating = false
-      window.removeEventListener('resize', resize)
-      cancelAnimationFrame(animationFrameId)
-    }
-  }, [mousePosition, isLoaded])
-
-  // Smooth mouse tracking - only when visible
-  useEffect(() => {
-    if (!isVisible) {
-      console.log('[Hero] Mouse tracking: OFF')
-      return // Don't track mouse when hero is not visible
-    }
-
-    console.log('[Hero] Mouse tracking: ON')
-
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({
-        x: e.clientX / window.innerWidth,
-        y: e.clientY / window.innerHeight
-      })
-    }
-
-    window.addEventListener('mousemove', handleMouseMove, { passive: true })
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove)
-    }
-  }, [isVisible])
 
   // GSAP Animations - only start when loader is complete
   useEffect(() => {
@@ -287,10 +29,10 @@ export default function Hero() {
           opacity: 1,
           y: 0,
           rotateX: 0,
-          duration: 1.6,
-          stagger: 0.2,
+          duration: 1.2,
+          stagger: 0.15,
           ease: 'power4.out',
-          delay: 0.2,
+          delay: 0.15,
         }
       )
 
@@ -303,9 +45,9 @@ export default function Hero() {
         {
           opacity: 1,
           y: 0,
-          duration: 1.0,
+          duration: 0.8,
           ease: 'power3.out',
-          delay: 1.4,
+          delay: 1.0,
         }
       )
 
@@ -318,10 +60,10 @@ export default function Hero() {
         {
           opacity: 1,
           x: 0,
-          duration: 0.6,
-          stagger: 0.06,
+          duration: 0.5,
+          stagger: 0.05,
           ease: 'power3.out',
-          delay: 1.2,
+          delay: 0.9,
         }
       )
 
@@ -432,15 +174,6 @@ export default function Hero() {
       {typeof window !== 'undefined' && window.innerWidth >= 768 && (
         <FloatingCanvasParticles particleCount={20} />
       )}
-
-      {/* 3D Canvas Background - Hidden on mobile for performance */}
-      <motion.canvas
-        ref={canvasRef}
-        className="absolute inset-0 hidden md:block"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: isLoaded ? 1 : 0 }}
-        transition={{ duration: 1.5, delay: 0.2 }}
-      />
 
       {/* Vignette */}
       <div className="absolute inset-0 bg-gradient-radial from-transparent via-black/10 to-black/60 pointer-events-none" />
