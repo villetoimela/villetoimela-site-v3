@@ -230,7 +230,7 @@ const ContactFooter = () => {
       />
 
       {/* Floating particles - Canvas based for better performance */}
-      {typeof window !== 'undefined' && window.innerWidth >= 768 && (
+      {typeof window !== 'undefined' && (
         <FloatingCanvasParticles particleCount={25} />
       )}
 
@@ -289,7 +289,7 @@ const ContactFooter = () => {
                 onChange={handleChange}
                 required
                 className="w-full bg-white/5 border border-white/10 rounded-lg px-6 py-4 text-white placeholder-white/30 focus:outline-none focus:border-white/30 transition-colors duration-300"
-                placeholder="your.email@example.com"
+                placeholder="ville.toimela@gmail.com"
               />
             </div>
 
@@ -371,7 +371,7 @@ const ContactFooter = () => {
                 Contact
               </h3>
               <div className="space-y-2">
-                <a href="mailto:ville@example.com" className="block text-white/80 hover:text-white transition-colors duration-300">
+                <a href="mailto:ville.toimela@gmail.com" className="block text-white/80 hover:text-white transition-colors duration-300">
                   ville.toimela@gmail.com
                 </a>
                 <p className="text-white/60">

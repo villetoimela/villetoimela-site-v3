@@ -40,7 +40,7 @@ export const projects: Project[] = [
     title: 'Weight Tracker App',
     image: '/images/projects/project-weightracker.png',
     tags: ['React', 'Supabase', 'Next.js', 'SCSS', 'Postgres'],
-    link: 'https://example.com',
+    link: 'https://villetoimela-weight-tracker.netlify.app/',
     featured: true,
   },
   {
@@ -144,7 +144,7 @@ export const projects: Project[] = [
     title: 'Kyocera technologies Website',
     image: '/images/projects/project-kyocera.png',
     tags: ['WordPress', 'JavaScript', 'SCSS', 'PHP', 'ACF'],
-    link: 'https://example.com',
+    link: 'https://kyoceratechnologies.com/',
     featured: true,
   },
   {

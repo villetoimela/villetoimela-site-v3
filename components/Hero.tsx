@@ -171,7 +171,7 @@ export default function Hero() {
       />
 
       {/* Floating particles - Canvas based for better performance */}
-      {typeof window !== 'undefined' && window.innerWidth >= 768 && (
+      {typeof window !== 'undefined' && (
         <FloatingCanvasParticles particleCount={25} />
       )}
 
