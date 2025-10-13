@@ -111,6 +111,10 @@ export default function HorizontalScroll({ panels }: HorizontalScrollProps) {
 
       // Calculate total scroll width
       const scrollWidth = scrollContainer.scrollWidth - window.innerWidth
+      
+      // Mobile needs more vertical scroll distance because panels are wider
+      const isMobileDevice = window.innerWidth < 768
+      const scrollMultiplier = isMobileDevice ? 1.4 : 1
 
       // Create horizontal scroll animation
       const scrollTween = gsap.to(scrollContainer, {
@@ -123,7 +127,7 @@ export default function HorizontalScroll({ panels }: HorizontalScrollProps) {
           pin: true,
           pinSpacing: true, // Explicitly set pinSpacing
           scrub: 1,
-          end: () => `+=${scrollWidth}`,
+          end: () => `+=${scrollWidth * scrollMultiplier}`,
           invalidateOnRefresh: true,
         },
       })
@@ -145,14 +149,13 @@ export default function HorizontalScroll({ panels }: HorizontalScrollProps) {
           pathElement.style.strokeDashoffset = `${pathLength}`
 
           // Animate the line in sync with horizontal scroll
-          const lineScrollMultiplier = window.innerWidth < 1024 ? 1.5 : 1
           const lineTween = gsap.to(pathElement, {
             strokeDashoffset: 0,
             ease: 'none',
             scrollTrigger: {
               trigger: section,
               start: 'top top',
-              end: () => `+=${scrollWidth * lineScrollMultiplier}`,
+              end: () => `+=${scrollWidth * scrollMultiplier}`,
               scrub: 1,
               onUpdate: (self) => {
                 const currentProgress = self.progress
@@ -320,7 +323,7 @@ export default function HorizontalScroll({ panels }: HorizontalScrollProps) {
           scrollTrigger: {
             trigger: section,
             start: 'top bottom-=100',
-            end: () => `+=${scrollWidth}`,
+            end: () => `+=${scrollWidth * scrollMultiplier}`,
             toggleActions: 'play none none reverse',
             onLeave: () => gsap.to(scrollIndicator, { opacity: 0, duration: 0.3 }),
             onEnterBack: () => gsap.to(scrollIndicator, { opacity: 1, duration: 0.3 }),
