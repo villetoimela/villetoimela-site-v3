@@ -516,7 +516,7 @@ export default function HorizontalScroll({ panels }: HorizontalScrollProps) {
         {panels.map((panel, index) => (
           <div
             key={index}
-            className={`panel-${uniqueId}-${index} h-screen flex items-center justify-center px-6 sm:px-12 md:px-20 lg:px-32 relative z-20 ${index === 0 ? 'min-w-[120vw] md:min-w-[100vw]' : 'min-w-[180vw] md:min-w-[150vw]'}`}
+            className={`panel-${uniqueId}-${index} h-screen flex items-center justify-center px-6 sm:px-12 md:px-20 lg:px-32 relative z-20 ${index === 0 ? 'min-w-[150vw] md:min-w-[100vw]' : 'min-w-[250vw] md:min-w-[150vw]'}`}
           >
             <div className={`panel-content-${uniqueId}-${index} w-full max-w-xs sm:max-w-md md:max-w-2xl lg:max-w-4xl xl:max-w-7xl px-4 sm:px-8 md:px-0`} style={{ perspective: '2000px' }}>
               <div className="flex flex-row items-start gap-8 sm:gap-12 md:gap-16 lg:gap-32">
