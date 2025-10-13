@@ -231,7 +231,7 @@ const ContactFooter = () => {
 
       {/* Floating particles - Canvas based for better performance */}
       {typeof window !== 'undefined' && window.innerWidth >= 768 && (
-        <FloatingCanvasParticles particleCount={20} />
+        <FloatingCanvasParticles particleCount={25} />
       )}
 
       {/* Background effects */}

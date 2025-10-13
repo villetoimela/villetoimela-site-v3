@@ -192,7 +192,7 @@ const TechStack = () => {
 
       {/* Floating particles - Canvas based for better performance */}
       {typeof window !== 'undefined' && window.innerWidth >= 768 && (
-        <FloatingCanvasParticles particleCount={15} />
+        <FloatingCanvasParticles particleCount={25} />
       )}
 
       <div className="container mx-auto px-6 relative z-10">
