@@ -140,7 +140,7 @@ const TechStack = () => {
     >
       {/* Animated gradient orbs in background */}
       <motion.div
-        className="absolute top-1/4 left-1/4 w-[500px] h-[500px] rounded-full opacity-15 blur-3xl pointer-events-none hidden md:block"
+        className="absolute top-1/4 left-1/4 w-[500px] h-[500px] rounded-full opacity-20 blur-3xl pointer-events-none hidden md:block"
         style={{
           background: 'radial-gradient(circle, rgba(100, 180, 255, 0.3) 0%, rgba(80, 150, 255, 0.15) 50%, transparent 70%)',
         }}
@@ -157,7 +157,7 @@ const TechStack = () => {
       />
 
       <motion.div
-        className="absolute bottom-1/3 right-1/4 w-[400px] h-[400px] rounded-full opacity-15 blur-3xl pointer-events-none hidden md:block"
+        className="absolute bottom-1/3 right-1/4 w-[400px] h-[400px] rounded-full opacity-20 blur-3xl pointer-events-none hidden md:block"
         style={{
           background: 'radial-gradient(circle, rgba(120, 200, 255, 0.25) 0%, rgba(100, 180, 255, 0.12) 50%, transparent 70%)',
         }}
@@ -174,7 +174,7 @@ const TechStack = () => {
       />
 
       <motion.div
-        className="absolute top-1/2 right-1/3 w-[350px] h-[350px] rounded-full opacity-10 blur-3xl pointer-events-none hidden md:block"
+        className="absolute top-1/2 right-1/3 w-[350px] h-[350px] rounded-full opacity-20 blur-3xl pointer-events-none hidden md:block"
         style={{
           background: 'radial-gradient(circle, rgba(150, 220, 255, 0.3) 0%, rgba(120, 200, 255, 0.15) 50%, transparent 70%)',
         }}

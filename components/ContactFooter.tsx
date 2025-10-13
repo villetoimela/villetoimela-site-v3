@@ -213,7 +213,7 @@ const ContactFooter = () => {
       />
 
       <motion.div
-        className="absolute top-1/3 right-1/4 w-[400px] h-[400px] rounded-full opacity-15 blur-3xl hidden md:block"
+        className="absolute top-1/3 right-1/4 w-[400px] h-[400px] rounded-full opacity-20 blur-3xl hidden md:block"
         style={{
           background: 'radial-gradient(circle, rgba(150, 220, 255, 0.35) 0%, rgba(120, 200, 255, 0.18) 50%, transparent 70%)',
         }}
