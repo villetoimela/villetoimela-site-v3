@@ -39,6 +39,8 @@ export default function ParallaxRevealLayers({ projectIds }: ParallaxRevealLayer
     if (!section || imagesRef.current.length === 0) return
 
     const ctx = gsap.context(() => {
+      const isMobile = window.innerWidth < 768
+      
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: section,
@@ -116,11 +118,12 @@ export default function ParallaxRevealLayers({ projectIds }: ParallaxRevealLayer
           ease: 'none',
         }, startTime)
         
-        // Fade out near the end
+        // Fade out near the end - delay more on mobile to fill the timeline better
+        const fadeOutTiming = isMobile ? `>-0.2` : `>-0.5`
         tl.to(img, {
           opacity: 0,
           duration: 0.3,
-        }, `>-0.5`)
+        }, fadeOutTiming)
       })
 
     }, sectionRef)
@@ -221,7 +224,7 @@ export default function ParallaxRevealLayers({ projectIds }: ParallaxRevealLayer
       />
 
       {/* Floating particles - Canvas based for better performance */}
-      {typeof window !== 'undefined' && window.innerWidth >= 768 && (
+      {typeof window !== 'undefined' && (
         <FloatingCanvasParticles particleCount={25} />
       )}
 
