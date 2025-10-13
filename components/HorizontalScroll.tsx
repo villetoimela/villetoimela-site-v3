@@ -553,7 +553,7 @@ export default function HorizontalScroll({ panels }: HorizontalScrollProps) {
         ))}
 
         {/* End spacer */}
-        <div className="h-screen w-32 sm:w-48 md:w-[50vw] lg:w-[30vw]" />
+        <div className="h-screen w-48 sm:w-64 md:w-80 lg:w-[30vw]" />
       </div>
 
       {/* Particles - rendered as fixed positioned elements */}

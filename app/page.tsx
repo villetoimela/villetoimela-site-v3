@@ -47,6 +47,8 @@ export default function Home() {
           }
         ]}
       />
+      {/* Spacer between HorizontalScroll and ProjectsStack3D */}
+      <div className="h-16 sm:h-24 md:h-32 lg:h-40 bg-black" />
       <ProjectsStack3D projectIds={['1','3','7','9','11']} />
       <HorizontalScroll
         panels={[
