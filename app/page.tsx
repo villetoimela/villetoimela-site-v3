@@ -47,7 +47,7 @@ export default function Home() {
           }
         ]}
       />
-      <ProjectsStack3D projectIds={['1','2','3','4','5']} />
+      <ProjectsStack3D projectIds={['1','3','7','9','11']} />
       <HorizontalScroll
         panels={[
           {
