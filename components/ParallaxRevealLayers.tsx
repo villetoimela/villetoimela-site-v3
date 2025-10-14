@@ -99,11 +99,13 @@ export default function ParallaxRevealLayers({ projectIds }: ParallaxRevealLayer
         const speedVariations = [1.8, 1.4, 2.0, 1.6, 1.9, 1.5, 2.1, 1.7, 1.8, 1.5, 1.9, 1.6]
         const speedMultiplier = speedVariations[index % speedVariations.length]
         
-        // Start below screen - more distance for better spacing
-        const startY = window.innerHeight * 1.5
+        // Start below screen - more distance for better spacing, less on mobile
+        const startY = isMobile ? window.innerHeight * 1.2 : window.innerHeight * 1.5
         
-        // End above screen - varying distances based on speed
-        const endY = -window.innerHeight * (1.0 + speedMultiplier * 0.3)
+        // End above screen - varying distances based on speed, less on mobile
+        const endY = isMobile ? 
+          -window.innerHeight * (0.7 + speedMultiplier * 0.2) : 
+          -window.innerHeight * (1.0 + speedMultiplier * 0.3)
 
         // Set initial position
         gsap.set(img, {
@@ -111,8 +113,9 @@ export default function ParallaxRevealLayers({ projectIds }: ParallaxRevealLayer
           opacity: 0,
         })
 
-        // Stagger start times - more spacing between images
-        const startTime = 0.6 + index * 0.15
+        // Stagger start times - more spacing between images, less on mobile
+        const staggerDelay = isMobile ? 0.08 : 0.15
+        const startTime = 0.6 + index * staggerDelay
         
         // Calculate duration based on speed - fast ones have shorter duration
         const duration = 2.5 / speedMultiplier
