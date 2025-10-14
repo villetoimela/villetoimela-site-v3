@@ -20,18 +20,30 @@ export default function ParallaxRevealLayers({ projectIds }: ParallaxRevealLayer
   const textRef = useRef<HTMLDivElement>(null)
 
   const selectedProjects: Project[] = useMemo(() => {
+    let projects: Project[]
+    
     if (projectIds && projectIds.length > 0) {
       const set = new Set(projectIds)
-      return allProjects.filter(p => set.has(p.id))
+      projects = allProjects.filter(p => set.has(p.id))
+    } else {
+      // Use all projects, but filter out any that might have invalid image paths
+      projects = allProjects.filter(project => {
+        const imageName = project.image.split('/').pop()
+        return imageName && 
+               imageName !== 'README.md' && 
+               imageName !== '.gitkeep' &&
+               (imageName.endsWith('.png') || imageName.endsWith('.jpg') || imageName.endsWith('.jpeg') || imageName.endsWith('.webp'))
+      })
     }
-    // Use all projects, but filter out any that might have invalid image paths
-    return allProjects.filter(project => {
-      const imageName = project.image.split('/').pop()
-      return imageName && 
-             imageName !== 'README.md' && 
-             imageName !== '.gitkeep' &&
-             (imageName.endsWith('.png') || imageName.endsWith('.jpg') || imageName.endsWith('.jpeg') || imageName.endsWith('.webp'))
-    })
+    
+    // Shuffle the projects array using Fisher-Yates algorithm
+    const shuffled = [...projects]
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+    }
+    
+    return shuffled
   }, [projectIds])
 
   useEffect(() => {
@@ -134,18 +146,18 @@ export default function ParallaxRevealLayers({ projectIds }: ParallaxRevealLayer
   // Define image positions and sizes
   const imageConfigs = selectedProjects.map((_, index) => {
     const positions = [
-      { left: '5%', size: 'large' },
-      { left: '50%', size: 'small' },
-      { left: '25%', size: 'medium' },
-      { left: '60%', size: 'medium' },
-      { left: '10%', size: 'small' },
-      { left: '40%', size: 'large' },
-      { left: '70%', size: 'small' },
+      { left: '1%', size: 'large' },
+      { left: '40%', size: 'small' },
       { left: '15%', size: 'medium' },
-      { left: '55%', size: 'small' },
-      { left: '30%', size: 'large' },
-      { left: '65%', size: 'medium' },
-      { left: '20%', size: 'small' },
+      { left: '50%', size: 'medium' },
+      { left: '5%', size: 'small' },
+      { left: '35%', size: 'medium' },
+      { left: '30%', size: 'small' },
+      { left: '10%', size: 'medium' },
+      { left: '45%', size: 'small' },
+      { left: '20%', size: 'large' },
+      { left: '45%', size: 'medium' },
+      { left: '15%', size: 'small' },
     ]
     return positions[index % positions.length]
   })
