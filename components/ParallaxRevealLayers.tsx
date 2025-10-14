@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Image from 'next/image'
@@ -18,6 +18,8 @@ export default function ParallaxRevealLayers({ projectIds }: ParallaxRevealLayer
   const sectionRef = useRef<HTMLDivElement>(null)
   const imagesRef = useRef<HTMLDivElement[]>([])
   const textRef = useRef<HTMLDivElement>(null)
+  const [isMobile, setIsMobile] = useState(false)
+  const [isClient, setIsClient] = useState(false)
 
   const selectedProjects: Project[] = useMemo(() => {
     let projects: Project[]
@@ -114,8 +116,10 @@ export default function ParallaxRevealLayers({ projectIds }: ParallaxRevealLayer
         })
 
         // Stagger start times - more spacing between images, less on mobile
+        // Add extra initial delay on mobile to allow images to load
         const staggerDelay = isMobile ? 0.08 : 0.15
-        const startTime = 0.6 + index * staggerDelay
+        const initialDelay = isMobile ? 0.8 : 0.6
+        const startTime = initialDelay + index * staggerDelay
         
         // Calculate duration based on speed - fast ones have shorter duration
         const duration = 2.5 / speedMultiplier
@@ -146,6 +150,19 @@ export default function ParallaxRevealLayers({ projectIds }: ParallaxRevealLayer
     return () => ctx.revert()
   }, [selectedProjects.length])
 
+  // Set up mobile detection and client-side rendering
+  useEffect(() => {
+    setIsClient(true)
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
   // Define image positions and sizes
   const imageConfigs = selectedProjects.map((_, index) => {
     const positions = [
@@ -167,6 +184,7 @@ export default function ParallaxRevealLayers({ projectIds }: ParallaxRevealLayer
 
   // Mobile-specific position adjustment
   const getMobileAdjustedPosition = (originalLeft: string) => {
+    if (!isClient) return originalLeft // Return original during SSR
     const numericValue = parseFloat(originalLeft)
     // Shift positions left by 20% on mobile (but keep them within bounds)
     const adjustedValue = Math.max(2, numericValue - 20)
@@ -239,7 +257,7 @@ export default function ParallaxRevealLayers({ projectIds }: ParallaxRevealLayer
       />
 
       {/* Floating particles - Canvas based for better performance */}
-      {typeof window !== 'undefined' && (
+      {isClient && (
         <FloatingCanvasParticles particleCount={25} />
       )}
 
@@ -283,8 +301,10 @@ export default function ParallaxRevealLayers({ projectIds }: ParallaxRevealLayer
                   alt={project.title}
                   fill
                   className="object-cover"
-                  sizes="40vw"
+                  sizes="(max-width: 768px) 80vw, 40vw"
                   quality={70}
+                  priority={idx < 4}
+                  loading={idx < 4 ? "eager" : "lazy"}
                 />
                 
                 {/* Dark overlay to reduce brightness */}
