@@ -259,4 +259,12 @@ export const projects: Project[] = [
     link: 'https://ez-math-game.netlify.app/',
     featured: true,
   },
+  {
+    id: '32',
+    title: 'Nietos AI',
+    image: '/images/projects/project-nietos-ai.png',
+    tags: ['WordPress', 'Gutenberg', 'AI', 'UI/UX'],
+    link: 'https://nietos-ai.com/',
+    featured: true,
+  },
 ]
