@@ -267,4 +267,12 @@ export const projects: Project[] = [
     link: 'https://nietos-ai.com/',
     featured: true,
   },
+  {
+    id: '33',
+    title: 'Nietos AI Plugin',
+    image: '/images/projects/project-nietos-ai-plugin.png',
+    tags: ['Plugin Development', 'WordPress', 'AI', 'UI/UX'],
+    link: 'https://nietos-ai.com/',
+    featured: true,
+  },
 ]
